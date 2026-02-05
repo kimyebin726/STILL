@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <link rel="icon" type="image/png" href="still_logo1.png">
+<meta charset="UTF-8" />
+<title>STILL | Visual Mode</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  *{ box-sizing:border-box; font-family:Pretendard, system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo"; }
+  :root{
+    --redA:#ff3b30;
+    --redB:#b31217;
+    --panel:rgba(0,0,0,.22);
+    --stroke:rgba(255,255,255,.16);
+  }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: radial-gradient(circle at top, var(--redA) 0%, var(--redB) 55%, #6a0000 100%);
+  }
+  .app{
+    width:min(1100px, 96vw);
+    height:min(760px, 92vh);
+    border-radius:28px;
+    background:rgba(0,0,0,.18);
+    backdrop-filter: blur(16px);
+    border:1px solid rgba(255,255,255,.18);
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* top corners */
+  .cornerBtn{
+    position:absolute;
+    top:16px;
+    width:44px;height:44px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.28);
+    border:1px solid rgba(255,255,255,.18);
+    color:#fff;
+    cursor:pointer;
+    z-index:40;
+  }
+  .cornerBtn:hover{ background:rgba(0,0,0,.36); }
+  .btnClose{ left:16px; }
+  .btnSettings{ right:16px;  font-size: 22px;
+  line-height: 1;   }
+
+
+  /* center logo */
+  .topLogo{
+    position:absolute;
+    top:18px; left:50%;
+    transform:translateX(-50%);
+    height:36px;
+    display:flex; align-items:center; justify-content:center;
+    z-index:35;
+    opacity:.95;
+    pointer-events:none;
+  }
+ .topLogo img{
+  height: 30px;   /* ← 기존 26px → 36~44px 추천 */
+}
+
+  /* speech bar */
+  .speech{
+    position:absolute;
+    top:66px; left:50%;
+    transform:translateX(-50%);
+    width:min(860px, calc(100% - 60px));
+    padding:16px 18px;
+    border-radius:20px;
+    background:rgba(0,0,0,.26);
+    border:1px solid rgba(255,255,255,.16);
+    backdrop-filter: blur(12px);
+    color:#fff;
+    z-index:30;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-height:72px; /* thicker */
+  }
+  .speechText{
+    flex:1;
+    min-width:0;
+  }
+  .speechTitle{
+    font-size:16px;
+    font-weight:750;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    line-height:1.25;
+  }
+  .speechSub{
+    margin-top:6px;
+    font-size:13px;
+    opacity:.82;
+    line-height:1.35;
+  }
+  .speechTools{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex:0 0 auto;
+  }
+  .toolPill{
+    height:36px;
+    padding:0 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.14);
+    color:#fff;
+    font-size:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    user-select:none;
+    white-space:nowrap;
+  }
+  .toolPill:hover{ background:rgba(255,255,255,.14); }
+  .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#24d36b;
+    box-shadow:0 0 0 3px rgba(36,211,107,.15);
+  }
+  .ico{
+    width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;
+    opacity:.9;
+  }
+
+  /* center column (video + buttons aligned to video center) */
+  .stage{
+    position:absolute;
+    inset:0;
+    padding:116px 22px 82px; /* leave space for speech + bottom buttons */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .centerCol{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .videoWrap{
+    height:100%;
+    max-height:100%;
+    aspect-ratio:9/16;
+    border-radius:26px;
+    overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.55);
+    background:#000;
+  }
+  video{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  /* bottom controls */
+  .controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+  }
+  .btnMain, .btnMini{
+    border:none;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    background:#fff;              /* white background */
+    box-shadow:0 12px 28px rgba(0,0,0,.35); /* shadow */
+  }
+  .btnMain{
+    width:72px;height:72px;
+  }
+  .btnMini{
+    width:54px;height:54px;
+  }
+  .btnMain img{ width:32px;height:32px; }
+  .btnMini img{ width:24px;height:24px; }
+
+  /* speech bar modes */
+.speech.hidden{ display:none; } /* (unused now; kept for safety) */
+
+/* mini mode (compact controls) */
+.speech.isMini{
+  width: fit-content;
+  min-height: auto;
+  padding: 12px 14px;
+  border-radius: 22px;
+  gap: 0;
+  justify-content: center;
+}
+.speech.isMini .speechText{ display:none; }
+.speech.isMini .speechTools{ gap:12px; }
+.speech.isMini .toolPill{
+  height:44px;
+  width:44px;
+  padding:0;
+  border-radius:16px;
+  justify-content:center;
+}
+.speech.isMini .toolPill span:not(.ico){ display:none; }
+.speech.isMini .dot{ display:none; }
+
+/* fix stray selector */
+.btnMini img{ width:24px;height:24px; }
+
+  /* intro overlay */
+  .introOverlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    z-index:10;
+  }
+  .introOverlay.fadeOut{
+    animation: introFade .35s ease forwards;
+  }
+  @keyframes introFade{
+    to{ opacity:0; transform:scale(1.01); visibility:hidden; }
+  }
+  .introBg{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(255,255,255,.12), rgba(0,0,0,.35)),
+      url('jesusface.png') center/cover no-repeat;
+    filter: blur(14px) saturate(1.05);
+    transform: scale(1.08);
+    opacity:.95;
+  }
+  .introCard{
+    position:relative;
+    width:min(420px, 92%);
+    border-radius:22px;
+    padding:18px 16px 16px;
+    background: rgba(0,0,0,.32);
+    border:1px solid rgba(255,255,255,.16);
+    backdrop-filter: blur(10px);
+    color:#fff;
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+  }
+  .introKicker{
+    font-size:12px;
+    letter-spacing:.16em;
+    opacity:.75;
+    font-weight:700;
+  }
+  .introTitle{
+    margin-top:8px;
+    font-size:18px;
+    font-weight:800;
+    line-height:1.25;
+  }
+  .introDesc{
+    margin-top:10px;
+    font-size:13px;
+    line-height:1.45;
+    opacity:.9;
+  }
+  .introDesc .muted{ opacity:.75; }
+  .introBtns{
+    margin-top:14px;
+    display:flex;
+    gap:10px;
+  }
+  .introBtn{
+    flex:1;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.10);
+    color:#fff;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .introBtn.primary{
+    background:#fff;
+    color:#111;
+    border-color: rgba(255,255,255,.35);
+    box-shadow:0 12px 26px rgba(0,0,0,.28);
+  }
+  .introBtn.ghost:hover{ background: rgba(255,255,255,.14); }
+  .introMini{
+    margin-top:12px;
+    font-size:12px;
+    line-height:1.5;
+    opacity:.82;
+    padding:12px 12px;
+    border-radius:14px;
+    background: rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.10);
+  }
+  /* make videoWrap relative for overlay */
+  .videoWrap{ position:relative; }
+
+
+  /* chat drawer (overlay; does NOT affect layout) */
+  .chatDrawer{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:18px;
+    width:min(560px, calc(100% - 36px));
+    border-radius:20px;
+    background: rgba(0,0,0,.26);
+    border:1px solid rgba(255,255,255,.16);
+    backdrop-filter: blur(12px);
+    box-shadow:0 18px 44px rgba(0,0,0,.45);
+    overflow:hidden;
+    z-index:60;
+  }
+
+  .chatHeader{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 14px;
+    border-bottom:1px solid rgba(255,255,255,.10);
+    color:#fff;
+  }
+  .chatTitle{ font-weight:800; font-size:14px; }
+  .chatClose{
+    border:none;
+    background:rgba(255,255,255,.10);
+    color:#fff;
+    padding:8px 10px;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:12px;
+  }
+  .chatClose:hover{ background:rgba(255,255,255,.14); }
+  .chatBody{
+    height:210px;
+    overflow:auto;
+    padding:12px 12px 8px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .msgRow{ display:flex; gap:10px; align-items:flex-end; }
+  .msgRow.me{ justify-content:flex-end; }
+  .bubble{
+    max-width:78%;
+    padding:10px 12px;
+    border-radius:16px;
+    font-size:13px;
+    line-height:1.45;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.10);
+    color:#fff;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .msgRow.me .bubble{
+    background:#fff;
+    color:#111;
+    border-color: rgba(255,255,255,.40);
+  }
+  .meta{
+    font-size:11px;
+    opacity:.7;
+    margin-top:4px;
+  }
+  .audioWrap audio{ width:240px; max-width:100%; }
+  .chatComposer{
+    display:flex;
+    gap:10px;
+    padding:12px;
+    border-top:1px solid rgba(255,255,255,.10);
+    background: rgba(0,0,0,.10);
+  }
+  .chatInput{
+    flex:1;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.10);
+    color:#fff;
+    padding:0 12px;
+    outline:none;
+  }
+  .chatInput::placeholder{ color: rgba(255,255,255,.72); }
+  .chatSend{
+    height:44px;
+    padding:0 14px;
+    border-radius:14px;
+    border:none;
+    background:#fff;
+    color:#111;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 12px 26px rgba(0,0,0,.22);
+  }
+  .chatSend:active{ transform: translateY(1px); }
+
+  /* recording badge */
+  .recBadge{
+    position:absolute;
+    left:18px;
+    bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:999px;
+    background:rgba(0,0,0,.28);
+    border:1px solid rgba(255,255,255,.16);
+    color:#fff;
+    z-index:25;
+    backdrop-filter: blur(10px);
+  }.record-indicator {
+  display: none !important;
+}#recordIndicator {
+  display: none !important;
+}
+  .recDot{
+    width:10px;height:10px;border-radius:50%;
+    background:#ff3b30;
+    box-shadow:0 0 0 4px rgba(255,59,48,.18);
+    animation:pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); opacity:1; }
+    50%{ transform:scale(1.15); opacity:.75; }
+  }
+  .recText{ font-size:12px; font-weight:800; }
+  .recTime{ font-size:12px; opacity:.9; font-variant-numeric:tabular-nums; }
+
+  /* responsive tweaks */
+  @media (max-width:640px){
+    .speechSub{ display:none; }
+    .speech{ min-height:64px; }
+    .stage{ padding:108px 14px 78px; }
+  }
+  .desc.main {
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0.95;
+  margin-top: 18px;
+}
+
+.desc.sub {
+  font-size: 13px;      /* ← 작게 */
+  line-height: 1.45;
+  opacity: 0.6;         /* ← 불투명 */
+  margin-top: 10px;     /* ← 간격 */
+}
+
+
+/* ===== Settings Sheet (bottom) ===== */
+.sheetDim{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  backdrop-filter: blur(2px);
+  z-index:80;
+  display:none;
+}
+.sheetDim.isOpen{ display:block; }
+
+.sheet{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:16px;
+  width:min(680px, calc(100% - 24px));
+  border-radius:26px;
+  background: rgba(30,30,30,.72);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(18px);
+  box-shadow:0 26px 80px rgba(0,0,0,.55);
+  color:#fff;
+  overflow:hidden;
+}
+.sheetHandle{
+  width:52px;height:5px;border-radius:999px;
+  background:rgba(255,255,255,.28);
+  margin:10px auto 6px;
+}
+.sheetTop{
+  position:relative;
+  padding:10px 16px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sheetTitle{
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:-.01em;
+}
+.sheetX{
+  position:absolute;
+  left:14px;
+  top:10px;
+  width:38px;height:38px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+}
+.sheetX:hover{ background:rgba(255,255,255,.14); }
+
+.sheetBody{ padding:8px 18px 18px; }
+
+.seg{
+  display:flex;
+  gap:10px;
+  padding:10px;
+  border-radius:18px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.10);
+}
+.segBtn{
+  flex:1;
+  height:44px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  font-weight:850;
+  cursor:pointer;
+}
+.segBtn.isOn{
+  background:#fff;
+  color:#111;
+  border-color: rgba(255,255,255,.35);
+  box-shadow:0 12px 26px rgba(0,0,0,.22);
+}
+
+.setRow{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px 6px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.setRow:last-child{ border-bottom:none; }
+.setIcon{
+  width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  opacity:.95;
+  font-size:18px;
+}
+.setLabel{
+  flex:1;
+  font-size:15px;
+  font-weight:850;
+  letter-spacing:-.01em;
+}
+.setSub{
+  display:block;
+  font-size:12px;
+  opacity:.72;
+  font-weight:650;
+  margin-top:4px;
+}
+
+/* iOS-like switch */
+.switch{
+  position:relative;
+  width:54px;height:32px;
+  display:inline-block;
+  flex:0 0 auto;
+}
+.switch input{ display:none; }
+.slider{
+  position:absolute; inset:0;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  transition:.18s ease;
+}
+.slider:before{
+  content:"";
+  position:absolute;
+  width:26px;height:26px;
+  left:3px; top:50%;
+  transform:translateY(-50%);
+  background:#fff;
+  border-radius:50%;
+  transition:.18s ease;
+  box-shadow:0 10px 20px rgba(0,0,0,.28);
+}
+.switch input:checked + .slider{
+  background:#1f7aff;
+  border-color: rgba(31,122,255,.35);
+}
+.switch input:checked + .slider:before{
+  transform:translate(22px,-50%);
+}
+
+.rangeWrap{
+  width:200px;
+  max-width:38vw;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.rangeWrap input[type="range"]{ width:100%; }
+.rangeMark{ font-size:12px; opacity:.85; font-weight:800; }
+
+/* text scale hook */
+:root{ --textScale: 1; }
+.speechTitle, .speechSub, .chatTitle, .bubble, .chatInput, .introTitle, .desc.main, .desc.sub{
+  font-size: calc(var(--baseSize, 14px) * var(--textScale));
+}
+.speechTitle{ --baseSize:16px; }
+.speechSub{ --baseSize:13px; }
+.chatTitle{ --baseSize:14px; }
+.bubble{ --baseSize:13px; }
+.chatInput{ --baseSize:14px; }
+.introTitle{ --baseSize:18px; }
+.desc.main{ --baseSize:15px; }
+.desc.sub{ --baseSize:13px; }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- corner buttons -->
+  <button class="cornerBtn btnClose" aria-label="닫기">✕</button>
+  <button class="cornerBtn btnSettings" aria-label="설정">⚙</button>
+
+  <!-- centered logo -->
+  <div class="topLogo" aria-hidden="true">
+    <img src="still_logo.png" alt="STILL"/>
+  </div>
+
+  <!-- speech bar -->
+  <div class="speech" id="speechBar">
+    <div class="speechText">
+      <div class="speechTitle">“내게 말해도 괜찮아. 내가 너와 함께 있어.”</div>
+      <div class="speechSub">마이크로 말하거나, 채팅으로 텍스트를 입력해요.</div>
+    </div>
+
+    <div class="speechTools">
+      <div class="toolPill" id="btnToggleSpeech" title="말풍선 켜기/끄기">
+        <span class="ico">💬</span><span>말풍선</span><span class="dot" id="speechDot"></span>
+      </div>
+      <div class="toolPill" id="btnToggleSound" title="소리 켜기/끄기">
+        <span class="ico" id="soundIcon">🔇</span><span id="soundLabel">무음</span>
+      </div>
+    
+<div class="toolPill" id="btnFlag" title="도움">
+  <span class="ico">🚩</span><span>도움</span>
+</div>
+</div>
+  </div>
+
+  <!-- stage -->
+  <div class="stage">
+    <div class="centerCol">
+      <div class="videoWrap">
+
+      <div class="introOverlay" id="introOverlay" role="dialog" aria-label="서비스 안내">
+        <div class="introBg" aria-hidden="true"></div>
+        <div class="introCard">
+          <div class="introKicker">고민상담</div>
+          <div class="introTitle">예수님께 <br>오늘의 고민을<br> 말해보세요</div>
+          <p class="desc main">
+  마이크로 말하거나 <br>채팅으로 대화해보세요
+</p>
+
+<p class="desc sub">
+  시작버튼을 누르고,<br> 은혜로운 시간을 가져보세요
+</p>
+          <div class="introBtns">
+            <button class="introBtn primary" id="btnStart">시작하기</button>
+            <button class="introBtn ghost" id="btnHow">사용법</button>
+          </div>
+          <div class="introMini" id="howBox" hidden>
+            • 마이크: 음성으로 고민 말하기<br/>
+            • 채팅: 텍스트로 작성하기<br/>
+            • 상단 아이콘: 말풍선/소리 토글
+          </div>
+        </div>
+      </div>
+
+        <video id="jesusVideo" src="jesusface.mp4" playsinline preload="auto"></video>
+      </div>
+
+      <!-- controls aligned with video center -->
+      <div class="controls">
+        <button class="btnMain" id="btnMic" aria-label="마이크">
+          <img src="mic.png" alt="mic"/>
+        </button>
+        <button class="btnMini" id="btnChat" aria-label="채팅">
+          <img src="chat.png" alt="chat"/>
+        </button>
+      </div>
+
+      <!-- chat drawer -->
+      <div class="chatDrawer" id="chatDrawer" aria-label="채팅" hidden>
+        <div class="chatHeader">
+          <div class="chatTitle">채팅</div>
+          <button class="chatClose" id="chatClose" aria-label="닫기">닫기</button>
+        </div>
+        <div class="chatBody" id="chatBody" role="log" aria-live="polite"></div>
+        <form class="chatComposer" id="chatForm">
+          <input class="chatInput" id="chatInput" type="text" placeholder="예수님께 고민을 적어보세요…" autocomplete="off" />
+          <button class="chatSend" type="submit">보내기</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+  
+
+<!-- settings sheet -->
+<div class="sheetDim" id="sheetDim" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-label="설정">
+    <div class="sheetHandle" aria-hidden="true"></div>
+    <div class="sheetTop">
+      <button class="sheetX" id="sheetClose" aria-label="닫기">✕</button>
+      <div class="sheetTitle">설정</div>
+    </div>
+
+    <div class="sheetBody">
+      <div class="seg" aria-label="모드 선택">
+        <button class="segBtn isOn" type="button" id="segDefault">기본값</button>
+        <button class="segBtn" type="button" id="segBeginner">비기너 모드</button>
+      </div>
+
+      <div class="setRow">
+        <div class="setIcon">🐢</div>
+        <div class="setLabel">
+          천천히 듣기
+          <span class="setSub">영상/음성 속도를 느리게 재생해요</span>
+        </div>
+        <label class="switch" aria-label="천천히 듣기 토글">
+          <input type="checkbox" id="slowToggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setRow">
+        <div class="setIcon">🔤</div>
+        <div class="setLabel">
+          글씨 크기 조정
+          <span class="setSub">말풍선/채팅 텍스트 크기를 조절해요</span>
+        </div>
+        <div class="rangeWrap" aria-label="글씨 크기 슬라이더">
+          <span class="rangeMark">A</span>
+          <input type="range" id="textScale" min="0.9" max="1.25" step="0.05" value="1" />
+          <span class="rangeMark" style="font-size:14px;">A</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  const video = document.getElementById('jesusVideo');
+
+
+// ===== Settings Sheet =====
+const btnSettings = document.querySelector('.btnSettings');
+const sheetDim = document.getElementById('sheetDim');
+const sheetClose = document.getElementById('sheetClose');
+const slowToggle = document.getElementById('slowToggle');
+const textScale = document.getElementById('textScale');
+const segDefault = document.getElementById('segDefault');
+const segBeginner = document.getElementById('segBeginner');
+
+function openSheet(){
+  sheetDim.classList.add('isOpen');
+  sheetDim.setAttribute('aria-hidden','false');
+}
+function closeSheet(){
+  sheetDim.classList.remove('isOpen');
+  sheetDim.setAttribute('aria-hidden','true');
+}
+
+btnSettings?.addEventListener('click', (e)=>{ e.stopPropagation(); openSheet(); });
+sheetClose?.addEventListener('click', (e)=>{ e.stopPropagation(); closeSheet(); });
+sheetDim?.addEventListener('click', (e)=>{ if(e.target === sheetDim) closeSheet(); });
+
+// Slow playback (video + any chat audio)
+function applyPlaybackRate(){
+  const rate = slowToggle?.checked ? 0.85 : 1.0;
+  if(video) video.playbackRate = rate;
+  document.querySelectorAll('.audioWrap audio').forEach(a=>{ a.playbackRate = rate; });
+}
+slowToggle?.addEventListener('change', applyPlaybackRate);
+
+// Text scale
+function applyTextScale(){
+  const v = parseFloat(textScale?.value || '1');
+  document.documentElement.style.setProperty('--textScale', String(v));
+}
+textScale?.addEventListener('input', applyTextScale);
+
+// Mode (UI state only for now)
+function setMode(beginner){
+  segBeginner?.classList.toggle('isOn', beginner);
+  segDefault?.classList.toggle('isOn', !beginner);
+}
+segDefault?.addEventListener('click', ()=>setMode(false));
+segBeginner?.addEventListener('click', ()=>setMode(true));
+
+  // speech toggle
+  const speechBar = document.getElementById('speechBar');
+  const btnToggleSpeech = document.getElementById('btnToggleSpeech');
+  const speechDot = document.getElementById('speechDot');
+
+  
+const speechIcon = btnToggleSpeech.querySelector('.ico');
+
+function setSpeechMini(isMini){
+  speechBar.classList.toggle('isMini', isMini);
+  // icon swap (full: bubble, mini: eye)
+  if(speechIcon) speechIcon.textContent = isMini ? '👁' : '💬';
+  // dot color still reflects "speech enabled" (always enabled; just compact UI)
+  speechDot.style.background = '#24d36b';
+  speechDot.style.boxShadow = '0 0 0 3px rgba(36,211,107,.15)';
+}
+
+// Default: full speech bar
+setSpeechMini(false);
+
+// Toggle between full ↔ mini (does NOT disappear)
+btnToggleSpeech.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  const nextMini = !speechBar.classList.contains('isMini');
+  setSpeechMini(nextMini);
+});
+
+// sound toggle (mute/unmute)
+  const btnToggleSound = document.getElementById('btnToggleSound');
+  const soundIcon = document.getElementById('soundIcon');
+  const soundLabel = document.getElementById('soundLabel');
+
+  function syncSoundUI(){
+    if(video.muted){
+      soundIcon.textContent = '🔇';
+      soundLabel.textContent = '무음';
+    }else{
+      soundIcon.textContent = '🔊';
+      soundLabel.textContent = '소리';
+    }
+  }
+  syncSoundUI();
+  btnToggleSound.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    video.muted = !video.muted;
+    syncSoundUI();
+    // if unmuted, try play (some browsers require interaction; this click counts)
+    video.play().catch(()=>{});
+  });
+
+  
+  // intro start: play video with sound once, then stop
+  const intro = document.getElementById('introOverlay');
+  const btnStart = document.getElementById('btnStart');
+  const btnHow = document.getElementById('btnHow');
+  const howBox = document.getElementById('howBox');
+
+// flag/help (placeholder)
+const btnFlag = document.getElementById('btnFlag');
+btnFlag?.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  // If intro is still visible, open "사용법". Otherwise, simple notice.
+  if(intro && intro.style.display !== 'none'){
+    howBox.hidden = false;
+  }else{
+    alert('도움/신고 기능은 준비 중이에요.');
+  }
+});
+
+
+
+  btnHow?.addEventListener('click', ()=>{
+    howBox.hidden = !howBox.hidden;
+  });
+
+  const startPlayback = async () => {
+    intro.classList.add('fadeOut');
+    // after animation, disable pointer events
+    setTimeout(()=>{ intro.style.display='none'; }, 360);
+
+    video.loop = false;
+    video.muted = false;
+    syncSoundUI();
+
+    try{
+      await video.play();
+    }catch(e){
+      // If unmuted play is blocked, fallback: play muted then unmute on first interaction
+      video.muted = true;
+      syncSoundUI();
+      try{ await video.play(); }catch(_e){}
+      const unlock = async () => {
+        document.removeEventListener('pointerdown', unlock);
+        document.removeEventListener('keydown', unlock);
+        video.muted = false;
+        syncSoundUI();
+        try{ await video.play(); }catch(_e){}
+      };
+      document.addEventListener('pointerdown', unlock, {once:true});
+      document.addEventListener('keydown', unlock, {once:true});
+    }
+  };
+
+  btnStart.addEventListener('click', startPlayback);
+
+  video.addEventListener('ended', ()=>{ video.pause(); });
+
+
+  // ===== Chat UI =====
+  const chatDrawer = document.getElementById('chatDrawer');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatBody = document.getElementById('chatBody');
+
+  function addMsg(text, who='me'){
+    const row = document.createElement('div');
+    row.className = 'msgRow ' + (who==='me' ? 'me' : 'ai');
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    row.appendChild(bubble);
+    chatBody.appendChild(row);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function addAudioMsg(blob){
+    const url = URL.createObjectURL(blob);
+    const row = document.createElement('div');
+    row.className = 'msgRow me audioWrap';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const audio = document.createElement('audio');
+    audio.controls = true;
+    audio.src = url;
+    bubble.appendChild(audio);
+    row.appendChild(bubble);
+    chatBody.appendChild(row);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function openChat(){
+    chatDrawer.hidden = false;
+    chatInput.focus();
+  }
+  function closeChat(){
+    chatDrawer.hidden = true;
+  }
+
+  // chat button: open/close drawer (layout stays identical)
+  btnChat.addEventListener('click', ()=>{
+    if(chatDrawer.hidden) openChat();
+    else closeChat();
+  });
+
+  chatClose.addEventListener('click', closeChat);
+
+  chatForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const txt = (chatInput.value || '').trim();
+    if(!txt) return;
+    addMsg(txt, 'me');
+    chatInput.value = '';
+    // placeholder AI reply (static)
+    setTimeout(()=>{
+      addMsg('지금 마음을 들려줘서 고마워요. 잠깐 숨을 고르고, 어떤 부분이 가장 답답한지 한 문장으로 말해볼까요?', 'ai');
+    }, 450);
+  });
+
+  // ===== Recording (Mic) =====
+  const recBadge = document.getElementById('recBadge');
+  const recTime = document.getElementById('recTime');
+  let mediaRecorder = null;
+  let recChunks = [];
+  let recTimer = null;
+  let recStartAt = 0;
+
+  function fmtTime(ms){
+    const s = Math.floor(ms/1000);
+    const mm = String(Math.floor(s/60)).padStart(2,'0');
+    const ss = String(s%60).padStart(2,'0');
+    return `${mm}:${ss}`;
+  }
+  function startTimer(){
+    recStartAt = Date.now();
+    recTime.textContent = '00:00';
+    recTimer = setInterval(()=>{ recTime.textContent = fmtTime(Date.now()-recStartAt); }, 250);
+  }
+  function stopTimer(){
+    if(recTimer){ clearInterval(recTimer); recTimer=null; }
+  }
+
+  async function startRecording(){
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+      recChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (e)=>{ if(e.data && e.data.size) recChunks.push(e.data); };
+      mediaRecorder.onstop = ()=>{
+        // stop tracks
+        stream.getTracks().forEach(t=>t.stop());
+        stopTimer();
+        recBadge.hidden = true;
+        const blob = new Blob(recChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        addAudioMsg(blob);
+      };
+      mediaRecorder.start();
+      recBadge.hidden = false;
+      startTimer();
+
+      // optional live transcription (Web Speech API)
+      startSpeechRecognition();
+
+    }catch(err){
+      alert('마이크 권한이 필요해요. 브라우저에서 마이크 접근을 허용해주세요.');
+      console.error(err);
+    }
+  }
+
+  function stopRecording(){
+    try{
+      stopSpeechRecognition();
+      if(mediaRecorder && mediaRecorder.state !== 'inactive'){
+        mediaRecorder.stop();
+      }
+    }catch(e){}
+  }
+
+  function isRecording(){
+    return mediaRecorder && mediaRecorder.state === 'recording';
+  }
+
+  // Speech Recognition (Korean)
+  let recognition = null;
+  function startSpeechRecognition(){
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR) return;
+    try{
+      recognition = new SR();
+      recognition.lang = 'ko-KR';
+      recognition.interimResults = true;
+      recognition.continuous = true;
+      let interim = '';
+      recognition.onresult = (event)=>{
+        let finalText = '';
+        interim = '';
+        for(let i=event.resultIndex; i<event.results.length; i++){
+          const res = event.results[i];
+          const txt = res[0].transcript;
+          if(res.isFinal) finalText += txt;
+          else interim += txt;
+        }
+        // show interim in input if chat open, otherwise ignore
+        if(!chatDrawer.hidden){
+          chatInput.value = (finalText || interim || '').trim();
+        }
+      };
+      recognition.onerror = ()=>{};
+      recognition.start();
+    }catch(e){}
+  }
+  function stopSpeechRecognition(){
+    try{ if(recognition){ recognition.stop(); recognition=null; } }catch(e){}
+  }
+
+  // Mic button toggles recording
+  const btnMic = document.getElementById('btnMic');
+  btnMic.addEventListener('click', async ()=>{
+    // Ensure intro is dismissed and video started (sound handled) when user engages with mic
+    if(intro && intro.style.display !== 'none'){
+      startPlayback(); // triggers video play sequence
+    }
+    if(isRecording()){
+      stopRecording();
+    }else{
+      // open chat so transcription can land somewhere (optional)
+      openChat();
+      await startRecording();
+    }
+  });
+const btnClose = document.querySelector('.btnClose');
+btnClose.addEventListener('click', () => {
+  window.history.back();
+});
+</script>
+
+</body>
+</html>

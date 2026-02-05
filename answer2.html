@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="still_logo1.png" type="image/png">
+  <title>STILL | 질문 결과</title>
+
+  <style>
+    :root{
+      --still:#FD4F19;
+      --ink:#101114;
+      --muted:#6B7280;
+      --paper:#ffffff;
+      --line: rgba(16,17,20,.10);
+
+      --rHero: 26px;
+      --rCard: 22px;
+
+      --shadow1: 0 20px 60px rgba(0,0,0,.18);
+      --shadow2: 0 10px 30px rgba(0,0,0,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, "Noto Sans KR", "Apple SD Gothic Neo", Arial, sans-serif;
+      color: var(--ink);
+      background: #0b0c0f; /* 완전 깔끔한 다크 베이스 */
+    }
+
+    /* ====== STAGE ====== */
+    .stage{
+      min-height: 100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding: 22px 12px 28px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* “올드한 그라데이션” 대신: 아주 얇은 STILL 컬러 haze만 */
+   .stage::before{
+  content:"";
+  position:absolute;
+  inset:-120px;
+
+  background:
+    radial-gradient(900px 520px at 20% 12%, rgba(255,59,48,.55), transparent 60%),
+    radial-gradient(900px 520px at 80% 14%, rgba(224,38,34,.45), transparent 65%),
+    linear-gradient(180deg, #ff3b30 0%, #e02622 50%, #b31217 100%);
+
+  filter: blur(8px);
+  opacity: 1;
+  pointer-events:none;
+}
+    /* 아주 미세한 노이즈(고급) */
+    .grain{
+      position:absolute; inset:0;
+      pointer-events:none;
+      opacity:.10;
+      background-image: radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px);
+      background-size: 3px 3px;
+      mix-blend-mode: overlay;
+    }
+
+    .shell{
+      width: min(980px, 100%);
+      position:relative;
+      z-index: 2;
+    }
+    
+
+    /* ====== HERO ====== */
+    .hero{
+      border-radius: var(--rHero) var(--rHero) 0 0;
+      overflow:hidden;
+      box-shadow: var(--shadow1);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      position:relative;
+    }
+
+    /* “유화”는 크게 깔지 말고: 상단에 ‘시네마틱 크롭’ + 소프트 */
+    .heroImg{
+      height: 340px;
+      width:100%;
+      background-image: var(--bgimg);
+      background-size: cover;
+      background-position: center 35%;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* 핵심: 올드함 없애는 현대식 오버레이 */
+    .heroImg::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        linear-gradient(to bottom,
+          rgba(11,12,15,.25),
+          rgba(11,12,15,.55) 55%,
+          rgba(11,12,15,.85) 100%);
+    }
+
+    /* 상단 로고: 작게, 정말 프리미엄하게 */
+    .brandTop{
+      position:absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index:3;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+      opacity:.95;
+    }
+    .brandTop img{
+ height: 32px;
+      width:auto;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.35));
+    }
+
+    /* Close/Download: 과한 글로우 제거 */
+    .topBtn{
+      position:absolute;
+      top:14px;
+      width:44px;height:44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      z-index:3;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .topBtn:hover{ transform: translateY(-1px); background: rgba(0,0,0,.32); }
+    .btnClose{ left:14px; }
+    .btnDownload{ right:14px; top:auto; bottom:14px; }
+
+    .icon{ width:18px; height:18px; fill: rgba(255,255,255,.92); }
+
+    /* 말씀 카드: “유광 글로우” 금지. 대신 종이 같은 미니멀 */
+    .verseCard{
+      position:relative;
+      z-index:2;
+      width:min(760px, calc(100% - 56px));
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 18px;
+      padding: 18px 18px 14px;
+      backdrop-filter: blur(14px);
+    }
+    .verse{
+      margin:0 0 12px;
+      text-align:center;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: rgba(255,255,255,.92);
+      line-height: 1.55;
+    }
+
+    .chips{
+      display:flex;
+      justify-content:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .chip{
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.22);
+      color: rgba(255,255,255,.90);
+    }
+
+    /* STILL 포인트는 “한 곳만” 정확히 */
+    .chipTag{
+      border-color: rgba(253,79,25,.35);
+      background: rgba(253,79,25,.18);
+      color: rgba(255,255,255,.92);
+    }
+
+    /* ====== CONTENT ====== */
+    .content{
+      background: rgba(255,255,255,.96);
+      border-radius: 0 0 var(--rHero) var(--rHero);
+      padding: 28px 28px 92px;
+      box-shadow: var(--shadow2);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .secTitle{
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+
+    .qRow{
+      display:flex;
+      gap: 14px;
+      padding: 10px 0 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+
+    /* 질문 라인: 얇고 선명하게(과한 그라데이션 X) */
+    .qLine{
+      width: 3px;
+      border-radius: 999px;
+      background: var(--still);
+      flex: 0 0 3px;
+      box-shadow: 0 10px 18px rgba(253,79,25,.18);
+    }
+
+    .qText{
+      margin:0;
+      font-size: 15.5px;
+      line-height: 1.75;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .answer{
+      margin:0;
+      font-size: 14.8px;
+      line-height: 1.9;
+      font-weight: 450;
+      letter-spacing: -0.01em;
+      color:#121316;
+      white-space: pre-wrap;
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .block{
+      padding: 18px 0 0;
+    }
+    .block + .block{
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 22px;
+    }
+    .blockTitle{
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+
+
+    /* ====== ACTIONS (하단 pill 유지, 더 모던하게) ====== */
+    .actions{
+      position: sticky;
+      bottom: 14px;
+      display:flex;
+      justify-content:center;
+      z-index: 5;
+      margin-top: -70px;
+    }
+    .pill{
+      width: min(720px, calc(100% - 24px));
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(16,17,20,.10);
+      box-shadow: var(--shadow2);
+      border-radius: 999px;
+      padding: 10px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap:10px;
+      backdrop-filter: blur(16px);
+    }
+    .pillLeft, .pillRight{ display:flex; gap:10px; align-items:center; }
+
+    .pbtn{
+      border: 1px solid rgba(16,17,20,.10);
+      background: #fff;
+      color:#101114;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .pbtn:hover{ transform: translateY(-1px); box-shadow: 0 10px 22px rgba(0,0,0,.10); }
+
+    /* 메인 버튼: “단 하나의 STILL 강한 포인트” */
+    #btnAskAgain{
+      border-color: rgba(253,79,25,.45);
+      box-shadow: 0 12px 28px rgba(253,79,25,.14);
+    }
+
+    .picon{ width:16px;height:16px; fill:#101114; opacity:.92; }
+
+    @media (max-width: 560px){
+      .heroImg{ height: 300px; }
+      .content{ padding: 22px 18px 92px; }
+      .verse{ font-size: 16.5px; }
+      .secTitle{ font-size: 17px; }
+      .pbtn{ padding: 10px 12px; font-size: 12.5px; }
+      .brandTop img{ height: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+        const PAGE_DATA = {
+      bgImage: "jesus1.jpeg",
+      logoImage: "still_logo.png",
+
+      /* 상단 말씀 */
+      verseText: "이에 이르되 가나안은 저주를 받아 그의 형제의 종들의 종이 되기를 원하노라",
+      verseRef: "창세기 9:25",
+      tag: "현직 목사 답변",
+
+      /* 질문 */
+      question: "가나안은 왜 저주받았는데 정복하라고 주시는거야?",
+
+      /* 본문 섹션들 */
+      sections: [
+        {
+          title: "생명의 말씀",
+          content: `질문 속에 담긴 혼란과 답답함이 느껴집니다. 성경을 읽다 보면 이런 부분에서 “도대체 하나님은 어떤 마음이신가?” 하는 생각이 들 수밖에 없습니다. <br>그 마음, 충분히 이해됩니다. 먼저 “가나안이 저주를 받았다”는 말은 창세기 9장에서 나옵니다. 노아의 아들 함이 잘못을 했을 때, 노아가 함이 아니라 그의 아들인 가나안을 두고 이렇게 말하지요. “가나안은 저주를 받아 그의 형제의 종들의 종이 되기를 원하노라” 창세기 9:25 <br><br>이 말은 특정 민족을 괴롭히고 멸망시키라는 식의 인종적·민족적 증오 선언이 아니라, 훗날 가나안 땅에 살게 될 족속들이 하나님을 떠나 심각한 죄 가운데 빠지게 되고, 결국 심판을 맞게 될 것이라는 ‘예언적 선포’에 가깝습니다. 이스라엘에게 “가나안을 정복하라”고 주신 것은, 단순히 남의 땅을 뺏고 전쟁에서 이기라는 명령이 아니라, 죄악으로 가득 찬 땅을 심판하시고 그 자리에 하나님 나라의 거룩한 백성을 세우시겠다는 구약 시대의 특별한 역사 속 사건입니다. 신명기 9:4-5에서도 하나님은 분명히 말씀하십니다. “네 하나님 여호와께서 그들을 네 앞에서 쫓아내신 후에 네 마음에 이르기를 내 의로움으로 말미암아 여호와께서 나를 이 땅으로 인도하여 들여…함이 아니라 이 민족들의 악함으로 말미암아…쫓아내려 하심이라” 신명기 9:4-5 <br><br>즉, 이스라엘이 더 의로워서가 아니라, 가나안 족속들의 죄악이 오래 참으심의 한계를 넘었고, 동시에 하나님은 족장들에게 약속하신 땅을 주시는 일을 함께 이루신 것입니다. 하나님이 가나안 정복을 명하신 것은 “특정 민족을 싫어하셨기 때문”이 아니라, 죄에 대한 공의로운 심판과, 하나님 백성을 위한 구속 역사(구원 계획)를 진행하는 과정에서 일어난, 인류 역사상 ‘한 번성격’의 독특한 사건으로 보는 것이 복음주의적인 이해입니다. 그래서 오늘날 그 사건을 근거로 전쟁이나 폭력을 정당화하는 것은 성경 전체의 흐름과 정반대입니다. 예수님은 오히려 “원수를 사랑하라”고 하셨지요. 마태복음 5:44<br><br> 정리하자면, 가나안이 저주를 받은 것과, 가나안 땅을 정복하라고 하신 것은 모두 “하나님이 임의로 미워해서”가 아니라, 죄에 대한 공의와, 약속을 지키시는 신실하심, 그리고 장차 예수 그리스도를 통해 모든 민족을 구원하시려는 큰 그림 속에서 이해되어야 합니다. 이해가 다 되지 않더라도, 성경 속 하나님은 언제나 악과 죄는 심판하시되, 사람을 구원하시기 위해 오래 참으시며 일하시는 분이라는 것을 함께 기억하는 것이 좋겠습니다.`
+        },
+        {
+          title: "성경 해설",
+          content: `창세기 9:25 (NKRV)
+
+이에 이르되 가나안은 저주를 받아 그의 형제의 종들의 종이 되기를 원하노라 하고 이 구절은 노아의 아들 함의 아들인 가나안이 저주를 받게 되는 장면을 보여줍니다. <br>노아는 포도주에 취해 벌거벗었을 때, 함은 이를 보고 아버지의 수치를 외부로 알렸습니다. 이에 반해 셈과 야벳은 옷으로 노아를 덮어 그의 수치를 가렸습니다.<br>깨어난 뒤 이를 안 노아는 함 대신 그의 아들 가나안을 저주하여 "형제들의 종들의 종"이 되게 했습니다. 이는 이스라엘 백성이 들어서기 전까지 가나안(현재 팔레스타인과 이스라엘 지역)의 후손들이 다른 민족에게 지배받는 것을 상징하는 예언적 의미를 담고 있습니다.`
+        },
+        {
+          title: "기도문",
+          content: `하늘에 계신 하나님, 말씀 속 노아의 저주와 가나안 정복의 의미를 깊이 깨닫게 하소서. 죄와 악을 미워하시되, 십자가로 구원의 길을 예비하신 주님의 공의와 사랑을 믿습니다. 역사의 심판을 통해 오늘 내 삶의 죄와 우상을 먼저 정복하게 하시고, 주시는 땅과 사명을 겸손히 감당하게 하소서. 주 예수 그리스도의 이름으로 기도 드립니다. 아멘`
+        }
+      ]
+    };
+  </script>
+
+  <div class="stage" id="stage">
+    <div class="grain"></div>
+
+    <div class="shell">
+      <div class="hero">
+        <div class="heroImg" id="heroImg">
+
+          <button class="topBtn btnClose" id="btnClose" aria-label="닫기">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z"/>
+            </svg>
+          </button>
+
+          <div class="brandTop">
+            <img id="brandLogo" alt="STILL" src="still_logo.png"
+                 onerror="this.style.display='none';" />
+          </div>
+
+          <div class="verseCard" role="group" aria-label="오늘의 말씀">
+            <p class="verse" id="verseText"></p>
+            <div class="chips">
+              <span class="chip chipTag" id="tagChip"></span>
+              <span class="chip" id="verseRef"></span>
+            </div>
+          </div>
+
+          <button class="topBtn btnDownload" id="btnDownload" aria-label="다운로드">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 16.5a1 1 0 0 0 .7-.29l4-4a1 1 0 1 0-1.4-1.42L13 13.09V3a1 1 0 1 0-2 0v10.09l-2.3-2.3a1 1 0 1 0-1.4 1.42l4 4a1 1 0 0 0 .7.29z"/>
+              <path d="M5 21a2 2 0 0 1-2-2v-3a1 1 0 1 1 2 0v3h14v-3a1 1 0 1 1 2 0v3a2 2 0 0 1-2 2H5z"/>
+            </svg>
+          </button>
+
+        </div>
+      </div>
+
+      <div class="content">
+        <section>
+          <h2 class="secTitle">나의 질문</h2>
+          <div class="qRow">
+            <div class="qLine"></div>
+            <p class="qText" id="qText"></p>
+          </div>
+        </section>
+
+        <section id="sectionsWrap">
+          <!-- 섹션들은 JS에서 PAGE_DATA.sections로 렌더링됩니다 -->
+        </section>
+      </div>
+
+      <div class="actions">
+        <div class="pill">
+          <div class="pillLeft">
+            <button class="pbtn" id="btnAskAgain">
+              <svg class="picon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 6V3L7 8l5 5V9c3.31 0 6 2.69 6 6a6 6 0 0 1-6 6 6 6 0 0 1-5.65-4H4.26A8 8 0 0 0 12 23a8 8 0 0 0 0-16z"/>
+              </svg>
+              다시 질문하기
+            </button>
+          </div>
+          <div class="pillRight">
+            <button class="pbtn" id="btnBookmark">
+              <svg class="picon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 3a2 2 0 0 0-2 2v16l8-3.2 8 3.2V5a2 2 0 0 0-2-2H6z"/>
+              </svg>
+              북마크
+            </button>
+
+            <button class="pbtn" id="btnShare">
+              <svg class="picon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 16a3 3 0 0 0-2.24 1.03L8.91 13.7a3.08 3.08 0 0 0 0-3.39l6.85-3.33A3 3 0 1 0 15 5a3 3 0 0 0 .09.7L8.24 9.03A3 3 0 1 0 9 12a3 3 0 0 0-.09-.7l6.85 3.33A3 3 0 1 0 18 16z"/>
+              </svg>
+              공유
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const stage = document.getElementById("stage");
+    stage.style.setProperty("--bgimg", `url('${PAGE_DATA.bgImage}')`);
+
+    const brandLogo = document.getElementById("brandLogo");
+    brandLogo.src = PAGE_DATA.logoImage;
+
+    document.getElementById("verseText").textContent = PAGE_DATA.verseText;
+    document.getElementById("verseRef").textContent = PAGE_DATA.verseRef;
+    document.getElementById("tagChip").textContent = PAGE_DATA.tag;
+
+    document.getElementById("qText").textContent = PAGE_DATA.question;
+
+    // 섹션 렌더링 (생명의 말씀 / 성경 해설 / 기도문 ...)
+    const wrap = document.getElementById("sectionsWrap");
+    const sec = Array.isArray(PAGE_DATA.sections) ? PAGE_DATA.sections : [];
+    wrap.innerHTML = sec.map(s => {
+      const safeTitle = (s.title || "").toString();
+      const safeContent = (s.content || "").toString();
+      return `
+        <div class="block">
+          <h2 class="blockTitle">${safeTitle}</h2>
+          <p class="answer">${safeContent}</p>
+        </div>
+      `;
+    }).join("");
+
+    // 하단 힌트(첫 섹션 아래에만)
+    if (sec.length){
+      const hint = document.createElement("div");
+      hint.className = "hint";
+      hint.textContent = "※ 답변은 묵상과 이해를 돕기 위한 안내입니다.";
+      wrap.querySelector(".block")?.appendChild(hint);
+    }
+
+
+    document.getElementById("btnClose").addEventListener("click", () => {
+      if (history.length > 1) history.back();
+      else window.location.href = "QnA.html";
+    });
+
+    document.getElementById("btnAskAgain").addEventListener("click", () => {
+      window.location.href = "QnA.html";
+    });
+
+    document.getElementById("btnBookmark").addEventListener("click", () => {
+      const key = "still_bookmarks";
+      const prev = JSON.parse(localStorage.getItem(key) || "[]");
+      prev.unshift({ id: Date.now(), ...PAGE_DATA });
+      localStorage.setItem(key, JSON.stringify(prev));
+      alert("북마크에 저장했어요!");
+    });
+
+    document.getElementById("btnShare").addEventListener("click", async () => {
+      const shareText = `Q. ${PAGE_DATA.question}\n\n${PAGE_DATA.verseText} (${PAGE_DATA.verseRef})`;
+      try{
+        if (navigator.share){
+          await navigator.share({ title: "STILL 질문 결과", text: shareText, url: location.href });
+        } else {
+          await navigator.clipboard.writeText(shareText + "\n" + location.href);
+          alert("공유할 내용을 복사했어요!");
+        }
+      }catch(e){}
+    });
+
+    document.getElementById("btnDownload").addEventListener("click", () => {
+      const blob = new Blob(
+        [`말씀: ${PAGE_DATA.verseText}\n${PAGE_DATA.verseRef}\n\n질문: ${PAGE_DATA.question}\n\n` + (Array.isArray(PAGE_DATA.sections)? PAGE_DATA.sections.map(s=>`[${s.title}]\n${s.content}\n`).join('\n') : '')],
+        { type: "text/plain;charset=utf-8" }
+      );
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "STILL_질문결과.txt";
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    });
+  </script>
+</body>
+</html>

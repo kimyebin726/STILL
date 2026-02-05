@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STILL KR - Q&A</title>
+<link rel="icon" type="image/png" href="still_logo1.png">
+  <style>
+    :root{
+      --brand:#D70F12;
+      --bg1:#7d0a0c;
+      --bg2:#d1161a;
+
+      --ink:#121212;
+      --muted:rgba(18,18,18,.55);
+      --line:rgba(18,18,18,.09);
+
+      --cardShadow: 0 18px 44px rgba(0,0,0,.08);
+      --frameShadow: 0 26px 80px rgba(0,0,0,.22);
+
+      --r32:32px;
+      --r24:24px;
+      --r20:20px;
+      --r16:16px;
+      --r14:14px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+              "Apple SD Gothic Neo","Noto Sans KR", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1000px 720px at 18% 8%, rgba(255,255,255,.12), transparent 60%),
+        radial-gradient(1000px 720px at 86% 35%, rgba(0,0,0,.22), transparent 55%),
+        linear-gradient(135deg, var(--bg2), var(--bg1));
+      padding:22px;
+    }
+
+    .frame{
+      width:min(1360px,100%);
+      margin:0 auto;
+      border-radius:var(--r32);
+      padding:14px;
+    }
+
+    .inner{
+      background:#fff;
+      border-radius:calc(var(--r32) - 10px);
+      overflow:hidden;
+      box-shadow:var(--frameShadow);
+      border:2px solid rgba(255,255,255,.55);
+    }
+
+    /* ===== HEADER ===== */
+    .header{
+      background:
+        radial-gradient(1200px 260px at 12% 0%, rgba(255,255,255,.18), transparent 62%),
+        radial-gradient(900px 260px at 85% 0%, rgba(0,0,0,.22), transparent 65%),
+        linear-gradient(135deg, #e0181c, #8d0b0d);
+      padding:18px 22px 16px;
+      color:#fff;
+    }
+
+    .headerTop{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand{display:flex;align-items:center;gap:6px;padding:0;margin:0;}
+    .brandKr{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#fff;
+  opacity:.9;
+  line-height:1;
+  transform: translateY(2px);
+  user-select:none;
+}
+.brand img{height:52px;width:auto;display:block;user-select:none;}
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width:760px;
+      justify-self:center;
+      width:100%;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.60);
+      border-radius: 999px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+    .search input{
+      border:0; outline:0;
+      background:transparent;
+      width:100%;
+      font-size:14px;
+      color:#111;
+    }
+    .searchIcon{width:22px;height:22px;object-fit:contain;opacity:.85;margin-left:6px;}
+    .micIcon{width:28px;height:28px;object-fit:contain;opacity:.9;cursor:pointer;}
+
+    .headerRight{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    .iconBtn{
+      width:42px;height:42px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      display:grid; place-items:center;
+      cursor:pointer;
+      padding:0;
+      user-select:none;
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      transition: .18s ease;
+    }
+    .iconBtn img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.95;
+      filter: brightness(.98) contrast(1.08);
+    }
+    .iconBtn:hover{
+      background: rgba(255,255,255,.16);
+      border-color: rgba(255,255,255,.34);
+      transform: translateY(-1px);
+    }
+
+    .profile{
+      width:42px; height:42px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      padding:0;
+      display:block;
+    }
+    .profile img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      transform: scale(1.25);
+      transform-origin:center;
+      display:block;
+    }
+
+    .navPills{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .navPill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navPill.active{
+      background: rgba(255,255,255,.92);
+      color:#111;
+      border-color: rgba(255,255,255,.70);
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main{
+      background:
+        radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
+        #fff;
+      padding:18px 18px 24px;
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      gap:18px;
+    }
+
+    .sidebar{
+      min-width:0;
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      padding:18px;
+      height:fit-content;
+    }
+
+    .secTitle{
+      font-size:12px;
+      letter-spacing:.14em;
+      color: rgba(18,18,18,.45);
+      font-weight:900;
+      margin:6px 0 12px;
+      text-transform: uppercase;
+    }
+
+    .sideItem{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid transparent;
+      cursor:pointer;
+      user-select:none;
+      color: rgba(18,18,18,.70);
+      font-weight:900;
+    }
+    .sideItem:hover{
+      background: rgba(18,18,18,.03);
+      border-color: rgba(18,18,18,.06);
+    }
+    .sideItem.active{
+      background: rgba(215,15,18,.07);
+      border-color: rgba(215,15,18,.18);
+      color:#111;
+    }
+    .sideDot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      opacity:.25;
+    }
+    .sideItem.active .sideDot{
+      background: var(--brand);
+      opacity:1;
+      box-shadow: 0 0 0 7px rgba(215,15,18,.12);
+    }
+
+    .content{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      overflow:hidden;
+    }
+    .pad{padding:16px}
+
+.cardHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.cardHead b{
+  font-size:16px;
+  letter-spacing:-.02em;
+}
+
+.chev{
+  color: rgba(18,18,18,.38);
+  font-size:22px;
+  line-height:1;
+}
+
+    .chev{color: rgba(18,18,18,.38); font-size:22px; line-height:1;}
+
+    .homeGrid{
+      display:grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    .span3{grid-column: 1 / -1;}
+
+    /* Today verse */
+    .verseChip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(215,15,18,.08);
+      border:1px solid rgba(215,15,18,.16);
+      color:#7a0b0b;
+      font-weight:900;
+      font-size:12px;
+      width:fit-content;
+    }
+    .verseTitle{margin:10px 0 0;font-weight:900;font-size:20px;letter-spacing:-.02em;}
+    .verseText{margin:8px 0 0;color: rgba(18,18,18,.60);font-weight:700;line-height:1.55;}
+    .verseRef{margin-top:10px;color: rgba(18,18,18,.45);font-size:12px;font-weight:800;}
+
+    /* Q&A list */
+    .qnaItem{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      padding:12px;
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.04);
+    }
+    .qnaItem + .qnaItem{margin-top:10px}
+    .qnaItem b{display:block;margin-bottom:6px;font-size:14px;letter-spacing:-.01em;}
+    .qnaItem span{color: rgba(18,18,18,.55);font-size:12px;font-weight:700;}
+
+    /* Notice list */
+    .noticeItem{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:12px;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .noticeItem + .noticeItem{margin-top:10px}
+    .badge{
+      flex:0 0 auto;
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      border:1px solid rgba(215,15,18,.18);
+      background: rgba(215,15,18,.08);
+      color:#7a0b0b;
+      margin-top:1px;
+      white-space:nowrap;
+    }
+    .noticeText{min-width:0}
+    .noticeTitle{
+      margin:0;
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:-.01em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .noticeMeta{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+.bibleIcon{
+  width:18px;
+  height:18px;
+  object-fit:contain;
+  display:block;
+}
+    /* === 썸네일에 PNG 넣기 (공통) === */
+    .thumb, .shortThumb{
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+
+    /* Video cards */
+    .videoRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .videoCard{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      overflow:hidden;
+      background:#fff;
+    }
+    .thumb{
+      aspect-ratio:16/9;
+      background:#eee;
+      position:relative;
+    }
+    .dur{
+      position:absolute;right:10px;bottom:10px;
+      padding:6px 8px;border-radius:10px;
+      background: rgba(0,0,0,.58);color:#fff;
+      font-size:12px;border:1px solid rgba(255,255,255,.16);
+    }
+    .vmeta{
+      padding:12px 12px 14px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .chdot{
+      width:34px;height:34px;border-radius:14px;
+      background: rgba(215,15,18,.10);
+      border:1px solid rgba(215,15,18,.18);
+      flex:0 0 auto;
+    }
+    .twrap{min-width:0}
+    .vt{
+      margin:0;
+      font-weight:900;
+      font-size:14px;
+      line-height:1.35;
+      letter-spacing:-.01em;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .vs{
+      margin:5px 0 0;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    /* Shorts: horizontal row */
+    .shortsRow{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      padding-bottom:6px;
+      scroll-snap-type:x mandatory;
+    }
+    .short{
+      flex: 0 0 190px;
+      scroll-snap-align:start;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      overflow:hidden;
+      background:#fff;
+      cursor:pointer;
+    }
+    .shortThumb{
+      aspect-ratio:9/16;
+      background:#eee;
+      position:relative;
+    }
+    .shortDur{
+      position:absolute;right:10px;bottom:10px;
+      padding:6px 8px;border-radius:10px;
+      background: rgba(0,0,0,.58);color:#fff;
+      font-size:12px;border:1px solid rgba(255,255,255,.16);
+    }
+    .shortMeta{padding:10px 12px 12px;}
+    .shortTitle{
+      margin:0;
+      font-weight:900;
+      font-size:13px;
+      letter-spacing:-.01em;
+      line-height:1.35;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .shortSub{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    /* Recommended */
+    .pills{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px;}
+    .pill{
+      padding:9px 12px;border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.03);
+      color: rgba(18,18,18,.72);
+      font-weight:900;font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+    .recGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+    .recTile{border:1px solid rgba(18,18,18,.10);border-radius: var(--r20);overflow:hidden;background:#fff;}
+    .tileMeta{padding:12px 12px 14px;display:flex;gap:10px;align-items:flex-start;}
+    .tileMeta .chdot{width:32px;height:32px}
+
+    /* ===== 쇼츠 모달 플레이어 ===== */
+    .playerModal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.55);
+      z-index:9999;
+      padding:18px;
+    }
+    .playerModal.open{ display:flex; }
+
+    .playerBox{
+      width:min(420px, 96vw);
+      border-radius:24px;
+      overflow:hidden;
+      background:#000;
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+      position:relative;
+    }
+    .playerStage{
+      width:100%;
+      aspect-ratio: 9 / 16;
+      position:relative;
+      background:#000;
+    }
+    .playerStage iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
+    .playerClose{
+      position:absolute;
+      top:10px; right:10px;
+      width:38px; height:38px;
+      border-radius:14px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.45);
+      color:#fff;
+      font-size:18px;
+      display:grid; place-items:center;
+      cursor:pointer;
+      z-index:2;
+    }
+
+    /* Responsive */
+    @media (max-width: 1180px){
+      .main{grid-template-columns:1fr}
+      .homeGrid{grid-template-columns:1fr 1fr}
+      .span3{grid-column: 1 / -1;}
+      .recGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (max-width: 860px){
+      .homeGrid{grid-template-columns:1fr}
+      .videoRow{grid-template-columns:1fr}
+      .recGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width: 740px){
+      body{padding:14px}
+      .headerTop{grid-template-columns: 1fr; gap:12px;}
+      .search{justify-self:stretch}
+      .headerRight{justify-content:flex-start}
+      .brand img{height:48px;}
+      .recGrid{grid-template-columns:1fr}
+    }
+  
+    /* QnA page */
+    .qnaWrap{width:100%;border-radius:26px}
+    .qnaTop{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+    .qnaTitle{font-size:20px;font-weight:900;letter-spacing:-.02em;line-height:1.15}
+    .qnaTabs{display:flex;gap:10px;margin-top:10px}
+    .qnaTabs .tab{border:1px solid rgba(0,0,0,.12);background:#fff;border-radius:14px;padding:10px 14px;font-weight:700;color:#444}
+    .qnaTabs .tab.active{border-color:rgba(253,79,25,.45);box-shadow:0 0 0 3px rgba(253,79,25,.08) inset}
+    .aiBadge{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid rgba(0,0,0,.12);font-weight:900}
+    .qnaSearch{display:flex;align-items:center;gap:10px;border:1px solid rgba(0,0,0,.10);background:#fff;border-radius:16px;padding:12px 14px;margin:14px 0}
+    .qnaSearch input{border:none;outline:none;width:100%;font-size:15px}
+    .qnaSearchIcon{opacity:.55}
+    .qnaList{display:flex;flex-direction:column;gap:12px}
+    .qItem{border:1px solid rgba(0,0,0,.10);border-radius:18px;padding:14px 14px 12px;background:#fff}
+    .qRow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .qText{font-size:16px;line-height:1.5;font-weight:700;color:#222;word-break:keep-all}
+    .qStatus{flex:0 0 auto;font-size:12px;font-weight:900;border-radius:999px;padding:8px 10px;border:1px solid rgba(253,79,25,.28);white-space:nowrap}
+    .qStatus.answered{color:#D70F12;background:rgba(253,79,25,.06)}
+    .qStatus.pending{color:#D70F12;background:#fff}
+    .qMeta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+    .tag{font-size:12px;font-weight:800;border:1px solid rgba(0,0,0,.12);background:#fff;border-radius:999px;padding:7px 10px;color:#555}
+    .metaText{font-size:12px;font-weight:700;color:#777}
+    .metaDot{color:#bbb}
+
+    .newQuestionBtn{margin-top:14px;width:100%;border:none;border-radius:999px;padding:16px 18px;  background: linear-gradient(135deg, #8B1E1E, #D70F12);
+  color:#fff;font-weight:900;font-size:16px}
+    .newQuestionBtn:hover{filter:brightness(.98)}
+    
+
+
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.subItem:hover{
+  background:rgba(18,18,18,.03);
+}
+
+.subItem img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.subItem span{
+  font-size:14px;
+  font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.qna-title {
+  font-size: 22px;        /* ← 지금보다 작게 */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+</style>
+</head>
+
+<body>
+  <div class="frame">
+    <div class="inner">
+
+      <header class="header">
+        <div class="headerTop">
+          <div class="brand" title="STILL">
+            <img src="still_logo.png" alt="STILL logo">
+            <span class="brandKr">KR</span>
+          </div>
+
+          <div class="search">
+            <img src="search.png" class="searchIcon" alt="search">
+            <input placeholder="영상 · 구절 · 교회 · 지역 검색" />
+            <img src="mic.png" class="micIcon" alt="mic">
+          </div>
+
+          <div class="headerRight">
+            <button class="iconBtn" title="알림">
+              <img src="bell.png" alt="알림">
+            </button>
+            <button class="iconBtn" title="업로드">
+              <img src="cross.png" alt="업로드">
+            </button>
+            <div class="profile" title="프로필">
+              <img src="bin.png" alt="profile">
+            </div>
+          </div>
+        </div>
+
+   <div class="navPills">
+  <div class="navPill" onclick="location.href='still.html'">홈</div>
+  <div class="navPill" onclick="location.href='bible.html'">성경</div>
+<div class="navPill active" onclick="location.href='QnA.html'">
+  Q&A
+</div>
+  <div class="navPill" onclick="location.href='calendar.html'">캘린더</div>
+  <div class="navPill" onclick="location.href='region.html'">지역</div>
+  <div class="navPill" onclick="location.href='church_db.html'">이단 분별</div>
+      <div class="navPill" onclick="location.href='jesusface.html'">예수님과 고민상담</div>
+</div>
+      </header>
+
+      <div class="main">
+        <aside class="sidebar">
+<div class="secTitle">Subscribe</div>
+
+<div class="subItem">
+  <img src="cbs.png" alt="새롭게하소서 CBS">
+  <span>새롭게하소서CBS</span>
+</div>
+
+<div class="subItem">
+  <img src="jaljal.png" alt="잘잘법">
+  <span>잘잘법 : 잘 믿고 잘 사는 법</span>
+</div>
+
+<div class="subItem">
+  <img src="weracle.png" alt="위라클">
+  <span>위라클 WERACLE</span>
+</div>
+
+<div class="subItem">
+  <img src="cts.png" alt="CTS">
+  <span>CTS기독교TV</span>
+</div>
+
+  <!-- 내 페이지 -->
+  <div class="secTitle" style="margin-top:18px">My Page</div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 최신기록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 재생목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 저장한 목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 좋아요 표시한 목록
+  </div>
+
+</aside>
+
+        <main class="content">
+          <div class="qnaWrap card">
+            <div class="pad">
+              <div class="qnaTop">
+                <div>
+               <div class="cardHead">
+  <b>질문하기</b>
+  <span class="chev">
+</div>
+                  <div class="qnaTabs">
+                    <button class="tab active">추천</button>
+                    <button class="tab">북마크</button>
+                    <button class="tab">내 질문</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="qnaSearch">
+                <span class="qnaSearchIcon">🔎</span>
+                <input type="text" placeholder="다른 사람들의 질문을 검색해보세요" />
+              </div>
+
+              <div class="qnaList">
+                <article class="qItem" onclick="location.href='answer.html'" style="cursor:pointer">
+                  <div class="qRow">
+                    <div class="qText">하나님은 사울, 솔로몬 모두 죄를 지었는데 왜 다른 잣대가 주어졌을까요?</div>
+                    <div class="qStatus answered">현직 목사 답변</div>
+                  </div>
+                  <div class="qMeta">
+                    <span class="tag">성경</span>
+                    <span class="tag">묵상</span>
+                    <span class="metaDot">•</span>
+                    <span class="metaText">로마서 2:11</span>
+                
+                  </div>
+                </article>
+
+                <article class="qItem" onclick="location.href='answer2.html'">
+                  <div class="qRow">
+                    <div class="qText">가나안은 왜 저주받았는데 정복하라고 주시는건가요?</div>
+                         <div class="qStatus answered">현직 목사 답변</div>
+                  </div>
+                  <div class="qMeta">
+                    <span class="tag">성경</span>
+                    <span class="tag">질문</span>
+                    <span class="metaDot">•</span>
+                    <span class="metaText">창세기 9:25</span>
+                  </div>
+                </article>
+
+                <article class="qItem" onclick="location.href='answer3.html'" style="cursor:pointer">
+                  <div class="qRow">
+                    <div class="qText">지옥은 어떤 모습인가요?</div>
+                    <div class="qStatus answered">현직 목사 답변</div>
+                  </div>
+                  <div class="qMeta">
+                    <span class="tag">성경</span>
+                    <span class="tag">질문</span>
+                    <span class="metaDot">•</span>
+                    <span class="metaText">마태복음 13:41-42</span>
+                  </div>
+                </article>
+<article class="qItem" onclick="location.href='answer.html'" style="cursor:pointer">
+  <div class="qRow">
+    <div class="qText">
+      믿지 않는 사람을 좋아하게 되었는데, 감정과 신앙 사이에서 어떻게 판단해야 할까요?
+    </div>
+    <div class="qStatus pending">목사 답변 대기</div>
+  </div>
+  <div class="qMeta">
+    <span class="tag">연애</span>
+    <span class="tag">신앙</span>
+    <span class="metaDot">•</span>
+    <span class="metaText">청년 고민</span>
+  </div>
+</article>
+<article class="qItem" onclick="location.href='answer.html'" style="cursor:pointer">
+  <div class="qRow">
+    <div class="qText">
+      계속되는 취업 실패 속에서 하나님의 뜻을 어떻게 분별할 수 있을까요?
+    </div>
+    <div class="qStatus answered">현직 목사 답변</div>
+  </div>
+  <div class="qMeta">
+    <span class="tag">취업</span>
+    <span class="tag">진로</span>
+    <span class="metaDot">•</span>
+    <span class="metaText">청년부</span>
+  </div>
+</article>
+<article class="qItem" onclick="location.href='answer.html'" style="cursor:pointer">
+  <div class="qRow">
+    <div class="qText">
+      전도를 해야 한다는 부담감 때문에 오히려 사람을 피하게 됩니다. 이 마음도 믿음이 약한 걸까요?
+    </div>
+    <div class="qStatus pending">목사 답변 대기</div>
+  </div>
+  <div class="qMeta">
+    <span class="tag">전도</span>
+    <span class="tag">신앙생활</span>
+    <span class="metaDot">•</span>
+    <span class="metaText">마음의 고민</span>
+  </div>
+</article>
+
+              </div>
+
+              <button class="newQuestionBtn">＋ 새 질문하기</button>
+            </div>
+          </div>
+
+        </main>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ✅ 쇼츠 모달 -->
+  <div class="playerModal" id="playerModal" aria-hidden="true">
+    <div class="playerBox" role="dialog" aria-modal="true">
+      <button class="playerClose" id="playerClose" aria-label="닫기">✕</button>
+      <div class="playerStage">
+        <iframe
+          id="playerFrame"
+          title="STILL Shorts Player"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // pill 클릭 UI
+    document.querySelectorAll(".pill").forEach(p=>{
+      p.addEventListener("click", ()=>{
+        document.querySelectorAll(".pill").forEach(x=>x.classList.remove("active"));
+        p.classList.add("active");
+      });
+    });
+
+    // ===== 쇼츠 모달 플레이어 =====
+    const modal = document.getElementById("playerModal");
+    const frame = document.getElementById("playerFrame");
+    const closeBtn = document.getElementById("playerClose");
+
+    function extractYouTubeId(url){
+      if(!url) return null;
+      const m1 = url.match(/\/shorts\/([a-zA-Z0-9_-]{6,})/);
+      if(m1 && m1[1]) return m1[1];
+      const m2 = url.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+      if(m2 && m2[1]) return m2[1];
+      const m3 = url.match(/youtu\.be\/([a-zA-Z0-9_-]{6,})/);
+      if(m3 && m3[1]) return m3[1];
+      return null;
+    }
+
+    function openShortByUrl(url){
+      const id = extractYouTubeId(url);
+      if(!id) return;
+      frame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&playsinline=1&controls=1&modestbranding=1&rel=0`;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeShort(){
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden","true");
+      frame.src = "";
+      document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll(".js-shortPlay").forEach(card=>{
+      card.addEventListener("click", ()=>{
+        openShortByUrl(card.getAttribute("data-url"));
+      });
+    });
+
+    closeBtn.addEventListener("click", closeShort);
+    modal.addEventListener("click", (e)=>{ if(e.target === modal) closeShort(); });
+    window.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("open")) closeShort(); });
+  </script>
+</body>
+</html>
+
+

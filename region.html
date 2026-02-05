@@ -1,0 +1,1509 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STILL – Region</title>
+<link rel="icon" type="image/png" href="still_logo1.png">
+  <style>
+    :root{
+      --brand:#D70F12;
+      --bg1:#7d0a0c;
+      --bg2:#d1161a;
+
+      --ink:#121212;
+      --muted:rgba(18,18,18,.55);
+      --line:rgba(18,18,18,.09);
+
+      --cardShadow: 0 18px 44px rgba(0,0,0,.08);
+      --frameShadow: 0 26px 80px rgba(0,0,0,.22);
+
+      --r32:32px;
+      --r24:24px;
+      --r20:20px;
+      --r16:16px;
+      --r14:14px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+              "Apple SD Gothic Neo","Noto Sans KR", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1000px 720px at 18% 8%, rgba(255,255,255,.12), transparent 60%),
+        radial-gradient(1000px 720px at 86% 35%, rgba(0,0,0,.22), transparent 55%),
+        linear-gradient(135deg, var(--bg2), var(--bg1));
+      padding:22px;
+    }
+
+    .frame{
+      width:min(1360px,100%);
+      margin:0 auto;
+      border-radius:var(--r32);
+      padding:14px;
+    }
+
+    .inner{
+      background:#fff;
+      border-radius:calc(var(--r32) - 10px);
+      overflow:hidden;
+      box-shadow:var(--frameShadow);
+      border:2px solid rgba(255,255,255,.55);
+    }
+
+    /* ===== HEADER ===== */
+    .header{
+      background:
+        radial-gradient(1200px 260px at 12% 0%, rgba(255,255,255,.18), transparent 62%),
+        radial-gradient(900px 260px at 85% 0%, rgba(0,0,0,.22), transparent 65%),
+        linear-gradient(135deg, #e0181c, #8d0b0d);
+      padding:18px 22px 16px;
+      color:#fff;
+    }
+
+    .headerTop{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.brandKr{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#fff;
+  opacity:.9;
+  line-height:1;
+  transform: translateY(2px); /* 로고와 시각적 정렬 */
+  user-select:none;
+}
+    .brand img{height:52px;width:auto;display:block;user-select:none;}
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width:760px;
+      justify-self:center;
+      width:100%;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.60);
+      border-radius: 999px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+    .search input{
+      border:0; outline:0;
+      background:transparent;
+      width:100%;
+      font-size:14px;
+      color:#111;
+    }
+    .searchIcon{width:22px;height:22px;object-fit:contain;opacity:.85;margin-left:6px;}
+    .micIcon{width:28px;height:28px;object-fit:contain;opacity:.9;cursor:pointer;}
+
+    .headerRight{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    .iconBtn{
+      width:42px;height:42px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      display:grid; place-items:center;
+      cursor:pointer;
+      padding:0;
+      user-select:none;
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      transition: .18s ease;
+    }
+    .iconBtn img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.95;
+      filter: brightness(.98) contrast(1.08);
+    }
+    .iconBtn:hover{
+      background: rgba(255,255,255,.16);
+      border-color: rgba(255,255,255,.34);
+      transform: translateY(-1px);
+    }
+
+    .profile{
+      width:42px; height:42px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      padding:0;
+      display:block;
+    }
+    .profile img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      transform: scale(1.25);
+      transform-origin:center;
+      display:block;
+    }
+
+    .navPills{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .navPill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navPill.active{
+      background: rgba(255,255,255,.92);
+      color:#111;
+      border-color: rgba(255,255,255,.70);
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main{
+      background:
+        radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
+        #fff;
+      padding:18px 18px 24px;
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      gap:18px;
+    }
+
+    .sidebar{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      padding:18px;
+      height:fit-content;
+    }
+
+    .secTitle{
+      font-size:12px;
+      letter-spacing:.14em;
+      color: rgba(18,18,18,.45);
+      font-weight:900;
+      margin:6px 0 12px;
+      text-transform: uppercase;
+    }
+
+    .sideItem{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid transparent;
+      cursor:pointer;
+      user-select:none;
+      color: rgba(18,18,18,.70);
+      font-weight:900;
+    }
+    .sideItem:hover{
+      background: rgba(18,18,18,.03);
+      border-color: rgba(18,18,18,.06);
+    }
+    .sideItem.active{
+      background: rgba(215,15,18,.07);
+      border-color: rgba(215,15,18,.18);
+      color:#111;
+    }
+    .sideDot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      opacity:.25;
+    }
+    .sideItem.active .sideDot{
+      background: var(--brand);
+      opacity:1;
+      box-shadow: 0 0 0 7px rgba(215,15,18,.12);
+    }
+
+    .content{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      overflow:hidden;
+    }
+    .pad{padding:16px}
+
+    .cardHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .cardHead b{font-size:16px; letter-spacing:-.02em;}
+    .chev{color: rgba(18,18,18,.38); font-size:22px; line-height:1;}
+
+    .homeGrid{
+      display:grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    .span3{grid-column: 1 / -1;}
+
+    /* Today verse */
+    .verseChip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(215,15,18,.08);
+      border:1px solid rgba(215,15,18,.16);
+      color:#7a0b0b;
+      font-weight:900;
+      font-size:12px;
+      width:fit-content;
+    }
+    .verseTitle{margin:10px 0 0;font-weight:900;font-size:20px;letter-spacing:-.02em;}
+    .verseText{margin:8px 0 0;color: rgba(18,18,18,.60);font-weight:700;line-height:1.55;}
+    .verseRef{margin-top:10px;color: rgba(18,18,18,.45);font-size:12px;font-weight:800;}
+
+    /* Q&A list */
+    .qnaItem{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      padding:12px;
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.04);
+    }
+    .qnaItem + .qnaItem{margin-top:10px}
+    .qnaItem b{display:block;margin-bottom:6px;font-size:14px;letter-spacing:-.01em;}
+    .qnaItem span{color: rgba(18,18,18,.55);font-size:12px;font-weight:700;}
+
+    /* Notice list */
+    .noticeItem{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:12px;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .noticeItem + .noticeItem{margin-top:10px}
+    .badge{
+      flex:0 0 auto;
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      border:1px solid rgba(215,15,18,.18);
+      background: rgba(215,15,18,.08);
+      color:#7a0b0b;
+      margin-top:1px;
+      white-space:nowrap;
+    }
+    .noticeText{min-width:0}
+    .noticeTitle{
+      margin:0;
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:-.01em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .noticeMeta{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+.bibleIcon{
+  width:18px;
+  height:18px;
+  object-fit:contain;
+  display:block;
+}
+    /* === 썸네일에 PNG 넣기 (공통) === */
+    .thumb, .shortThumb{
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+
+    /* Video cards */
+    .videoRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .videoCard{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      overflow:hidden;
+      background:#fff;
+    }
+    .thumb{
+      aspect-ratio:16/9;
+      background:#eee;
+      position:relative;
+    }
+    .dur{
+      position:absolute;right:10px;bottom:10px;
+      padding:6px 8px;border-radius:10px;
+      background: rgba(0,0,0,.58);color:#fff;
+      font-size:12px;border:1px solid rgba(255,255,255,.16);
+    }
+    .vmeta{
+      padding:12px 12px 14px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .chdot{
+      width:34px;height:34px;border-radius:14px;
+      background: rgba(215,15,18,.10);
+      border:1px solid rgba(215,15,18,.18);
+      flex:0 0 auto;
+    }
+    .twrap{min-width:0}
+    .vt{
+      margin:0;
+      font-weight:900;
+      font-size:14px;
+      line-height:1.35;
+      letter-spacing:-.01em;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .vs{
+      margin:5px 0 0;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    /* Shorts: horizontal row */
+    .shortsRow{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      padding-bottom:6px;
+      scroll-snap-type:x mandatory;
+    }
+    .short{
+      flex: 0 0 190px;
+      scroll-snap-align:start;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      overflow:hidden;
+      background:#fff;
+      cursor:pointer;
+    }
+    .shortThumb{
+      aspect-ratio:9/16;
+      background:#eee;
+      position:relative;
+    }
+    .shortDur{
+      position:absolute;right:10px;bottom:10px;
+      padding:6px 8px;border-radius:10px;
+      background: rgba(0,0,0,.58);color:#fff;
+      font-size:12px;border:1px solid rgba(255,255,255,.16);
+    }
+    .shortMeta{padding:10px 12px 12px;}
+    .shortTitle{
+      margin:0;
+      font-weight:900;
+      font-size:13px;
+      letter-spacing:-.01em;
+      line-height:1.35;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .shortSub{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    /* Recommended */
+    .pills{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px;}
+    .pill{
+      padding:9px 12px;border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.03);
+      color: rgba(18,18,18,.72);
+      font-weight:900;font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+    .recGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+    .recTile{border:1px solid rgba(18,18,18,.10);border-radius: var(--r20);overflow:hidden;background:#fff;}
+    .tileMeta{padding:12px 12px 14px;display:flex;gap:10px;align-items:flex-start;}
+    .tileMeta .chdot{width:32px;height:32px}
+
+    /* ===== 쇼츠 모달 플레이어 ===== */
+    .playerModal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.55);
+      z-index:9999;
+      padding:18px;
+    }
+    .playerModal.open{ display:flex; }
+
+    .playerBox{
+      width:min(420px, 96vw);
+      border-radius:24px;
+      overflow:hidden;
+      background:#000;
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+      position:relative;
+    }
+    .playerStage{
+      width:100%;
+      aspect-ratio: 9 / 16;
+      position:relative;
+      background:#000;
+    }
+    .playerStage iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
+    .playerClose{
+      position:absolute;
+      top:10px; right:10px;
+      width:38px; height:38px;
+      border-radius:14px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.45);
+      color:#fff;
+      font-size:18px;
+      display:grid; place-items:center;
+      cursor:pointer;
+      z-index:2;
+    }
+/* 필터 리스트 전체 */
+.filterList{
+  display:flex;
+  flex-direction:column;
+  gap:12px;               /* ✅ 행 간격 */
+  margin-top:14px;
+}
+
+/* 개별 필터 버튼 */
+.filterItem{
+  height:48px;
+  padding:0 20px;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,.08);
+  background:#fff;
+  text-align:left;
+  font-size:15px;
+  font-weight:600;
+  color:#222;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+/* hover */
+.filterItem:hover{
+  background:rgba(0,0,0,.02);
+}
+
+/* 선택 상태 (전체) */
+.filterItem.active{
+  border-color:rgba(215,15,18,.25);
+  background:radial-gradient(
+    900px 220px at 10% 0%,
+    rgba(215,15,18,.08),
+    transparent 60%
+  );
+  color:#D70F12;
+  font-weight:700;
+}
+
+    /* Responsive */
+    @media (max-width: 1180px){
+      .main{grid-template-columns:1fr}
+      .homeGrid{grid-template-columns:1fr 1fr}
+      .span3{grid-column: 1 / -1;}
+      .recGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (max-width: 860px){
+      .homeGrid{grid-template-columns:1fr}
+      .videoRow{grid-template-columns:1fr}
+      .recGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width: 740px){
+      body{padding:14px}
+      .headerTop{grid-template-columns: 1fr; gap:12px;}
+      .search{justify-self:stretch}
+      .headerRight{justify-content:flex-start}
+      .brand img{height:48px;}
+      .recGrid{grid-template-columns:1fr}
+    }
+  
+    /* ===== Region Page ===== */
+    .regionTop{
+      display:grid;
+      grid-template-columns: 1.2fr .9fr;
+      gap:14px;
+      align-items:stretch;
+      margin-top:6px;
+    }
+    .locSelect{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      padding:14px;
+    }
+    .locLabel{
+      font-size:12px;
+      font-weight:1000;
+      letter-spacing:.12em;
+      color: rgba(18,18,18,.45);
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .locRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .sel{
+      height:42px;
+      padding:0 12px;
+      border-radius:14px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-weight:900;
+      color: rgba(18,18,18,.78);
+      outline:none;
+    }
+    .mapCard{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:260px;
+    }
+    .mapHead{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+    .mapHead b{font-size:14px; letter-spacing:-.01em;}
+    .mapMock{
+      position:relative;
+      flex:1;
+      border-radius: var(--r20);
+      border:1px solid rgba(18,18,18,.10);
+      background:
+        radial-gradient(800px 320px at 10% 0%, rgba(215,15,18,.10), transparent 60%),
+        radial-gradient(800px 320px at 90% 40%, rgba(0,0,0,.06), transparent 55%),
+        linear-gradient(180deg, rgba(18,18,18,.02), rgba(18,18,18,.00));
+      overflow:hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .mapHint{
+      position:absolute;
+      left:12px; right:12px; bottom:12px;
+      padding:10px 12px;
+      border-radius: var(--r16);
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      color: rgba(18,18,18,.60);
+      font-size:12px;
+      font-weight:800;
+      line-height:1.45;
+    }
+    .pin{
+      position:absolute;
+      width:14px;height:14px;
+      border-radius:999px;
+      background: rgba(215,15,18,.75);
+      box-shadow: 0 0 0 8px rgba(215,15,18,.12);
+      border:1px solid rgba(255,255,255,.80);
+    }
+    .pin.p1{left:22%; top:32%}
+    .pin.p2{left:55%; top:40%; background: rgba(18,18,18,.30); box-shadow: 0 0 0 8px rgba(18,18,18,.08);}
+    .pin.p3{left:70%; top:24%; background: rgba(215,15,18,.55);}
+    .pin.p4{left:38%; top:58%; background: rgba(215,15,18,.35);}
+
+    .regionGrid{
+      display:grid;
+      grid-template-columns: 1.2fr .9fr;
+      gap:16px;
+      margin-top:16px;
+      align-items:start;
+    }
+
+    .list{display:flex; flex-direction:column; gap:10px;}
+    .recCard{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      padding:12px;
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .recCard:hover{
+      transform: translateY(-1px);
+      border-color: rgba(215,15,18,.18);
+      box-shadow: 0 14px 34px rgba(0,0,0,.05);
+    }
+    .recTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .recTop b{
+      font-size:14px;
+      font-weight:1000;
+      letter-spacing:-.01em;
+    }
+    .recSub{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:800;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .badgeRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+
+    .detailPanel{display:flex; flex-direction:column; gap:10px;}
+
+    @media (max-width: 1180px){
+      .regionTop{grid-template-columns:1fr}
+      .regionGrid{grid-template-columns:1fr}
+    }
+
+  
+    /* ===== Region list tidy ===== */
+    .recCard{
+      padding:14px 14px;
+    }
+    .recTop{
+      align-items:center;
+    }
+    .recTitle{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .recTitle b{
+      font-size:15px;
+      line-height:1.25;
+      letter-spacing:-.02em;
+      margin:0;
+      word-break:keep-all;
+    }
+    .recMeta{
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:900;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      line-height:1.4;
+    }
+    .recBadge{align-self:flex-start;
+      flex:0 0 auto;
+      margin-left:12px;
+    }
+    .recBadge .tag{
+      font-size:11px;
+      padding:6px 10px;
+    }
+    .recFoot{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid rgba(18,18,18,.06);
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+ .recCard.selected {
+  background: #fff !important;
+}
+
+    /* Right detail panel tidy */
+    .detailPanel .dLine .k{letter-spacing:.14em;}
+    .detailPanel .dLine .v{line-height:1.45;}
+
+  
+    /* ===== Detail panel: match STILL card system ===== */
+    .detailCardWrap{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      padding:12px;
+    }
+    .detailCardHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:4px 4px 10px;
+    }
+    .detailCardHead b{
+      font-size:14px;
+      letter-spacing:-.01em;
+      font-weight:1000;
+    }
+    .detailCardHead .subtle{font-weight:900;}
+    .kv{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background: rgba(18,18,18,.01);
+      padding:12px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .kv + .kv{ margin-top:10px; }
+    .kvTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .k2{
+      font-size:11px;
+      font-weight:1000;
+      letter-spacing:.14em;
+      color: rgba(18,18,18,.45);
+      text-transform:uppercase;
+    }
+    .v2{
+      font-size:14px;
+      font-weight:950;
+      color: rgba(18,18,18,.88);
+      letter-spacing:-.01em;
+      line-height:1.35;
+      word-break:keep-all;
+    }
+    .v3{
+      margin-top:6px;
+      font-size:12px;
+      font-weight:850;
+      color: rgba(18,18,18,.60);
+      line-height:1.45;
+    }
+    .btnRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .btn{
+      height:36px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background:#fff;
+      font-weight:1000;
+      cursor:pointer;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      transition:.15s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 34px rgba(0,0,0,.05); }
+    .btn.primary{
+      border-color: rgba(215,15,18,.22);
+      background: radial-gradient(900px 220px at 10% 0%, rgba(215,15,18,.08), transparent 60%), #fff;
+      color: rgba(215,15,18,.95);
+    }
+    .btn.ghost{ background: rgba(18,18,18,.02); }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+    .chips .tag{ font-size:11px; padding:6px 10px; }
+
+  
+    /* ===== Hashtag row + top-right badge as button ===== */
+    .hashRow{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid rgba(18,18,18,.06);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .hash{
+      font-size:11px;
+      font-weight:600;
+      color: rgba(215,15,18,.65);
+      letter-spacing:-.005em;
+      white-space:nowrap;
+    }
+    .hash::before{ content:"#"; margin-right:1px; }
+    .badgeBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:30px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.12);
+      background: rgba(18,18,18,.02);
+      font-weight:1000;
+      font-size:12px;
+      color: rgba(18,18,18,.78);
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      user-select:none;
+    }
+    .badgeBtn.pick{
+      border-color: rgba(215,15,18,.20);
+      background: radial-gradient(900px 220px at 10% 0%, rgba(215,15,18,.08), transparent 60%), #fff;
+      color: rgba(215,15,18,.95);
+    }
+.nearPill{
+  height:42px;
+  padding:0 16px;
+  border-radius:999px;
+  border:1px solid rgba(18,18,18,.12);
+  background:rgba(18,18,18,.02);
+  font-weight:900;
+  font-size:14px;
+  color:rgba(18,18,18,.78);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  transition:.15s ease;
+}
+
+.nearPill:hover{
+  background:rgba(18,18,18,.04);
+}
+
+.nearPill.active{
+  border-color:rgba(215,15,18,.25);
+  background:
+    radial-gradient(900px 220px at 10% 0%,
+      rgba(215,15,18,.08),
+      transparent 60%
+    );
+  color:#D70F12;
+}
+
+.nearDot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:rgba(215,15,18,.9);
+  box-shadow:0 0 0 6px rgba(215,15,18,.18);
+}
+/* Subscribe channel item */
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.subItem:hover{
+  background:rgba(18,18,18,.03);
+}
+
+.subItem img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.subItem span{
+  font-size:14px;
+  font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="frame">
+    <div class="inner">
+
+      <header class="header">
+        <div class="headerTop">
+       <div class="brand" title="STILL">
+  <img src="still_logo.png" alt="STILL logo">
+  <span class="brandKr">KR</span>
+</div>
+
+          <div class="search">
+            <img src="search.png" class="searchIcon" alt="search">
+            <input placeholder="영상 · 구절 · 교회 · 지역 검색" />
+            <img src="mic.png" class="micIcon" alt="mic">
+          </div>
+
+          <div class="headerRight">
+            <button class="iconBtn" title="알림">
+              <img src="bell.png" alt="알림">
+            </button>
+            <button class="iconBtn" title="업로드">
+              <img src="cross.png" alt="업로드">
+            </button>
+            <div class="profile" title="프로필">
+              <img src="bin.png" alt="profile">
+            </div>
+          </div>
+        </div>
+
+        <div class="navPills">
+          <div class="navPill" onclick="location.href='still.html'">홈</div>
+          <div class="navPill" onclick="location.href='bible.html'">성경</div>
+     <div class="navPill" onclick="location.href='QnA.html'">
+  Q&A
+</div>
+          <div class="navPill" onclick="location.href='calendar.html'">캘린더</div>
+          <div class="navPill active" onclick="location.href='region.html'">지역</div>
+       <div class="navPill" onclick="location.href='church_db.html'">이단 분별</div>
+           <div class="navPill" onclick="location.href='jesusface.html'">예수님과 고민상담</div>
+        </div>
+      </header>
+
+      <div class="main">
+        <aside class="sidebar">
+
+  <!-- 구독 -->
+<div class="secTitle">Subscribe</div>
+
+<div class="subItem">
+  <img src="cbs.png" alt="새롭게하소서 CBS">
+  <span>새롭게하소서CBS</span>
+</div>
+
+<div class="subItem">
+  <img src="jaljal.png" alt="잘잘법">
+  <span>잘잘법 : 잘 믿고 잘 사는 법</span>
+</div>
+
+<div class="subItem">
+  <img src="weracle.png" alt="위라클">
+  <span>위라클 WERACLE</span>
+</div>
+
+<div class="subItem">
+  <img src="cts.png" alt="CTS">
+  <span>CTS기독교TV</span>
+</div>
+
+  <!-- 내 페이지 -->
+  <div class="secTitle" style="margin-top:18px">My Page</div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 최신기록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 재생목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 저장한 목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 좋아요 표시한 목록
+  </div>
+
+</aside>
+        
+        <main class="content">
+
+          <section class="card">
+            <div class="pad">
+              <div class="cardHead">
+                <b>지역</b>
+                <span class="chev">›</span>
+              </div>
+
+              <div class="regionTop">
+                <div class="locSelect">
+                  <div class="locRow">
+                    <select id="selCity" class="sel">
+                      <option value="서울">서울</option>
+                      <option value="경기">경기</option>
+                      <option value="인천">인천</option>
+                      <option value="부산">부산</option>
+                      <option value="대구">대구</option>
+                      <option value="대전">대전</option>
+                      <option value="광주">광주</option>
+                    </select>
+                    <select id="selGu" class="sel">
+                      <option value="성동구">성동구</option>
+                      <option value="마포구">마포구</option>
+                      <option value="서대문구">서대문구</option>
+                      <option value="강남구">강남구</option>
+                      <option value="송파구">송파구</option>
+                    </select>
+                <button class="nearPill" id="btnNear">
+  <span class="nearDot"></span>
+  내 주변
+</button>
+                  </div>
+<div class="filterList">
+  <button class="filterItem active">전체</button>
+  <button class="filterItem">교회</button>
+  <button class="filterItem">행사</button>
+  <button class="filterItem">찬양집회</button>
+  <button class="filterItem">기도회</button>
+  <button class="filterItem">기타</button>
+</div>
+                </div>
+
+                <div class="mapCard">
+                  <div class="mapHead">
+                    <b id="mapTitle">서울 · 성동구</b>
+                    <span class="subtle" id="mapMeta">추천 장소 8개</span>
+                  </div>
+                  <div class="mapMock" aria-label="map placeholder">
+                    <div class="pin p1" title="STILL Pick"></div>
+                    <div class="pin p2" title="교회"></div>
+                    <div class="pin p3" title="집회"></div>
+                    <div class="pin p4" title="모임"></div>
+                    <div class="mapHint">
+                      실제 서비스에서는 지도(카카오/네이버/구글)로 연동 가능<br/>
+                      지금은 STILL 스타일 목업으로 구성했어요.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+        
+            </div>
+          </section>
+
+          <div class="regionGrid">
+
+            <section class="card">
+              <div class="pad">
+                <div class="cardHead">
+                  <b>이 지역 추천</b>
+                  <span class="subtle" id="countText">표시 중: 0개</span>
+                </div>
+
+                <div class="list" id="recList"></div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="pad">
+                <div class="cardHead">
+                  <b>상세 설명</b>
+                  
+                </div>   
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ✅ 쇼츠 모달 -->
+  <div class="playerModal" id="playerModal" aria-hidden="true">
+    <div class="playerBox" role="dialog" aria-modal="true">
+      <button class="playerClose" id="playerClose" aria-label="닫기">✕</button>
+      <div class="playerStage">
+        <iframe
+          id="playerFrame"
+          title="STILL Shorts Player"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  
+  <script>
+    // ===== Region data (demo) =====
+    const items = [
+      {
+        id:"c1",
+        type:"church",
+        pick:true,
+        title:"성수 온기교회 (청년 예배)",
+        area:{city:"서울", gu:"성동구"},
+        meta:"주일 2부 · 청년 많음 · 환영팀",
+        tags:["first","youth","worship"],
+        address:"서울 성동구 (성수) · 도보 7분",
+        about:"처음 방문해도 안내가 잘 되어 있고, 청년 예배 분위기가 따뜻한 편.",
+        action:{label:"교회 정보 보기", href:"#"}
+      },
+      {
+        id:"c2",
+        type:"church",
+        pick:false,
+        title:"마포 말씀교회 (말씀 중심)",
+        area:{city:"서울", gu:"마포구"},
+        meta:"말씀 · 강해 · 차분함",
+        tags:["quiet","first"],
+        address:"서울 마포구 · 합정/홍대 인근",
+        about:"말씀 중심 예배, 조용하고 정돈된 분위기.",
+        action:{label:"교회 정보 보기", href:"#"}
+      },
+      {
+        id:"e1",
+        type:"event",
+        pick:true,
+        title:"목요일 피아워십 찬양집회",
+        area:{city:"서울", gu:"성동구"},
+        meta:"목 20:00 · 현장/온라인",
+        tags:["worship","youth"],
+        address:"서울 · 피아워십",
+        about:"찬양으로 예배의 온도를 회복하는 목요 집회.",
+        action:{label:"캘린더에서 보기", href:"calendar.html"}
+      },
+      {
+        id:"e2",
+        type:"event",
+        pick:true,
+        title:"2월 17일 잘잘법 콘서트",
+        area:{city:"서울", gu:"성동구"},
+        meta:"2/17 19:00 · 지정 이벤트",
+        tags:["youth"],
+        address:"서울 · (공연장)",
+        about:"말씀과 문화가 만나는 자리. 청년들이 함께 모여 회복과 울림을 경험.",
+        action:{label:"캘린더에서 보기", href:"calendar.html"}
+      },
+      {
+        id:"g1",
+        type:"group",
+        pick:false,
+        title:"성경읽기 모임 – 로마서 (온라인)",
+        area:{city:"서울", gu:"성동구"},
+        meta:"화 20:30 · ZOOM",
+        tags:["first","quiet"],
+        address:"온라인 참여",
+        about:"로마서를 함께 읽으며 복음의 뼈대를 다시 세우는 스터디.",
+        action:{label:"참여 링크", href:"#"}
+      },
+      {
+        id:"g2",
+        type:"group",
+        pick:true,
+        title:"화요성수 정기 모임",
+        area:{city:"서울", gu:"성동구"},
+        meta:"매주 화 19:30 · 정기 모임",
+        tags:["first","youth"],
+        address:"서울 · (대표) 청년 연합",
+        about:"말씀과 기도로 한 주의 중심을 세우는 정기 모임.",
+        action:{label:"캘린더에서 보기", href:"calendar.html"}
+      },
+      {
+        id:"c3",
+        type:"church",
+        pick:false,
+        title:"서대문 은혜교회 (공동체 중심)",
+        area:{city:"서울", gu:"서대문구"},
+        meta:"청년부 · 소그룹 활발",
+        tags:["youth"],
+        address:"서울 서대문구 · 신촌/이대 인근",
+        about:"소그룹과 교제가 활성화되어 있어 관계 형성이 빠른 편.",
+        action:{label:"교회 정보 보기", href:"#"}
+      },
+      {
+        id:"e3",
+        type:"event",
+        pick:false,
+        title:"회복의 밤 – 불안/번아웃 기도회",
+        area:{city:"서울", gu:"성동구"},
+        meta:"2/12 19:30 · 기도/회복",
+        tags:["quiet","first"],
+        address:"서울 · (센터)",
+        about:"지친 마음을 위한 회복 기도회. 짧은 말씀과 중보 중심.",
+        action:{label:"캘린더에서 보기", href:"calendar.html"}
+      }
+    ];
+
+    const state = { city:"서울", gu:"성동구", filter:"all", selected:null };
+
+    const $ = (s)=>document.querySelector(s);
+    const $$ = (s)=>Array.from(document.querySelectorAll(s));
+
+    function tagLabel(t){
+      const map = {
+        first:"처음 OK",
+        youth:"청년",
+        quiet:"조용함",
+        worship:"찬양",
+        church:"교회",
+        event:"행사",
+        group:"모임"
+      };
+      return map[t] || t;
+    }
+
+    function typeLabel(type){
+      return ({church:"교회", event:"행사/집회", group:"모임/공동체"})[type] || type;
+    }
+
+    function matchesFilter(it){
+      const f = state.filter;
+      if(f==="all") return it.area.city===state.city; // 기본은 도시 기준
+      if(["church","event","group"].includes(f)) return it.type===f && it.area.city===state.city;
+      if(["first","youth","quiet","worship"].includes(f)) return (it.tags||[]).includes(f) && it.area.city===state.city;
+      return it.area.city===state.city;
+    }
+
+    function renderHeader(){
+      $("#mapTitle").textContent = `${state.city} · ${state.gu}`;
+    }
+
+    function renderList(){
+      const list = $("#recList");
+      list.innerHTML = "";
+
+      const filtered = items.filter(it=>matchesFilter(it)).filter(it=>it.area.gu===state.gu || state.filter==="all");
+      $("#countText").textContent = `표시 중: ${filtered.length}개`;
+
+      $("#mapMeta").textContent = `추천 장소 ${filtered.length}개`;
+
+      if(filtered.length===0){
+        const empty = document.createElement("div");
+        empty.className = "recCard";
+        empty.style.cursor = "default";
+        empty.innerHTML = `
+          <div class="recTop"><b>해당 조건에 맞는 추천이 없어요</b><span class="tag">필터 변경</span></div>
+          <div class="recSub"><span>필터를 ‘전체’로 바꾸거나</span><span>•</span><span>다른 구/동을 선택해보세요</span></div>
+        `;
+        list.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach(it=>{
+        const card = document.createElement("div");
+        card.className = "recCard";
+        card.setAttribute("data-id", it.id);
+        card.innerHTML = `
+          <div class="recTop">
+            <div class="recTitle">
+              <b>${it.title}</b>
+              <div class="recMeta">
+                <span>${typeLabel(it.type)}</span><span>•</span>
+                <span>${it.meta}</span>
+              </div>
+            </div>
+            <div class="recBadge">
+              ${it.pick ? `<span class="badgeBtn pick">STILL Pick</span>` : `<span class="badgeBtn">${typeLabel(it.type)}</span>`}
+            </div>
+          </div>
+
+          <div class="hashRow">
+            <span class="hash">${state.city}</span>
+            <span class="hash">${state.gu}</span>
+            ${(it.tags||[]).slice(0,4).map(t=>`<span class="hash">${tagLabel(t)}</span>`).join("")}
+          </div>
+        `;
+        card.addEventListener("click", ()=>selectItem(it.id));
+        list.appendChild(card);
+      });
+    }
+
+    function selectItem(id){
+      const it = items.find(x=>x.id===id);
+      if(!it) return;
+      state.selected = id;
+      // selected highlight
+      document.querySelectorAll('.recCard').forEach(c=>c.classList.remove('selected'));
+      const curCard = document.querySelector(`.recCard[data-id="${id}"]`);
+      if(curCard) curCard.classList.add('selected');
+
+      $("#detailHint").textContent = "상세가 표시되고 있어요";
+
+      const panel = $("#detailPanel");
+      panel.innerHTML = `
+        <div class="kv">
+          <div class="kvTop">
+            <div>
+              <div class="k2">TITLE</div>
+              <div class="v2">${it.title}</div>
+              <div class="v3">${typeLabel(it.type)} ${it.pick ? "· STILL Pick" : ""} · ${state.city} ${state.gu}</div>
+            </div>
+            ${it.pick ? `<span class="tag pick">STILL Pick</span>` : `<span class="tag">${typeLabel(it.type)}</span>`}
+          </div>
+
+          <div class="btnRow">
+            <button class="btn primary" onclick="location.href='${it.action.href}'">${it.action.label}</button>
+            <button class="btn ghost" id="copyBtn">복사</button>
+          </div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">WHERE</div>
+          <div class="v2">${it.address}</div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">ABOUT</div>
+          <div class="v2">${it.about}</div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">TAGS</div>
+          <div class="chips">
+            ${(it.tags||[]).map(t=>`<span class="tag">${tagLabel(t)}</span>`).join("")}
+          </div>
+        </div>
+      `;
+
+      const btn = $("#copyBtn");
+      if(btn){
+        btn.addEventListener("click", async ()=>{
+          const text = `[STILL] ${it.title} / ${state.city} ${state.gu} / ${it.address}`;
+          try{
+            await navigator.clipboard.writeText(text);
+            $("#detailHint").textContent = "복사 완료!";
+            setTimeout(()=>$("#detailHint").textContent="상세가 표시되고 있어요", 1200);
+          }catch(e){
+            $("#detailHint").textContent = "복사 실패(브라우저 권한 확인)";
+            setTimeout(()=>$("#detailHint").textContent="상세가 표시되고 있어요", 1400);
+          }
+        });
+      }
+    }
+
+    // pills
+    $$(".pill").forEach(p=>{
+      p.addEventListener("click", ()=>{
+        $$(".pill").forEach(x=>x.classList.remove("active"));
+        p.classList.add("active");
+        state.filter = p.getAttribute("data-filter");
+        renderAll();
+      });
+    });
+
+    // selects
+    $("#selCity").addEventListener("change", (e)=>{
+      state.city = e.target.value;
+      // simple default gu list per city
+      const guSel = $("#selGu");
+      const presets = {
+        "서울":["성동구","마포구","서대문구","강남구","송파구"],
+        "경기":["성남시","수원시","고양시","부천시","용인시"],
+        "인천":["연수구","남동구","부평구","서구","미추홀구"],
+        "부산":["해운대구","수영구","남구","부산진구","동래구"],
+        "대구":["수성구","중구","달서구","동구","북구"],
+        "대전":["서구","유성구","중구","동구","대덕구"],
+        "광주":["북구","서구","남구","동구","광산구"]
+      };
+      const list = presets[state.city] || ["전체"];
+      guSel.innerHTML = list.map(v=>`<option value="${v}">${v}</option>`).join("");
+      state.gu = list[0];
+      renderAll();
+    });
+
+    $("#selGu").addEventListener("change", (e)=>{
+      state.gu = e.target.value;
+      renderAll();
+    });
+
+$("#btnNear").addEventListener("click", ()=>{
+  state.city = "서울";
+  state.gu = "성동구";
+
+  $("#selCity").value = state.city;
+  $("#selGu").innerHTML = ["성동구","마포구","서대문구","강남구","송파구"]
+    .map(v=>`<option value="${v}">${v}</option>`).join("");
+  $("#selGu").value = state.gu;
+
+  $("#btnNear").classList.add("active");
+  renderAll();
+});
+
+
+    function renderAll(){
+      renderHeader();
+      renderList();
+      // auto select first visible
+      const filtered = items.filter(it=>matchesFilter(it)).filter(it=>it.area.gu===state.gu || state.filter==="all");
+      if(filtered[0]) selectItem(filtered[0].id);
+      else {
+        state.selected = null;
+        $("#detailHint").textContent = "카드를 클릭하면 상세가 보여요";
+        $("#detailPanel").innerHTML = ``;
+      }
+    }
+
+    renderAll();
+  </script>
+
+</body>
+</html>
+
+

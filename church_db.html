@@ -1,0 +1,1528 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STILL – 이단 분별</title>
+  <link rel="icon" type="image/png" href="still_logo1.png">
+
+  <style>
+    :root{
+      --brand:#D70F12;
+      --bg1:#7d0a0c;
+      --bg2:#d1161a;
+
+      --ink:#121212;
+      --muted:rgba(18,18,18,.55);
+      --line:rgba(18,18,18,.09);
+
+      --cardShadow: 0 18px 44px rgba(0,0,0,.08);
+      --frameShadow: 0 26px 80px rgba(0,0,0,.22);
+
+      --r32:32px;
+      --r24:24px;
+      --r20:20px;
+      --r16:16px;
+      --r14:14px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+              "Apple SD Gothic Neo","Noto Sans KR", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1000px 720px at 18% 8%, rgba(255,255,255,.12), transparent 60%),
+        radial-gradient(1000px 720px at 86% 35%, rgba(0,0,0,.22), transparent 55%),
+        linear-gradient(135deg, var(--bg2), var(--bg1));
+      padding:22px;
+    }
+
+    .frame{
+      width:min(1360px,100%);
+      margin:0 auto;
+      border-radius:var(--r32);
+      padding:14px;
+    }
+
+    .inner{
+      background:#fff;
+      border-radius:calc(var(--r32) - 10px);
+      overflow:hidden;
+      box-shadow:var(--frameShadow);
+      border:2px solid rgba(255,255,255,.55);
+    }
+
+    /* ===== HEADER (bible.html 유지) ===== */
+    .header{
+      background:
+        radial-gradient(1200px 260px at 12% 0%, rgba(255,255,255,.18), transparent 62%),
+        radial-gradient(900px 260px at 85% 0%, rgba(0,0,0,.22), transparent 65%),
+        linear-gradient(135deg, #e0181c, #8d0b0d);
+      padding:18px 22px 16px;
+      color:#fff;
+    }
+    .headerTop{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap:16px;
+    }
+    .brand{display:flex;align-items:center;gap:6px;}
+    .brandKr{
+      font-size:14px;
+      font-weight:900;
+      letter-spacing:.08em;
+      color:#fff;
+      opacity:.9;
+      line-height:1;
+      transform: translateY(2px);
+      user-select:none;
+    }
+    .brand img{height:52px;width:auto;display:block;user-select:none;}
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width:760px;
+      justify-self:center;
+      width:100%;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.60);
+      border-radius: 999px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+    .search input{
+      border:0; outline:0;
+      background:transparent;
+      width:100%;
+      font-size:14px;
+      color:#111;
+    }
+    .searchIcon{width:22px;height:22px;object-fit:contain;opacity:.85;margin-left:6px;}
+    .micIcon{width:28px;height:28px;object-fit:contain;opacity:.9;cursor:pointer;}
+
+    .headerRight{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    .iconBtn{
+      width:42px;height:42px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      display:grid; place-items:center;
+      cursor:pointer;
+      padding:0;
+      user-select:none;
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      transition: .18s ease;
+    }
+    .iconBtn img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.95;
+      filter: brightness(.98) contrast(1.08);
+    }
+    .iconBtn:hover{
+      background: rgba(255,255,255,.16);
+      border-color: rgba(255,255,255,.34);
+      transform: translateY(-1px);
+    }
+
+    .profile{
+      width:42px; height:42px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      padding:0;
+      display:block;
+    }
+    .profile img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      transform: scale(1.25);
+      transform-origin:center;
+      display:block;
+    }
+
+    .navPills{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .navPill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      text-decoration:none;
+    }
+    .navPill.active{
+      background: rgba(255,255,255,.92);
+      color:#111;
+      border-color: rgba(255,255,255,.70);
+    }
+
+    /* ===== MAIN LAYOUT (유지) ===== */
+    .main{
+      background:
+        radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
+        #fff;
+      padding:18px 18px 24px;
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      gap:18px;
+    }
+
+    .sidebar{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      padding:18px;
+      height:fit-content;
+    }
+
+    .secTitle{
+      font-size:12px;
+      letter-spacing:.14em;
+      color: rgba(18,18,18,.45);
+      font-weight:900;
+      margin:6px 0 12px;
+      text-transform: uppercase;
+    }
+
+    .sideItem{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid transparent;
+      cursor:pointer;
+      user-select:none;
+      color: rgba(18,18,18,.70);
+      font-weight:900;
+    }
+    .sideItem:hover{
+      background: rgba(18,18,18,.03);
+      border-color: rgba(18,18,18,.06);
+    }
+    .sideItem.active{
+      background: rgba(215,15,18,.07);
+      border-color: rgba(215,15,18,.18);
+      color:#111;
+    }
+    .sideDot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      opacity:.25;
+    }
+    .sideItem.active .sideDot{
+      background: var(--brand);
+      opacity:1;
+      box-shadow: 0 0 0 7px rgba(215,15,18,.12);
+    }
+
+    .subItem{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .subItem:hover{ background:rgba(18,18,18,.03); }
+    .subItem img{
+      width:32px;height:32px;border-radius:50%;
+      object-fit:cover;flex-shrink:0;
+    }
+    .subItem span{
+      font-size:14px;font-weight:700;color:rgba(18,18,18,.78);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+
+    .content{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      overflow:hidden;
+    }
+    .pad{padding:16px}
+
+    .subNote{
+      color: rgba(18,18,18,.55);
+      font-weight:800;
+      font-size:12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* ===== Center (bibleWrap 구도 유지, 내용만 변경) ===== */
+    .bibleWrap{ border-radius: var(--r24); overflow:hidden; }
+
+    .bibleTop{
+      padding:14px 16px 10px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(900px 220px at 10% 0%, rgba(215,15,18,.06), transparent 60%),
+        #fff;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .bibleTop .title{
+      font-weight:900;
+      font-size:16px;
+      letter-spacing:-.02em;
+      margin:0;
+    }
+
+    .controls{
+      padding:12px 16px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    .ctrl{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-weight:900;
+      font-size:13px;
+      color: rgba(18,18,18,.78);
+      cursor:pointer;
+      user-select:none;
+    }
+    .ctrl select, .ctrl input{
+      border:0; outline:0;
+      background:transparent;
+      font-weight:900;
+      font-size:13px;
+      color:#111;
+    }
+    .ctrl input{ width:200px; cursor:text; }
+    .ctrl.primary{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+    .ctrl.ghost{ background:#fff; border-color: rgba(18,18,18,.10); }
+
+    .toggle{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 10px 8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-weight:900;
+      font-size:13px;
+      color: rgba(18,18,18,.78);
+      user-select:none;
+    }
+    .switch{
+      width:42px;height:24px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      position:relative;
+      cursor:pointer;
+      border:1px solid rgba(18,18,18,.10);
+    }
+    .knob{
+      width:20px;height:20px;border-radius:999px;
+      background:#fff;
+      position:absolute;top:1px;left:1px;
+      box-shadow: 0 8px 16px rgba(0,0,0,.18);
+      transition:.18s ease;
+    }
+    .switch.on{ background: rgba(215,15,18,.55); }
+    .switch.on .knob{ left:21px; }
+
+    .bibleGrid{
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+
+    .panel{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background:#fff;
+      overflow:hidden;
+    }
+    .panelHead{
+      padding:12px 12px 10px;
+      border-bottom:1px solid rgba(18,18,18,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background: rgba(18,18,18,.01);
+    }
+    .panelHead b{
+      font-size:15px;
+      font-weight:900;
+      letter-spacing:-.01em;
+    }
+
+    /* Tabs (controls 아래) */
+    .tabs{
+      padding:10px 16px 0;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      border-bottom:1px solid rgba(18,18,18,.06);
+    }
+    .tab{
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-weight:900;
+      font-size:13px;
+      color: rgba(18,18,18,.72);
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+
+    /* Left list cards */
+    .list{
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .resCard{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      padding:12px;
+      background:#fff;
+      cursor:pointer;
+      transition:.15s ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .resCard:hover{
+      transform: translateY(-1px);
+      border-color: rgba(215,15,18,.18);
+      box-shadow: 0 14px 34px rgba(0,0,0,.05);
+    }
+    .resCard.selected{
+      border-color: rgba(215,15,18,.22);
+      background: radial-gradient(900px 220px at 10% 0%, rgba(215,15,18,.06), transparent 60%), #fff;
+    }
+    .resTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .resTitle{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .resTitle b{
+      font-size:15px;
+      line-height:1.25;
+      letter-spacing:-.02em;
+      margin:0;
+      word-break:keep-all;
+    }
+    .resMeta{
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:900;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      line-height:1.4;
+    }
+
+    /* Badges */
+    .badgeBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:30px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.12);
+      background: rgba(18,18,18,.02);
+      font-weight:1000;
+      font-size:12px;
+      color: rgba(18,18,18,.78);
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      user-select:none;
+      white-space:nowrap;
+    }
+    .badgeBtn.good{
+      border-color: rgba(18,18,18,.12);
+      background: rgba(18,18,18,.02);
+    }
+    .badgeBtn.verified{
+      border-color: rgba(215,15,18,.20);
+      background: radial-gradient(900px 220px at 10% 0%, rgba(215,15,18,.08), transparent 60%), #fff;
+      color: rgba(215,15,18,.95);
+    }
+    .badgeBtn.warn{
+      border-color: rgba(18,18,18,.14);
+      background: rgba(18,18,18,.02);
+      color: rgba(18,18,18,.70);
+    }
+
+    .hashRow{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid rgba(18,18,18,.06);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .hash{
+      font-size:11px;
+      font-weight:600;
+      color: rgba(215,15,18,.65);
+      letter-spacing:-.005em;
+      white-space:nowrap;
+    }
+    .hash::before{ content:"#"; margin-right:1px; }
+
+    /* Right detail */
+    .detailPad{ padding:12px; }
+    .kv{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background: rgba(18,18,18,.01);
+      padding:12px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .kv + .kv{ margin-top:10px; }
+    .k2{
+      font-size:11px;
+      font-weight:1000;
+      letter-spacing:.14em;
+      color: rgba(18,18,18,.45);
+      text-transform:uppercase;
+    }
+    .v2{
+      font-size:14px;
+      font-weight:950;
+      color: rgba(18,18,18,.88);
+      letter-spacing:-.01em;
+      line-height:1.35;
+      word-break:keep-all;
+      margin-top:6px;
+    }
+    .v3{
+      margin-top:6px;
+      font-size:12px;
+      font-weight:850;
+      color: rgba(18,18,18,.60);
+      line-height:1.45;
+    }
+
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .chip{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-size:11px;
+      font-weight:950;
+      color: rgba(18,18,18,.70);
+      width:fit-content;
+      user-select:none;
+    }
+    .chip.red{
+      border-color: rgba(215,15,18,.22);
+      background: rgba(215,15,18,.08);
+      color:#7a0b0b;
+    }
+
+    .btnRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .btn{
+      height:36px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background:#fff;
+      font-weight:1000;
+      cursor:pointer;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      transition:.15s ease;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 34px rgba(0,0,0,.05); }
+    .btn.primary{
+      border-color: rgba(215,15,18,.22);
+      background: radial-gradient(900px 220px at 10% 0%, rgba(215,15,18,.08), transparent 60%), #fff;
+      color: rgba(215,15,18,.95);
+    }
+    .btn.ghost{ background: rgba(18,18,18,.02); }
+
+    /* Checklist */
+    .checkList{ margin-top:10px; display:flex; flex-direction:column; gap:10px; }
+    .checkItem{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px 10px;
+      border-radius:16px;
+      border:1px solid rgba(18,18,18,.10);
+      background:#fff;
+    }
+    .tick{
+      width:18px;height:18px;border-radius:6px;
+      border:1px solid rgba(18,18,18,.14);
+      background: rgba(18,18,18,.03);
+      flex:0 0 auto;
+      margin-top:1px;
+      display:grid;place-items:center;
+      font-size:12px;
+      color:rgba(18,18,18,.35);
+      user-select:none;
+    }
+    .checkItem.on .tick{
+      border-color: rgba(215,15,18,.22);
+      background: rgba(215,15,18,.08);
+      color: rgba(215,15,18,.95);
+    }
+    .checkText{ min-width:0; }
+    .checkText b{
+      display:block;
+      font-size:13px;
+      font-weight:950;
+      letter-spacing:-.01em;
+      margin:0;
+    }
+    .checkText span{
+      display:block;
+      margin-top:4px;
+      color: rgba(18,18,18,.58);
+      font-size:12px;
+      font-weight:800;
+      line-height:1.45;
+    }
+
+    .hintBar{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      color: rgba(18,18,18,.62);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.45;
+    }
+    .hintBar strong{ color:#111; }
+
+    /* Full focus mode (reuse silenceSwitch) */
+    body.focusMode .bibleGrid{ grid-template-columns: 1fr !important; }
+    body.focusMode #rightPanel{ display:none !important; }
+
+    @media (max-width: 1180px){
+      .main{grid-template-columns:1fr}
+      .toggle{margin-left:0}
+      .bibleGrid{grid-template-columns:1fr}
+    }
+    @media (max-width: 740px){
+      body{padding:14px}
+      .headerTop{grid-template-columns: 1fr; gap:12px;}
+      .search{justify-self:stretch}
+      .headerRight{justify-content:flex-start}
+      .brand img{height:48px;}
+      .toggle{width:100%; justify-content:space-between;}
+      .ctrl input{ width:160px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="frame">
+    <div class="inner">
+
+      <header class="header">
+        <div class="headerTop">
+          <div class="brand" title="STILL">
+            <img src="still_logo.png" alt="STILL logo">
+            <span class="brandKr">KR</span>
+          </div>
+
+          <div class="search">
+            <img src="search.png" class="searchIcon" alt="search">
+            <input placeholder="영상 · 구절 · 교회 · 지역 검색" />
+            <img src="mic.png" class="micIcon" alt="mic">
+          </div>
+
+          <div class="headerRight">
+            <button class="iconBtn" title="알림">
+              <img src="bell.png" alt="알림">
+            </button>
+            <button class="iconBtn" title="업로드">
+              <img src="cross.png" alt="업로드">
+            </button>
+            <div class="profile" title="프로필">
+              <img src="bin.png" alt="profile">
+            </div>
+          </div>
+        </div>
+
+        <div class="navPills">
+          <div class="navPill" onclick="location.href='still.html'">홈</div>
+          <div class="navPill" onclick="location.href='bible.html'">성경</div>
+          <div class="navPill" onclick="location.href='QnA.html'">Q&A</div>
+          <div class="navPill" onclick="location.href='calendar.html'">캘린더</div>
+          <a class="navPill" href="region.html">지역</a>
+          <div class="navPill active">이단 분별</div>
+              <div class="navPill" onclick="location.href='jesusface.html'">예수님과 고민상담</div>
+        </div>
+      </header>
+
+      <div class="main">
+
+        <!-- SIDEBAR (bible.html에서 쓰던 구조 유지) -->
+        <aside class="sidebar">
+          <div class="secTitle">Subscribe</div>
+
+          <div class="subItem">
+            <img src="cbs.png" alt="새롭게하소서 CBS">
+            <span>새롭게하소서CBS</span>
+          </div>
+          <div class="subItem">
+            <img src="jaljal.png" alt="잘잘법">
+            <span>잘잘법 : 잘 믿고 잘 사는 법</span>
+          </div>
+          <div class="subItem">
+            <img src="weracle.png" alt="위라클">
+            <span>위라클 WERACLE</span>
+          </div>
+          <div class="subItem">
+            <img src="cts.png" alt="CTS">
+            <span>CTS기독교TV</span>
+          </div>
+
+          <div class="secTitle" style="margin-top:18px">My Page</div>
+          <div class="sideItem"><span class="sideDot"></span> 최신기록</div>
+          <div class="sideItem"><span class="sideDot"></span> 재생목록</div>
+          <div class="sideItem"><span class="sideDot"></span> 저장한 목록</div>
+          <div class="sideItem"><span class="sideDot"></span> 좋아요 표시한 목록</div>
+        </aside>
+
+        <main class="content">
+          <section class="card bibleWrap">
+
+            <!-- Top title (성경 페이지 톤 유지) -->
+            <div class="bibleTop">
+              <p class="title">이단 분별</p>
+              <div class="subNote" title="안내">
+                STILL은 이단/정통을 단정하지 않습니다. 공개된 소속 정보 기반으로 “확인 경로”를 제공합니다.
+              </div>
+            </div>
+
+            <!-- Controls (성경의 컨트롤 바 느낌을 유지) -->
+            <div class="controls">
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">교회/단체</span>
+                <input id="qName" placeholder="예) 새롭게하소서 / ○○교회 / 단체명" />
+              </div>
+
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">지역</span>
+                <select id="qCity">
+                  <option value="all" selected>전체</option>
+                  <option value="서울">서울</option>
+                  <option value="경기">경기</option>
+                  <option value="인천">인천</option>
+                  <option value="부산">부산</option>
+                  <option value="대구">대구</option>
+                  <option value="대전">대전</option>
+                  <option value="광주">광주</option>
+                </select>
+              </div>
+
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">구/군</span>
+                <select id="qGu">
+                  <option value="all" selected>전체</option>
+                  <option value="성동구">성동구</option>
+                  <option value="마포구">마포구</option>
+                  <option value="서대문구">서대문구</option>
+                  <option value="강남구">강남구</option>
+                  <option value="송파구">송파구</option>
+                </select>
+              </div>
+
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">교단</span>
+                <select id="qDenom">
+                  <option value="all" selected>전체</option>
+                  <option value="예장합동">예장합동</option>
+                  <option value="예장통합">예장통합</option>
+                  <option value="기감">기감</option>
+                  <option value="침례교">침례교</option>
+                  <option value="기타/미상">기타/미상</option>
+                </select>
+              </div>
+
+              <div class="ctrl primary" id="btnSearch">소속 확인</div>
+              <div class="ctrl ghost" id="btnReset">초기화</div>
+
+              <div class="toggle">
+                <span>집중 모드</span>
+                <div class="switch" id="focusSwitch" role="switch" aria-checked="false" tabindex="0">
+                  <div class="knob"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+              <div class="tab active" data-tab="search">검색 결과</div>
+              <div class="tab" data-tab="signals">위험 신호</div>
+              <div class="tab" data-tab="howto">확인 방법</div>
+            </div>
+
+            <!-- Grid (좌 결과 / 우 상세) -->
+            <div class="bibleGrid">
+
+              <!-- Left panel -->
+              <div class="panel" id="leftPanel">
+                <div class="panelHead">
+                  <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                    <b id="leftTitle">검색 결과</b>
+                    <div class="subNote" id="leftSub" style="white-space:normal;">
+                      교회/단체 소속은 “공식 공개 정보”를 통해 확인하는 것을 권장합니다.
+                    </div>
+                  </div>
+                  <span class="badgeBtn good" id="countBadge">0개</span>
+                </div>
+
+                <div class="list" id="resultList"></div>
+              </div>
+
+              <!-- Right panel -->
+              <div class="panel" id="rightPanel">
+                <div class="panelHead">
+                  <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                    <b id="detailTitle">상세 안내</b>
+                    <div class="subNote" id="detailHint" style="white-space:normal;">
+                      왼쪽 카드 선택 시, 소속/근거/체크리스트가 표시됩니다.
+                    </div>
+                  </div>
+                  <button class="btn ghost" id="copyBtn" style="height:32px;">복사</button>
+                </div>
+
+                <div class="detailPad" id="detailPanel">
+                  <div class="kv">
+                    <div class="k2">NOTICE</div>
+                    <div class="v2">판정이 아니라 “확인 경로” 제공</div>
+                    <div class="v3">
+                      STILL은 특정 단체를 이단/정통으로 단정하지 않습니다.<br/>
+                      아래 안내는 “공개된 소속 정보·표기·링크” 기반이며, 최종 확인은 공식 자료를 권장합니다.
+                    </div>
+                    <div class="chips">
+                      <span class="chip">투명성</span>
+                      <span class="chip">공식 링크</span>
+                      <span class="chip red">질문 허용</span>
+                    </div>
+                  </div>
+
+                  <div class="kv">
+                    <div class="k2">NEXT</div>
+                    <div class="v2">검색하거나, 위험 신호 탭을 눌러 확인해보세요</div>
+                    <div class="btnRow">
+                      <button class="btn primary" id="goSignals">위험 신호 보기</button>
+                      <button class="btn ghost" id="goHowto">확인 방법 보기</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /grid -->
+          </section>
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Demo DB (MVP용: 내부 DB로 “동작”부터) =====
+    // 실서비스에서는: 교단/공식 디렉토리 API or 제휴 데이터로 교체
+    const db = [
+      {
+        id:"org-cbs",
+        name:"새롭게하소서CBS",
+        kind:"미디어/채널",
+        city:"서울",
+        gu:"all",
+        denom:"기타/미상",
+        confidence:"likely",
+        address:"(채널/방송)",
+        summary:"방송/미디어 채널은 ‘교단 소속’ 대신 운영 주체/공식 소개 페이지를 확인하세요.",
+        evidence:[
+          {label:"공식 소개(링크 추가)", url:"#"},
+          {label:"채널 정보(링크 추가)", url:"#"}
+        ],
+        tags:["채널","공식소개","운영주체확인"]
+      },
+      {
+        id:"org-jaljal",
+        name:"잘잘법 : 잘 믿고 잘 사는 법",
+        kind:"미디어/콘텐츠",
+        city:"서울",
+        gu:"all",
+        denom:"기타/미상",
+        confidence:"likely",
+        address:"(콘텐츠)",
+        summary:"콘텐츠/강연은 소속 교단보다 ‘출연자/운영기관’의 공식 이력 확인이 중요합니다.",
+        evidence:[
+          {label:"공식 소개(링크 추가)", url:"#"}
+        ],
+        tags:["콘텐츠","출연자이력","운영기관"]
+      },
+      {
+        id:"org-weracle",
+        name:"위라클 WERACLE",
+        kind:"미디어/커뮤니티",
+        city:"서울",
+        gu:"all",
+        denom:"기타/미상",
+        confidence:"unknown",
+        address:"(커뮤니티)",
+        summary:"커뮤니티는 정체·운영 구조·재정 공개·모집 방식 등을 함께 확인하세요.",
+        evidence:[
+          {label:"공식 소개(링크 추가)", url:"#"}
+        ],
+        tags:["커뮤니티","정체확인","투명성"]
+      },
+      {
+        id:"org-cts",
+        name:"CTS기독교TV",
+        kind:"미디어/방송",
+        city:"서울",
+        gu:"all",
+        denom:"기타/미상",
+        confidence:"verified",
+        address:"(방송사)",
+        summary:"방송사는 교단 소속이 아니라 ‘법인/방송사 공식 정보’로 확인하는 편이 정확합니다.",
+        evidence:[
+          {label:"공식 사이트(링크 추가)", url:"#"},
+          {label:"회사 소개(링크 추가)", url:"#"}
+        ],
+        tags:["방송","공식사이트","운영정보"]
+      },
+      // 교회 샘플
+      {
+        id:"ch-onggi-seongsu",
+        name:"성수 온기교회",
+        kind:"교회",
+        city:"서울",
+        gu:"성동구",
+        denom:"예장합동",
+        confidence:"verified",
+        address:"서울 성동구 (성수)",
+        summary:"교단/노회 표기, 담임 목회자 이력, 예배 안내/재정 투명성을 함께 확인하세요.",
+        evidence:[
+          {label:"교회 홈페이지(링크 추가)", url:"#"},
+          {label:"교단/노회 확인(링크 추가)", url:"#"}
+        ],
+        tags:["교단표기","노회","예배안내","투명성"]
+      },
+      {
+        id:"ch-mapow",
+        name:"마포 말씀교회",
+        kind:"교회",
+        city:"서울",
+        gu:"마포구",
+        denom:"예장통합",
+        confidence:"likely",
+        address:"서울 마포구",
+        summary:"동일 이름 교회가 있을 수 있어 지역/담임/교단 표기를 교차 확인하세요.",
+        evidence:[
+          {label:"교회 홈페이지(링크 추가)", url:"#"}
+        ],
+        tags:["이름중복주의","지역교차확인","교단표기"]
+      }
+    ];
+
+    const state = {
+      tab:"search",
+      selectedId:null
+    };
+
+    const $ = (s)=>document.querySelector(s);
+    const $$ = (s)=>Array.from(document.querySelectorAll(s));
+
+    function norm(s){
+      return (s||"").toString().trim().toLowerCase();
+    }
+
+    function confidenceLabel(c){
+      if(c==="verified") return ["Verified","verified"];
+      if(c==="likely") return ["Likely","warn"];
+      return ["Unknown","good"];
+    }
+
+    function hashify(tokens){
+      return (tokens||[]).slice(0,4).map(t=>`<span class="hash">${t}</span>`).join("");
+    }
+
+    function filterDB(){
+      const qName = norm($("#qName").value);
+      const city = $("#qCity").value;
+      const gu = $("#qGu").value;
+      const denom = $("#qDenom").value;
+
+      return db.filter(x=>{
+        const hitName = !qName || norm(x.name).includes(qName);
+        const hitCity = (city==="all") || x.city===city;
+        const hitGu = (gu==="all") || x.gu===gu || x.gu==="all";
+        const hitDenom = (denom==="all") || x.denom===denom;
+        return hitName && hitCity && hitGu && hitDenom;
+      });
+    }
+
+    function renderTab(){
+      // left title & content switching
+      if(state.tab==="search"){
+        $("#leftTitle").textContent = "검색 결과";
+        $("#leftSub").textContent = "교회/단체 소속은 ‘공식 공개 정보’를 통해 확인하는 것을 권장합니다.";
+        renderResults();
+        // right panel stays as selection detail
+        if(!state.selectedId){
+          $("#detailHint").textContent = "왼쪽 카드 선택 시, 소속/근거/체크리스트가 표시됩니다.";
+        }
+      }
+      if(state.tab==="signals"){
+        $("#leftTitle").textContent = "위험 신호";
+        $("#leftSub").textContent = "아래 항목이 반복되면 ‘주의/경계’가 필요합니다. (정죄가 아니라 안전 확인)";
+        renderSignals();
+        renderSignalsDetail();
+      }
+      if(state.tab==="howto"){
+        $("#leftTitle").textContent = "확인 방법";
+        $("#leftSub").textContent = "교단 소속은 ‘표기·이력·공식 루트’로 교차 확인하세요.";
+        renderHowto();
+        renderHowtoDetail();
+      }
+    }
+
+    function renderResults(){
+      const list = $("#resultList");
+      list.innerHTML = "";
+
+      const rows = filterDB();
+      $("#countBadge").textContent = `${rows.length}개`;
+
+      if(rows.length===0){
+        const empty = document.createElement("div");
+        empty.className = "resCard";
+        empty.style.cursor = "default";
+        empty.innerHTML = `
+          <div class="resTop">
+            <div class="resTitle">
+              <b>일치하는 결과가 없어요</b>
+              <div class="resMeta"><span>이름을 줄여서 검색하거나</span><span>•</span><span>지역/교단 필터를 ‘전체’로 바꿔보세요</span></div>
+            </div>
+            <span class="badgeBtn good">Unknown</span>
+          </div>
+          <div class="hashRow">
+            <span class="hash">데이터없음</span>
+            <span class="hash">추가확인</span>
+            <span class="hash">공식루트</span>
+          </div>
+        `;
+        list.appendChild(empty);
+        return;
+      }
+
+      rows.forEach(x=>{
+        const card = document.createElement("div");
+        card.className = "resCard" + (state.selectedId===x.id ? " selected" : "");
+        const [lbl, cls] = confidenceLabel(x.confidence);
+
+        card.innerHTML = `
+          <div class="resTop">
+            <div class="resTitle">
+              <b>${x.name}</b>
+              <div class="resMeta">
+                <span>${x.kind}</span><span>•</span>
+                <span>${x.city}${x.gu!=="all" ? " · "+x.gu : ""}</span><span>•</span>
+                <span>${x.denom}</span>
+              </div>
+            </div>
+            <span class="badgeBtn ${cls}">${lbl}</span>
+          </div>
+          <div class="hashRow">
+            <span class="hash">${x.city}</span>
+            ${x.gu!=="all" ? `<span class="hash">${x.gu}</span>` : ``}
+            ${hashify(x.tags)}
+          </div>
+        `;
+        card.addEventListener("click", ()=>selectItem(x.id));
+        list.appendChild(card);
+      });
+    }
+
+    function selectItem(id){
+      state.selectedId = id;
+      $$(".resCard").forEach(c=>c.classList.remove("selected"));
+      const target = $$(".resCard").find(c=>{
+        // no dataset used; find by text match fallback is risky, so just rerender
+        return false;
+      });
+      // rerender for consistent highlight
+      renderResults();
+
+      const x = db.find(v=>v.id===id);
+      if(!x) return;
+
+      const [lbl, cls] = confidenceLabel(x.confidence);
+
+      $("#detailTitle").textContent = "상세 안내";
+      $("#detailHint").textContent = "결과는 ‘안내’입니다. 공식 자료로 최종 확인하세요.";
+
+      const evidenceHtml = (x.evidence||[]).map(e=>{
+        return `<button class="btn ghost" onclick="location.href='${e.url}'">${e.label}</button>`;
+      }).join("");
+
+      const caution = (x.confidence==="verified")
+        ? "공식/공개 정보와 일치하는 항목이 있어요."
+        : (x.confidence==="likely")
+          ? "이름/지역이 유사합니다. 교단/노회 표기를 추가 확인하세요."
+          : "DB에 충분한 근거가 없습니다. 아래 체크리스트로 교차 확인을 권장합니다.";
+
+      $("#detailPanel").innerHTML = `
+        <div class="kv">
+          <div class="k2">TITLE</div>
+          <div class="v2">${x.name}</div>
+          <div class="v3">${x.kind} · ${x.city}${x.gu!=="all" ? " "+x.gu : ""} · ${x.address || ""}</div>
+          <div class="chips">
+            <span class="chip ${x.confidence==="verified" ? "red":""}">${lbl}</span>
+            <span class="chip">${x.denom}</span>
+            <span class="chip">교차확인</span>
+          </div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">SUMMARY</div>
+          <div class="v2">${caution}</div>
+          <div class="v3">${x.summary || ""}</div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">EVIDENCE</div>
+          <div class="v2">공식/공개 정보로 확인</div>
+          <div class="v3">아래 링크는 데모 상태입니다. 실제 서비스에서는 교단/공식 디렉토리 링크로 연결하세요.</div>
+          <div class="btnRow">
+            ${evidenceHtml || `<button class="btn ghost">링크 준비 중</button>`}
+          </div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">CHECKLIST</div>
+          <div class="v2">“소속 확인” 실전 체크</div>
+          <div class="checkList">
+            ${checkItemHTML("교단/노회 표기가 명확한가요?", "홈페이지/주보/안내문에 교단·노회(또는 지교회 소속) 표기가 있는지 확인")}
+            ${checkItemHTML("담임/리더 이력이 공개되어 있나요?", "안수/학력/이전 사역지 등 검증 가능한 정보가 있는지")}
+            ${checkItemHTML("질문/검증을 환영하나요?", "질문하면 죄책감/공포를 주는지, 투명하게 답하는지")}
+            ${checkItemHTML("재정/헌금 운영이 투명한가요?", "재정 공개·결산 보고 등 기본 투명성 체크")}
+          </div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">RED FLAGS</div>
+          <div class="v2">이 말/행동이 반복되면 주의</div>
+          <div class="chips">
+            <span class="chip red">정체 숨김</span>
+            <span class="chip red">관계 단절</span>
+            <span class="chip red">비밀 교리</span>
+            <span class="chip red">질문 금지</span>
+          </div>
+          <div class="btnRow" style="margin-top:10px;">
+            <button class="btn primary" id="toSignalsBtn">위험 신호 탭 열기</button>
+            <button class="btn ghost" id="toHowtoBtn">확인 방법 탭 열기</button>
+          </div>
+        </div>
+
+        <div class="hintBar">
+          <strong>TIP</strong> 동일한 교회명이 여러 지역에 존재할 수 있어요. <br/>
+          “지역 + 담임 + 교단(노회)” 3가지를 같이 확인하면 정확도가 크게 올라갑니다.
+        </div>
+      `;
+
+      // bind buttons
+      const toSignalsBtn = $("#toSignalsBtn");
+      const toHowtoBtn = $("#toHowtoBtn");
+      if(toSignalsBtn) toSignalsBtn.addEventListener("click", ()=>setTab("signals"));
+      if(toHowtoBtn) toHowtoBtn.addEventListener("click", ()=>setTab("howto"));
+    }
+
+    function checkItemHTML(title, desc){
+      const id = "ck_" + Math.random().toString(16).slice(2);
+      return `
+        <div class="checkItem" data-ck="${id}">
+          <div class="tick">✓</div>
+          <div class="checkText">
+            <b>${title}</b>
+            <span>${desc}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function wireChecklistToggle(){
+      $$("#detailPanel .checkItem").forEach(it=>{
+        it.addEventListener("click", ()=>{
+          it.classList.toggle("on");
+        });
+      });
+    }
+
+    // Signals content
+    const signals = [
+      {t:"정체를 숨기고 접근", d:"동아리/설문/상담/문화모임으로 위장한 뒤, 뒤늦게 소속을 밝힘"},
+      {t:"‘비밀 교리’ 단계 교육", d:"입문→심화→충성처럼 단계적으로만 알려주고 외부 공유를 금지"},
+      {t:"리더 절대화", d:"리더의 말이 성경·상식 위에 놓이거나, 비판하면 ‘사탄/불순종’으로 몰음"},
+      {t:"관계 단절 유도", d:"가족/친구/기존 교회와 멀어지게 하고 ‘반대=믿음 없음’으로 낙인"},
+      {t:"시간/헌신 압박", d:"수면·학업·직장까지 침해할 정도로 모임/활동 참여를 강요"},
+      {t:"돈/노동 요구 + 죄책감", d:"헌금/후원/노동을 강요하며 ‘믿음이면 해야지’ 식으로 압박"}
+    ];
+
+    function renderSignals(){
+      const list = $("#resultList");
+      list.innerHTML = "";
+      $("#countBadge").textContent = `${signals.length}개`;
+
+      signals.forEach((s, idx)=>{
+        const card = document.createElement("div");
+        card.className = "resCard";
+        card.style.cursor = "default";
+        card.innerHTML = `
+          <div class="resTop">
+            <div class="resTitle">
+              <b>${idx+1}. ${s.t}</b>
+              <div class="resMeta"><span>${s.d}</span></div>
+            </div>
+            <span class="badgeBtn verified">RED</span>
+          </div>
+          <div class="hashRow">
+            <span class="hash">주의</span>
+            <span class="hash">검증</span>
+            <span class="hash">투명성</span>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function renderSignalsDetail(){
+      $("#detailTitle").textContent = "위험 신호";
+      $("#detailHint").textContent = "여러 항목이 동시에 나타나면 ‘경계’가 필요합니다.";
+
+      $("#detailPanel").innerHTML = `
+        <div class="kv">
+          <div class="k2">GUIDE</div>
+          <div class="v2">정죄가 아니라 “안전 확인”입니다</div>
+          <div class="v3">
+            위험 신호는 단독으로는 오해가 있을 수 있어요.<br/>
+            하지만 <strong>정체 숨김 + 질문 금지 + 관계 통제</strong>가 함께 나오면 위험도가 크게 올라갑니다.
+          </div>
+          <div class="chips">
+            <span class="chip red">정체 숨김</span>
+            <span class="chip red">질문 금지</span>
+            <span class="chip red">관계 통제</span>
+          </div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">WHAT TO DO</div>
+          <div class="v2">지금 할 수 있는 행동</div>
+          <div class="checkList">
+            ${checkItemHTML("개인정보 제공을 잠시 멈추기", "주소/가족관계/연락처/직장 등 과한 정보 요구 시 중단")}
+            ${checkItemHTML("대화 기록/안내문 보관", "메시지/링크/모집 안내 등 증거를 남기기")}
+            ${checkItemHTML("신뢰할 사람에게 공유", "가족/친구/목회자 등에게 상황을 객관적으로 공유")}
+            ${checkItemHTML("공식 루트로 소속 확인", "교단/노회/교회 공식 표기 및 운영 주체 확인")}
+          </div>
+          <div class="hintBar" style="margin-top:10px;">
+            <strong>위험 상황</strong>(협박/감금/금전 갈취)이 의심되면 즉시 주변 도움과 전문기관 상담을 권장합니다.
+          </div>
+        </div>
+      `;
+
+      wireChecklistToggle();
+    }
+
+    // Howto content
+    const howto = [
+      {t:"교단/노회 소속을 직접 물어보기", d:"‘어느 교단/노회 소속인가요?’를 명확히 질문"},
+      {t:"공식 표기 확인", d:"홈페이지/주보/안내문에 교단·노회·담임 정보가 적혀 있는지"},
+      {t:"담임/리더 이력 교차 검증", d:"안수/학력/이전 사역지 등 검증 가능한 근거가 있는지"},
+      {t:"질문에 대한 반응 관찰", d:"질문을 환영하는지, 죄책감/공포를 주는지"},
+      {t:"재정 투명성 체크", d:"결산 보고·재정 공개·운영 구조가 투명한지"},
+      {t:"모집 방식 점검", d:"정체 숨김/관계 단절 유도/과한 헌신 강요가 있는지"}
+    ];
+
+    function renderHowto(){
+      const list = $("#resultList");
+      list.innerHTML = "";
+      $("#countBadge").textContent = `${howto.length}개`;
+
+      howto.forEach((s, idx)=>{
+        const card = document.createElement("div");
+        card.className = "resCard";
+        card.style.cursor = "default";
+        card.innerHTML = `
+          <div class="resTop">
+            <div class="resTitle">
+              <b>${idx+1}. ${s.t}</b>
+              <div class="resMeta"><span>${s.d}</span></div>
+            </div>
+            <span class="badgeBtn good">TIP</span>
+          </div>
+          <div class="hashRow">
+            <span class="hash">공식</span>
+            <span class="hash">교차확인</span>
+            <span class="hash">투명성</span>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function renderHowtoDetail(){
+      $("#detailTitle").textContent = "확인 방법";
+      $("#detailHint").textContent = "‘투명성 + 질문 허용 + 성경 중심’이 무너지면 위험 확률이 올라갑니다.";
+
+      $("#detailPanel").innerHTML = `
+        <div class="kv">
+          <div class="k2">CORE</div>
+          <div class="v2">현실적으로 가장 잘 먹히는 3가지</div>
+          <div class="v3">
+            1) <strong>교단/노회 표기</strong>가 명확한가<br/>
+            2) <strong>질문</strong>을 환영하는가<br/>
+            3) <strong>운영/재정</strong>이 투명한가
+          </div>
+          <div class="chips">
+            <span class="chip">교단/노회</span>
+            <span class="chip red">질문 허용</span>
+            <span class="chip">투명성</span>
+          </div>
+        </div>
+
+        <div class="kv">
+          <div class="k2">TEMPLATE</div>
+          <div class="v2">확인 질문 예시</div>
+          <div class="v3">
+            • “어느 교단/노회 소속인가요?”<br/>
+            • “담임목사(리더) 안수/이력은 어디에서 확인할 수 있나요?”<br/>
+            • “교회 재정/운영 구조는 어디에 공개되나요?”<br/>
+            • “질문이 있으면 누구에게, 어떤 방식으로 확인하나요?”
+          </div>
+          <div class="btnRow">
+            <button class="btn primary" id="copyTemplate">질문 템플릿 복사</button>
+            <button class="btn ghost" id="backSearch">검색으로 돌아가기</button>
+          </div>
+        </div>
+
+        <div class="hintBar">
+          <strong>주의</strong> “지금은 비밀”, “나중에 알려줄게요”, “의심은 사탄” 같은 반응이 반복되면 경계가 필요합니다.
+        </div>
+      `;
+
+      const copyTemplate = $("#copyTemplate");
+      if(copyTemplate){
+        copyTemplate.addEventListener("click", async ()=>{
+          const text =
+`[교단/소속 확인 질문]
+1) 어느 교단/노회 소속인가요?
+2) 담임(리더) 안수/이력은 어디에서 확인할 수 있나요?
+3) 교회/단체 운영 구조와 재정 공개는 어디에서 볼 수 있나요?
+4) 질문이 있을 때 공식적으로 확인하는 절차가 있나요?`;
+          try{
+            await navigator.clipboard.writeText(text);
+            $("#detailHint").textContent = "템플릿 복사 완료!";
+            setTimeout(()=>$("#detailHint").textContent="‘투명성 + 질문 허용 + 성경 중심’이 무너지면 위험 확률이 올라갑니다.", 1200);
+          }catch(e){
+            $("#detailHint").textContent = "복사 실패(브라우저 권한 확인)";
+          }
+        });
+      }
+
+      const backSearch = $("#backSearch");
+      if(backSearch) backSearch.addEventListener("click", ()=>setTab("search"));
+    }
+
+    function setTab(t){
+      state.tab = t;
+      $$(".tab").forEach(x=>x.classList.remove("active"));
+      const cur = $(`.tab[data-tab="${t}"]`);
+      if(cur) cur.classList.add("active");
+      renderTab();
+    }
+
+    // ===== Focus mode switch (reuse switch UI) =====
+    const sw = $("#focusSwitch");
+    function toggleFocus(){
+      const on = sw.classList.toggle("on");
+      sw.setAttribute("aria-checked", on ? "true" : "false");
+      document.body.classList.toggle("focusMode", on);
+    }
+    sw.addEventListener("click", toggleFocus);
+    sw.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        toggleFocus();
+      }
+    });
+
+    // ===== buttons =====
+    $("#btnSearch").addEventListener("click", ()=>{
+      setTab("search");
+      // select first item automatically (if any)
+      const rows = filterDB();
+      if(rows[0]) selectItem(rows[0].id);
+      else {
+        state.selectedId = null;
+        $("#detailTitle").textContent = "상세 안내";
+        $("#detailHint").textContent = "검색 결과가 없어요. 필터를 바꿔보세요.";
+      }
+      // re-bind checklist toggles if detail exists
+      wireChecklistToggle();
+    });
+
+    $("#btnReset").addEventListener("click", ()=>{
+      $("#qName").value = "";
+      $("#qCity").value = "all";
+      $("#qGu").value = "all";
+      $("#qDenom").value = "all";
+      state.selectedId = null;
+      setTab("search");
+      $("#detailTitle").textContent = "상세 안내";
+      $("#detailHint").textContent = "왼쪽 카드 선택 시, 소속/근거/체크리스트가 표시됩니다.";
+      $("#detailPanel").innerHTML = `
+        <div class="kv">
+          <div class="k2">NOTICE</div>
+          <div class="v2">판정이 아니라 “확인 경로” 제공</div>
+          <div class="v3">
+            STILL은 특정 단체를 이단/정통으로 단정하지 않습니다.<br/>
+            안내는 “공개된 소속 정보·표기·링크” 기반이며, 최종 확인은 공식 자료를 권장합니다.
+          </div>
+          <div class="chips">
+            <span class="chip">투명성</span>
+            <span class="chip">공식 링크</span>
+            <span class="chip red">질문 허용</span>
+          </div>
+        </div>
+      `;
+    });
+
+    // Tab click
+    $$(".tab").forEach(t=>{
+      t.addEventListener("click", ()=>setTab(t.getAttribute("data-tab")));
+    });
+
+    // Right panel helper buttons
+    $("#goSignals").addEventListener("click", ()=>setTab("signals"));
+    $("#goHowto").addEventListener("click", ()=>setTab("howto"));
+
+    // Copy button (copy current selection summary)
+    $("#copyBtn").addEventListener("click", async ()=>{
+      if(state.tab!=="search" || !state.selectedId){
+        // copy generic
+        try{
+          await navigator.clipboard.writeText("[STILL] 이단 분별: 판정이 아니라 ‘공식 루트로 확인’하는 안내 페이지입니다.");
+          $("#detailHint").textContent = "복사 완료!";
+          setTimeout(()=>$("#detailHint").textContent="왼쪽 카드 선택 시, 소속/근거/체크리스트가 표시됩니다.", 1200);
+        }catch(e){
+          $("#detailHint").textContent = "복사 실패(브라우저 권한 확인)";
+        }
+        return;
+      }
+
+      const x = db.find(v=>v.id===state.selectedId);
+      if(!x) return;
+
+      const text = `[STILL] ${x.name} / ${x.kind} / ${x.city}${x.gu!=="all" ? " "+x.gu : ""} / 교단: ${x.denom} / 안내: 공식 자료로 최종 확인 권장`;
+      try{
+        await navigator.clipboard.writeText(text);
+        $("#detailHint").textContent = "복사 완료!";
+        setTimeout(()=>$("#detailHint").textContent="결과는 ‘안내’입니다. 공식 자료로 최종 확인하세요.", 1200);
+      }catch(e){
+        $("#detailHint").textContent = "복사 실패(브라우저 권한 확인)";
+      }
+    });
+
+    // Enter search
+    $("#qName").addEventListener("keydown", (e)=>{
+      if(e.key==="Enter"){
+        e.preventDefault();
+        $("#btnSearch").click();
+      }
+    });
+
+    function wireChecklistToggle(){
+      $$("#detailPanel .checkItem").forEach(it=>{
+        it.addEventListener("click", ()=>{
+          it.classList.toggle("on");
+        });
+      });
+    }
+
+    // init
+    setTab("search");
+    // prefill results (show all)
+    renderResults();
+  </script>
+</body>
+</html>

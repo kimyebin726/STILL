@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STILL – Calendar</title>
+  <link rel="icon" type="image/png" href="still_logo1.png">
+  <style>
+    :root{
+      --brand:#D70F12;
+      --bg1:#7d0a0c;
+      --bg2:#d1161a;
+
+      --ink:#121212;
+      --muted:rgba(18,18,18,.55);
+      --line:rgba(18,18,18,.09);
+
+      --cardShadow: 0 18px 44px rgba(0,0,0,.08);
+      --frameShadow: 0 26px 80px rgba(0,0,0,.22);
+
+      --r32:32px;
+      --r24:24px;
+      --r20:20px;
+      --r16:16px;
+      --r14:14px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+              "Apple SD Gothic Neo","Noto Sans KR", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1000px 720px at 18% 8%, rgba(255,255,255,.12), transparent 60%),
+        radial-gradient(1000px 720px at 86% 35%, rgba(0,0,0,.22), transparent 55%),
+        linear-gradient(135deg, var(--bg2), var(--bg1));
+      padding:22px;
+    }
+
+    .frame{
+      width:min(1360px,100%);
+      margin:0 auto;
+      border-radius:var(--r32);
+      padding:14px;
+    }
+
+    .inner{
+      background:#fff;
+      border-radius:calc(var(--r32) - 10px);
+      overflow:hidden;
+      box-shadow:var(--frameShadow);
+      border:2px solid rgba(255,255,255,.55);
+    }
+
+    /* ===== HEADER ===== */
+    .header{
+      background:
+        radial-gradient(1200px 260px at 12% 0%, rgba(255,255,255,.18), transparent 62%),
+        radial-gradient(900px 260px at 85% 0%, rgba(0,0,0,.22), transparent 65%),
+        linear-gradient(135deg, #e0181c, #8d0b0d);
+      padding:18px 22px 16px;
+      color:#fff;
+    }
+
+    .headerTop{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .brandKr{
+      font-size:14px;
+      font-weight:900;
+      letter-spacing:.08em;
+      color:#fff;
+      opacity:.9;
+      line-height:1;
+      transform: translateY(2px);
+      user-select:none;
+    }
+    .brand img{height:52px;width:auto;display:block;user-select:none;}
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width:760px;
+      justify-self:center;
+      width:100%;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.60);
+      border-radius: 999px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+    .search input{
+      border:0; outline:0;
+      background:transparent;
+      width:100%;
+      font-size:14px;
+      color:#111;
+    }
+    .searchIcon{width:22px;height:22px;object-fit:contain;opacity:.85;margin-left:6px;}
+    .micIcon{width:28px;height:28px;object-fit:contain;opacity:.9;cursor:pointer;}
+
+    .headerRight{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    .iconBtn{
+      width:42px;height:42px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      display:grid; place-items:center;
+      cursor:pointer;
+      padding:0;
+      user-select:none;
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      transition: .18s ease;
+    }
+    .iconBtn img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.95;
+      filter: brightness(.98) contrast(1.08);
+    }
+    .iconBtn:hover{
+      background: rgba(255,255,255,.16);
+      border-color: rgba(255,255,255,.34);
+      transform: translateY(-1px);
+    }
+
+    .profile{
+      width:42px; height:42px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      padding:0;
+      display:block;
+    }
+    .profile img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      transform: scale(1.25);
+      transform-origin:center;
+      display:block;
+    }
+
+    .navPills{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .navPill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navPill.active{
+      background: rgba(255,255,255,.92);
+      color:#111;
+      border-color: rgba(255,255,255,.70);
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main{
+      background:
+        radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
+        #fff;
+      padding:18px 18px 24px;
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      gap:18px;
+    }
+
+    .sidebar{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      padding:18px;
+      height:fit-content;
+    }
+
+    .secTitle{
+      font-size:12px;
+      letter-spacing:.14em;
+      color: rgba(18,18,18,.45);
+      font-weight:900;
+      margin:6px 0 12px;
+      text-transform: uppercase;
+    }
+
+    .sideItem{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid transparent;
+      cursor:pointer;
+      user-select:none;
+      color: rgba(18,18,18,.70);
+      font-weight:900;
+    }
+    .sideItem:hover{
+      background: rgba(18,18,18,.03);
+      border-color: rgba(18,18,18,.06);
+    }
+    .sideItem.active{
+      background: rgba(215,15,18,.07);
+      border-color: rgba(215,15,18,.18);
+      color:#111;
+    }
+    .sideDot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      opacity:.25;
+    }
+    .sideItem.active .sideDot{
+      background: var(--brand);
+      opacity:1;
+      box-shadow: 0 0 0 7px rgba(215,15,18,.12);
+    }
+
+    .content{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      overflow:hidden;
+    }
+    .pad{padding:16px}
+
+    .cardHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .cardHead b{font-size:16px; letter-spacing:-.02em;}
+    .chev{color: rgba(18,18,18,.38); font-size:22px; line-height:1;}
+
+    /* ===== Calendar page layout ===== */
+    /* ✅ 변경: 좌우(2열) -> 위아래(1열) */
+    .calGrid{
+      display:grid;
+      grid-template-columns: 1fr;   /* 위/아래 */
+      gap:16px;
+      align-items:start;
+    }
+
+    .subtle{
+      color: rgba(18,18,18,.55);
+      font-weight:800;
+      font-size:12px;
+    }
+
+    .monthBar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background: radial-gradient(800px 240px at 0% 0%, rgba(215,15,18,.08), transparent 55%), #fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.04);
+    }
+
+    .monthLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .monthTitle{
+      font-weight:1000;
+      letter-spacing:-.02em;
+      font-size:18px;
+      white-space:nowrap;
+    }
+    .monthMeta{
+      font-size:12px;
+      font-weight:800;
+      color: rgba(18,18,18,.55);
+      white-space:nowrap;
+    }
+
+    .mBtnRow{display:flex; gap:8px; align-items:center;}
+    .mBtn{
+      height:40px;
+      padding:0 12px;
+      border-radius:14px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.03);
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s ease;
+    }
+    .mBtn:hover{background: rgba(18,18,18,.06); transform: translateY(-1px);}
+    .mBtn.primary{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+
+    .filters{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .pill{
+      padding:9px 12px;border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.03);
+      color: rgba(18,18,18,.72);
+      font-weight:900;font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+
+    .week{
+      display:grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .day{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background:#fff;
+      min-height:120px;
+      padding:10px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .day.muted{
+      opacity:.45;
+      background: rgba(18,18,18,.01);
+    }
+
+    .dayTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .dNum{
+      font-weight:1000;
+      letter-spacing:-.02em;
+      font-size:14px;
+    }
+    .dWk{
+      font-size:11px;
+      font-weight:900;
+      color: rgba(18,18,18,.45);
+      letter-spacing:.10em;
+      text-transform:uppercase;
+    }
+
+    .dotRow{display:flex; gap:6px; flex-wrap:wrap;}
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      opacity:.35;
+      border:1px solid rgba(18,18,18,.08);
+    }
+    .dot.c-prayer{ background: rgba(215,15,18,.55); opacity:1; }
+    .dot.c-worship{ background: rgba(215,15,18,.22); opacity:1; }
+    .dot.c-word{ background: rgba(18,18,18,.30); opacity:.9; }
+    .dot.c-culture{ background: rgba(215,15,18,.75); opacity:1; }
+    .dot.c-youth{ background: rgba(215,15,18,.38); opacity:1; }
+    .dot.c-heal{ background: rgba(18,18,18,.20); opacity:1; }
+
+    .miniEvent{
+      padding:8px 9px;
+      border-radius:14px;
+      border:1px solid rgba(18,18,18,.10);
+      background:#fff;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s ease;
+    }
+    .miniEvent:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(0,0,0,.05);
+      border-color: rgba(215,15,18,.18);
+    }
+    .miniEvent .t{
+      font-weight:1000;
+      font-size:12px;
+      letter-spacing:-.01em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .miniEvent .m{
+      margin-top:4px;
+      font-size:11px;
+      font-weight:800;
+      color: rgba(18,18,18,.55);
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:1000;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.03);
+      color: rgba(18,18,18,.72);
+      white-space:nowrap;
+    }
+    .tag.pick{
+      border-color: rgba(215,15,18,.18);
+      background: rgba(215,15,18,.08);
+      color:#7a0b0b;
+    }
+    .tag.recurring{
+      border-color: rgba(18,18,18,.12);
+      background: rgba(18,18,18,.03);
+    }
+    .tag.online{
+      border-color: rgba(18,18,18,.12);
+      background: rgba(18,18,18,.03);
+    }
+
+    .todayFocus{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background: radial-gradient(920px 300px at 12% 0%, rgba(215,15,18,.10), transparent 60%), #fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.04);
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    
+    /* ===== Clean Detail Layout (stacked, tidy) ===== */
+    .detailTopBar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 14px 12px;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background: radial-gradient(920px 240px at 12% 0%, rgba(215,15,18,.08), transparent 60%), #fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      margin-bottom:12px;
+    }
+    .detailTitleWrap{min-width:0}
+    .detailTitleWrap b{
+      display:block;
+      font-size:18px;
+      letter-spacing:-.02em;
+      margin-bottom:6px;
+      line-height:1.2;
+    }
+
+    .detailStack{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .detailCard{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      padding:12px;
+    }
+    .detailCardHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:2px 2px 10px;
+    }
+    .detailCardHead b{
+      font-size:14px;
+      letter-spacing:-.01em;
+    }
+
+    /* tighten todayFocus to match other cards */
+    .todayFocus{ padding:12px; }
+    .focusItem{ padding:12px; }
+
+    /* make dLine feel less stretched */
+    .dLine{ padding:12px 12px; }
+.focusHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .focusHead b{
+      font-size:14px;
+      letter-spacing:-.01em;
+    }
+    .focusList{display:flex; flex-direction:column; gap:10px;}
+    .focusItem{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      padding:12px;
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .focusItem:hover{
+      transform: translateY(-1px);
+      border-color: rgba(215,15,18,.18);
+      box-shadow: 0 14px 34px rgba(0,0,0,.05);
+    }
+    .focusTitle{
+      margin:0;
+      font-weight:1000;
+      font-size:14px;
+      letter-spacing:-.01em;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .focusMeta{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:800;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .dLine{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 10px;
+      border-radius: var(--r20);
+      border:1px solid rgba(18,18,18,.08);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .dLine + .dLine{margin-top:10px}
+    .dL{min-width:0}
+    .dL .k{
+      font-size:11px;
+      font-weight:1000;
+      color: rgba(18,18,18,.45);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .dL .v{
+      margin-top:6px;
+      font-weight:950;
+      font-size:13px;
+      color: rgba(18,18,18,.78);
+      line-height:1.35;
+      word-break:keep-all;
+    }
+    .dR{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex:0 0 auto;
+    }
+    .smallBtn{
+      height:38px;
+      padding:0 12px;
+      border-radius:14px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.03);
+      font-weight:1000;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .smallBtn:hover{background: rgba(18,18,18,.06); transform: translateY(-1px);}
+    .smallBtn.primary{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+    .smallBtn.ghost{
+      background:#fff;
+    }
+    .saved{
+      border-color: rgba(215,15,18,.18) !important;
+      background: rgba(215,15,18,.08) !important;
+      color:#7a0b0b !important;
+    }
+
+    .inlineHelp{
+      margin-top:12px;
+      padding:12px;
+      border-radius: var(--r20);
+      border:1px solid rgba(18,18,18,.08);
+      background: rgba(18,18,18,.02);
+      color: rgba(18,18,18,.58);
+      font-size:12px;
+      font-weight:800;
+      line-height:1.55;
+    }.navPill,
+.navPill:hover,
+.navPill:visited,
+.navPill:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+    /* Responsive */
+    @media (max-width: 1180px){
+      .main{grid-template-columns:1fr}
+    }
+    @media (max-width: 900px){
+      .week{grid-template-columns: repeat(2, minmax(0, 1fr));}
+      .day{min-height:unset}
+      .detailBox{max-width: 100%;}
+    }
+    @media (max-width: 740px){
+      body{padding:14px}
+      .headerTop{grid-template-columns: 1fr; gap:12px;}
+      .search{justify-self:stretch}
+      .headerRight{justify-content:flex-start}
+      .brand img{height:48px;}
+      .week{grid-template-columns:1fr}
+      .detailBox{max-width: 100%;}
+    }/* Subscribe channel item */
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.subItem:hover{
+  background:rgba(18,18,18,.03);
+}
+
+.subItem img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.subItem span{
+  font-size:14px;
+  font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="frame">
+    <div class="inner">
+
+      <header class="header">
+        <div class="headerTop">
+          <div class="brand" title="STILL" onclick="location.href='still.html'" style="cursor:pointer">
+            <img src="still_logo.png" alt="STILL logo">
+            <span class="brandKr">KR</span>
+          </div>
+
+          <div class="search">
+            <img src="search.png" class="searchIcon" alt="search">
+          <input placeholder="영상 · 구절 · 교회 · 지역 검색" />
+            <img src="mic.png" class="micIcon" alt="mic">
+          </div>
+
+          <div class="headerRight">
+            <button class="iconBtn" title="알림">
+              <img src="bell.png" alt="알림">
+            </button>
+            <button class="iconBtn" title="업로드">
+              <img src="cross.png" alt="업로드">
+            </button>
+            <div class="profile" title="프로필">
+              <img src="bin.png" alt="profile">
+            </div>
+          </div>
+        </div>
+
+        <div class="navPills">
+          <div class="navPill" onclick="location.href='still.html'">홈</div>
+          <div class="navPill" onclick="location.href='bible.html'">성경</div>
+        <div class="navPill" onclick="location.href='QnA.html'">
+  Q&A
+</div>
+          <div class="navPill active">캘린더</div>
+          <a class="navPill" href="region.html">지역</a>
+         <div class="navPill" onclick="location.href='church_db.html'">이단 분별</div>
+             <div class="navPill" onclick="location.href='jesusface.html'">예수님과 고민상담</div>
+        </div>
+      </header>
+
+      <div class="main">
+       <aside class="sidebar">
+
+  <!-- 구독 -->
+<div class="secTitle">Subscribe</div>
+
+<div class="subItem">
+  <img src="cbs.png" alt="새롭게하소서 CBS">
+  <span>새롭게하소서CBS</span>
+</div>
+
+<div class="subItem">
+  <img src="jaljal.png" alt="잘잘법">
+  <span>잘잘법 : 잘 믿고 잘 사는 법</span>
+</div>
+
+<div class="subItem">
+  <img src="weracle.png" alt="위라클">
+  <span>위라클 WERACLE</span>
+</div>
+
+<div class="subItem">
+  <img src="cts.png" alt="CTS">
+  <span>CTS기독교TV</span>
+</div>
+
+  <!-- 내 페이지 -->
+  <div class="secTitle" style="margin-top:18px">My Page</div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 최신기록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 재생목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 저장한 목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 좋아요 표시한 목록
+  </div>
+
+</aside>
+        <main class="content">
+
+          <!-- Top: Month + Filters -->
+          <section class="card">
+            <div class="pad">
+              <div class="cardHead">
+                <b>캘린더</b>
+                <span class="chev">›</span>
+              </div>
+
+              <div class="monthBar">
+                <div class="monthLeft">
+                  <div>
+                    <div class="monthTitle" id="monthTitle">2026년 2월</div>
+                    <div class="monthMeta" id="monthMeta">STILL이 큐레이션한 이번 달 예배·모임·콘서트</div>
+                  </div>
+                </div>
+
+                <div class="mBtnRow">
+                  <button class="mBtn" id="prevMonth">‹</button>
+                  <button class="mBtn primary" id="goToday">오늘</button>
+                  <button class="mBtn" id="nextMonth">›</button>
+                </div>
+              </div>
+
+              <div class="filters" style="margin-top:12px">
+                <div class="pill active" data-filter="all">전체</div>
+                <div class="pill" data-filter="prayer">기도/회복</div>
+                <div class="pill" data-filter="worship">찬양/예배</div>
+                <div class="pill" data-filter="word">말씀/공부</div>
+                <div class="pill" data-filter="culture">문화/콘서트</div>
+                <div class="pill" data-filter="youth">청년/캠퍼스</div>
+                <div class="pill" data-filter="heal">치유/상담</div>
+                <div class="pill" data-filter="pick">STILL Pick</div>
+                <div class="pill" data-filter="recurring">정기 모임</div>
+              </div>
+
+              <div class="inlineHelp">
+                <b style="color:#111">팁:</b> 점(●)은 그 날의 일정 성격을 보여줘요.
+                정기 모임은 <b>정기</b> 태그가 붙고, 꼭 추천하는 일정은 <b>STILL Pick</b>이 떠요.
+              </div>
+            </div>
+          </section>
+
+          <div class="calGrid">
+
+            <!-- 1) Calendar -->
+            <section class="card">
+              <div class="pad">
+                <div class="cardHead">
+                  <b>이번 달</b>
+                  <span class="subtle" id="hintCount">표시 중: 0개 일정</span>
+                </div>
+
+                <div class="week" id="calendarGrid"></div>
+              </div>
+            </section>
+
+            <!-- 2) Detail (below calendar) -->
+            <section class="card">
+              <div class="pad">
+                <div class="detailTopBar">
+                  <div class="detailTitleWrap">
+                    <b id="detailTitle">TODAY on STILL</b>
+                    <div class="subtle" id="detailSub">오늘 참여 가능한 예배/모임을 먼저 보여드려요.</div>
+                  </div>
+                  <span class="tag pick" id="detailDateChip">오늘</span>
+                </div>
+
+                <div class="detailStack">
+                  <div class="todayFocus">
+                    <div class="focusHead">
+                      <b>오늘의 포커스</b>
+                      <span class="subtle" id="todayDateText"></span>
+                    </div>
+                    <div class="focusList" id="todayList"></div>
+                  </div>
+
+                  <div class="detailCard">
+                    <div class="detailCardHead">
+                      <b>일정 상세</b>
+                      <span class="subtle" id="detailStatus">카드 클릭 시 상세 표시</span>
+                    </div>
+
+                    <div id="detailPanel">
+                      <div class="dLine">
+                        <div class="dL">
+                          <div class="k">TITLE</div>
+                          <div class="v">위 캘린더에서 일정을 선택해 주세요</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="inlineHelp">
+                    <b style="color:#111">큐레이션 기준:</b>
+                    “많은 청년들이 실제로 가는 정기 모임 + 이번 달 꼭 가볼 만한 날짜 지정 이벤트” 중심으로 구성돼요.
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div><!-- /calGrid -->
+
+        </main>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ========= Data (샘플) =========
+    const events = [
+      {
+        id:"tuesday-sungsoo",
+        title:"화요성수 정기 모임",
+        date:"2026-02-03",
+        time:"19:30",
+        category:"prayer",
+        tags:["recurring","youth"],
+        pick:true,
+        place:"서울 · (대표) 청년 연합",
+        online:false,
+        host:"Community",
+        desc:"매주 화요일, 말씀과 기도로 한 주의 중심을 세우는 정기 모임.",
+        linkText:"모임 안내 보기",
+        link:"#",
+        related:[
+          {title:"기도가 흔들릴 때 붙드는 한 구절", channel:"한마음 청년", meta:"추천 영상 연결"}
+        ]
+      },
+      {
+        id:"piah-worship",
+        title:"목요일 피아워십 찬양집회",
+        date:"2026-02-05",
+        time:"20:00",
+        category:"worship",
+        tags:["recurring"],
+        pick:true,
+        place:"서울 · 피아워십",
+        online:true,
+        host:"Piah Worship",
+        desc:"찬양으로 마음을 열고, 공동체로 예배의 온도를 회복하는 목요 집회.",
+        linkText:"라이브/다시보기",
+        link:"#",
+        related:[
+          {title:"찬양으로 마음이 열리는 순간", channel:"STILL Worship", meta:"추천 영상 연결"}
+        ]
+      },
+      {
+        id:"welllaw-concert",
+        title:"잘잘법 콘서트",
+        date:"2026-02-17",
+        time:"19:00",
+        category:"culture",
+        tags:["youth"],
+        pick:true,
+        place:"서울 · (공연장)",
+        online:false,
+        host:"Event",
+        desc:"말씀과 문화가 만나는 자리. 청년들이 함께 모여 회복과 울림을 경험하는 콘서트.",
+        linkText:"예매/신청",
+        link:"#",
+        related:[
+          {title:"문화 속 신앙: 그리스도인의 시선", channel:"STILL", meta:"추천 영상 연결"}
+        ]
+      },
+      {
+        id:"bible-study",
+        title:"청년 성경공부 – 로마서",
+        date:"2026-02-10",
+        time:"20:30",
+        category:"word",
+        tags:["recurring","youth"],
+        pick:false,
+        place:"온라인 · ZOOM",
+        online:true,
+        host:"Study",
+        desc:"로마서를 함께 읽으며 복음의 뼈대를 다시 세우는 스터디.",
+        linkText:"참여 링크",
+        link:"#",
+        related:[]
+      },
+      {
+        id:"healing-night",
+        title:"회복의 밤 – 불안/번아웃 기도회",
+        date:"2026-02-12",
+        time:"19:30",
+        category:"heal",
+        tags:["youth"],
+        pick:false,
+        place:"서울 · (센터)",
+        online:false,
+        host:"Care",
+        desc:"불안과 지친 마음을 위한 회복 기도회. 짧은 말씀과 중보 중심.",
+        linkText:"안내 보기",
+        link:"#",
+        related:[]
+      }
+    ];
+
+    // ========= State =========
+    const state = {
+      viewDate: new Date(2026, 1, 1), // 2026-02
+      filter: "all",
+      saved: new Set(JSON.parse(localStorage.getItem("stillSavedEvents") || "[]")),
+      selectedId: null
+    };
+
+    const $ = (s)=>document.querySelector(s);
+    const $$ = (s)=>Array.from(document.querySelectorAll(s));
+
+    // ========= Helpers =========
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function fmtYMD(d){
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
+    function kMonthTitle(d){
+      return `${d.getFullYear()}년 ${d.getMonth()+1}월`;
+    }
+    function kDateLabel(ymd){
+      const [y,m,dd] = ymd.split("-").map(Number);
+      const dt = new Date(y, m-1, dd);
+      const wk = ["일","월","화","수","목","금","토"][dt.getDay()];
+      return `${m}월 ${dd}일 (${wk})`;
+    }
+    function sameMonth(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth(); }
+
+    function catToDotClass(cat){
+      return ({
+        prayer:"c-prayer",
+        worship:"c-worship",
+        word:"c-word",
+        culture:"c-culture",
+        youth:"c-youth",
+        heal:"c-heal"
+      })[cat] || "";
+    }
+
+    function tagLabel(tag){
+      const map = {
+        recurring:"정기",
+        pick:"STILL Pick",
+        online:"온라인",
+        youth:"청년",
+        prayer:"기도",
+        worship:"찬양",
+        word:"말씀",
+        culture:"문화",
+        heal:"치유"
+      };
+      return map[tag] || tag;
+    }
+
+    function eventMatchesFilter(ev){
+      const f = state.filter;
+      if(f==="all") return true;
+      if(f==="pick") return !!ev.pick;
+      if(f==="recurring") return (ev.tags||[]).includes("recurring");
+      if(["prayer","worship","word","culture","youth","heal"].includes(f)){
+        if(f==="youth") return ev.category==="youth" || (ev.tags||[]).includes("youth");
+        return ev.category===f;
+      }
+      return true;
+    }
+
+    function getEventsByDate(ymd){
+      return events.filter(e=>e.date===ymd).filter(eventMatchesFilter);
+    }
+
+    // ========= Pills =========
+    $$(".pill").forEach(p=>{
+      p.addEventListener("click", ()=>{
+        $$(".pill").forEach(x=>x.classList.remove("active"));
+        p.classList.add("active");
+        state.filter = p.getAttribute("data-filter");
+        renderAll();
+      });
+    });
+
+    // ========= Month Nav =========
+    $("#prevMonth").addEventListener("click", ()=>{
+      state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()-1, 1);
+      renderAll();
+    });
+    $("#nextMonth").addEventListener("click", ()=>{
+      state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()+1, 1);
+      renderAll();
+    });
+    $("#goToday").addEventListener("click", ()=>{
+      const now = new Date();
+      state.viewDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      renderAll();
+      const today = fmtYMD(now);
+      const list = getEventsByDate(today);
+      if(list[0]) selectEvent(list[0].id);
+    });
+
+    // ========= Calendar =========
+    function renderCalendar(){
+      const grid = $("#calendarGrid");
+      grid.innerHTML = "";
+
+      const d = state.viewDate;
+      const y = d.getFullYear();
+      const m = d.getMonth();
+
+      $("#monthTitle").textContent = kMonthTitle(d);
+      $("#monthMeta").textContent = "STILL이 큐레이션한 이번 달 예배·모임·콘서트";
+
+      const first = new Date(y, m, 1);
+      const start = new Date(first);
+      start.setDate(first.getDate() - first.getDay());
+
+      const weeksToShow = 6;
+      const daysToShow = weeksToShow * 7;
+
+      let visibleEventCount = 0;
+
+      for(let i=0;i<daysToShow;i++){
+        const cur = new Date(start);
+        cur.setDate(start.getDate()+i);
+
+        const ymd = fmtYMD(cur);
+        const inMonth = sameMonth(cur, first);
+        const dayEvents = getEventsByDate(ymd);
+
+        visibleEventCount += dayEvents.length;
+
+        const day = document.createElement("div");
+        day.className = "day" + (inMonth ? "" : " muted");
+
+        const top = document.createElement("div");
+        top.className = "dayTop";
+        top.innerHTML = `
+          <div class="dNum">${cur.getDate()}</div>
+          <div class="dWk">${["SUN","MON","TUE","WED","THU","FRI","SAT"][cur.getDay()]}</div>
+        `;
+
+        const dotRow = document.createElement("div");
+        dotRow.className = "dotRow";
+
+        const cats = Array.from(new Set(dayEvents.map(e=>e.category)));
+        cats.slice(0,6).forEach(cat=>{
+          const dot = document.createElement("span");
+          dot.className = `dot ${catToDotClass(cat)}`;
+          dot.title = cat;
+          dotRow.appendChild(dot);
+        });
+
+        day.appendChild(top);
+        day.appendChild(dotRow);
+
+        dayEvents.slice(0,3).forEach(ev=>{
+          const mini = document.createElement("div");
+          mini.className = "miniEvent";
+          mini.setAttribute("data-id", ev.id);
+          mini.innerHTML = `
+            <div class="t">${ev.title}</div>
+            <div class="m">
+              <span>${ev.time}</span><span>•</span>
+              <span>${ev.place.split("·")[0].trim()}</span>
+              ${ev.pick ? `<span class="tag pick" style="padding:4px 8px;font-size:10px;">STILL Pick</span>` : ``}
+              ${(ev.tags||[]).includes("recurring") ? `<span class="tag recurring" style="padding:4px 8px;font-size:10px;">정기</span>` : ``}
+            </div>
+          `;
+          mini.addEventListener("click", ()=>selectEvent(ev.id));
+          day.appendChild(mini);
+        });
+
+        if(dayEvents.length > 3){
+          const more = document.createElement("div");
+          more.className = "miniEvent";
+          more.style.background = "rgba(18,18,18,.02)";
+          more.style.borderStyle = "dashed";
+          more.innerHTML = `<div class="t">+ ${dayEvents.length-3}개 더 보기</div><div class="m"><span>${kDateLabel(ymd)}</span></div>`;
+          more.addEventListener("click", ()=>{
+            selectEvent(dayEvents[0].id);
+          });
+          day.appendChild(more);
+        }
+
+        grid.appendChild(day);
+      }
+
+      $("#hintCount").textContent = `표시 중: ${visibleEventCount}개 일정`;
+    }
+
+    // ========= Today Focus =========
+    function renderToday(){
+      const now = new Date();
+      const today = fmtYMD(now);
+
+      $("#todayDateText").textContent = kDateLabel(today);
+
+      const todays = events.filter(e=>e.date===today).filter(eventMatchesFilter);
+
+      const list = $("#todayList");
+      list.innerHTML = "";
+
+      if(todays.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "focusItem";
+        empty.style.cursor = "default";
+        empty.innerHTML = `
+          <p class="focusTitle">오늘 등록된 일정이 아직 없어요</p>
+          <div class="focusMeta"><span>필터를 ‘전체’로 바꿔보거나</span><span>•</span><span>이번 달 추천 일정을 확인해보세요</span></div>
+        `;
+        list.appendChild(empty);
+
+        const fallback = events
+          .filter(e=>e.pick)
+          .filter(eventMatchesFilter)
+          .sort((a,b)=>a.date.localeCompare(b.date))
+          .slice(0,2);
+
+        fallback.forEach(ev=>{
+          const it = document.createElement("div");
+          it.className = "focusItem";
+          it.innerHTML = `
+            <p class="focusTitle">
+              <span class="tag pick">STILL Pick</span>
+              ${ev.title}
+            </p>
+            <div class="focusMeta">
+              <span>${kDateLabel(ev.date)}</span><span>•</span><span>${ev.time}</span><span>•</span>
+              <span>${ev.online ? "온라인" : "오프라인"}</span>
+            </div>
+          `;
+          it.addEventListener("click", ()=>selectEvent(ev.id));
+          list.appendChild(it);
+        });
+
+        return;
+      }
+
+      todays
+        .sort((a,b)=>a.time.localeCompare(b.time))
+        .forEach(ev=>{
+          const it = document.createElement("div");
+          it.className = "focusItem";
+          it.innerHTML = `
+            <p class="focusTitle">
+              ${ev.pick ? `<span class="tag pick">STILL Pick</span>` : ``}
+              ${(ev.tags||[]).includes("recurring") ? `<span class="tag recurring">정기</span>` : ``}
+              ${ev.title}
+            </p>
+            <div class="focusMeta">
+              <span>${ev.time}</span><span>•</span>
+              <span>${ev.place}</span><span>•</span>
+              <span>${ev.online ? "온라인 가능" : "현장 참여"}</span>
+            </div>
+          `;
+          it.addEventListener("click", ()=>selectEvent(ev.id));
+          list.appendChild(it);
+        });
+    }
+
+    // ========= Detail =========
+    function selectEvent(id){
+      const ev = events.find(e=>e.id===id);
+      if(!ev) return;
+      state.selectedId = id;
+
+      $("#detailTitle").textContent = ev.title;
+      $("#detailDateChip").textContent = kDateLabel(ev.date);
+      $("#detailSub").textContent = ev.pick ? "STILL이 추천하는 일정이에요." : "공동체가 함께 모이는 자리예요.";
+      $("#detailStatus").textContent = "상세가 표시되고 있어요";
+
+      const panel = $("#detailPanel");
+      panel.innerHTML = "";
+
+      const tags = [];
+      if(ev.pick) tags.push("pick");
+      (ev.tags||[]).forEach(t=>tags.push(t));
+      if(ev.online) tags.push("online");
+      tags.push(ev.category);
+
+      const tagHtml = tags
+        .filter((v,i,a)=>a.indexOf(v)===i)
+        .slice(0,5)
+        .map(t=>{
+          const cls = (t==="pick") ? "pick" : "";
+          return `<span class="tag ${cls}">${tagLabel(t)}</span>`;
+        }).join(" ");
+
+      const isSaved = state.saved.has(ev.id);
+
+      panel.insertAdjacentHTML("beforeend", `
+        <div class="dLine">
+          <div class="dL">
+            <div class="k">WHEN</div>
+            <div class="v">${kDateLabel(ev.date)} · ${ev.time}</div>
+          </div>
+          <div class="dR">
+            <button class="smallBtn ${isSaved ? "saved" : "primary"}" id="saveBtn">
+              ${isSaved ? "관심 ✓" : "관심"}
+            </button>
+          </div>
+        </div>
+
+        <div class="dLine">
+          <div class="dL">
+            <div class="k">WHERE</div>
+            <div class="v">${ev.place} ${ev.online ? "· (온라인 참여 가능)" : ""}</div>
+          </div>
+          <div class="dR">
+            <button class="smallBtn ghost" id="copyBtn">복사</button>
+          </div>
+        </div>
+
+        <div class="dLine">
+          <div class="dL">
+            <div class="k">TAGS</div>
+            <div class="v">${tagHtml || "<span class='subtle'>태그 없음</span>"}</div>
+          </div>
+        </div>
+
+        <div class="dLine">
+          <div class="dL">
+            <div class="k">ABOUT</div>
+            <div class="v">${ev.desc}</div>
+          </div>
+        </div>
+
+        <div class="dLine">
+          <div class="dL">
+            <div class="k">LINK</div>
+            <div class="v">
+              <a href="${ev.link || "#"}" style="color:#7a0b0b;font-weight:1000;text-decoration:none;border-bottom:1px solid rgba(215,15,18,.25)">
+                ${ev.linkText || "안내 보기"}
+              </a>
+            </div>
+          </div>
+          <div class="dR">
+            <button class="smallBtn" id="openBtn">열기</button>
+          </div>
+        </div>
+      `);
+
+      if((ev.related||[]).length){
+        const relWrap = document.createElement("div");
+        relWrap.className = "dLine";
+        relWrap.innerHTML = `
+          <div class="dL">
+            <div class="k">RELATED</div>
+            <div class="v">
+              ${(ev.related||[]).slice(0,3).map(r=>{
+                return `• ${r.title} <span style="color:rgba(18,18,18,.55);font-weight:900;">— ${r.channel}</span>
+                <span style="color:rgba(18,18,18,.45);font-weight:800;">(${r.meta||"STILL 연결"})</span>`;
+              }).join("<br>")}
+            </div>
+          </div>
+        `;
+        panel.appendChild(relWrap);
+      }
+
+      const saveBtn = $("#saveBtn");
+      const copyBtn = $("#copyBtn");
+      const openBtn = $("#openBtn");
+
+      saveBtn.addEventListener("click", ()=>{
+        if(state.saved.has(ev.id)) state.saved.delete(ev.id);
+        else state.saved.add(ev.id);
+        localStorage.setItem("stillSavedEvents", JSON.stringify(Array.from(state.saved)));
+        selectEvent(ev.id);
+      });
+
+      copyBtn.addEventListener("click", async ()=>{
+        const text = `[STILL] ${ev.title} / ${kDateLabel(ev.date)} ${ev.time} / ${ev.place}`;
+        try{
+          await navigator.clipboard.writeText(text);
+          $("#detailStatus").textContent = "복사 완료!";
+          setTimeout(()=>$("#detailStatus").textContent="상세가 표시되고 있어요", 1200);
+        }catch(e){
+          $("#detailStatus").textContent = "복사 실패(브라우저 권한 확인)";
+          setTimeout(()=>$("#detailStatus").textContent="상세가 표시되고 있어요", 1400);
+        }
+      });
+
+      openBtn.addEventListener("click", ()=>{
+        if(ev.link && ev.link !== "#") window.open(ev.link, "_blank");
+        else {
+          $("#detailStatus").textContent = "연결 링크가 아직 없어요(데모)";
+          setTimeout(()=>$("#detailStatus").textContent="상세가 표시되고 있어요", 1400);
+        }
+      });
+    }
+
+    // ========= Render All =========
+    function renderAll(){
+      renderCalendar();
+      renderToday();
+
+      if(state.selectedId){
+        const ev = events.find(e=>e.id===state.selectedId);
+        if(ev && eventMatchesFilter(ev)) selectEvent(state.selectedId);
+        else {
+          state.selectedId = null;
+          $("#detailTitle").textContent = "TODAY on STILL";
+          $("#detailDateChip").textContent = "오늘";
+          $("#detailSub").textContent = "오늘 참여 가능한 예배/모임을 먼저 보여드려요.";
+          $("#detailStatus").textContent = "카드 클릭 시 상세 표시";
+          $("#detailPanel").innerHTML = `
+            <div class="dLine">
+              <div class="dL">
+                <div class="k">TITLE</div>
+                <div class="v">위 캘린더에서 일정을 선택해 주세요</div>
+              </div>
+            </div>
+          `;
+        }
+      }
+    }
+
+    renderAll();
+
+    const firstPick = events
+      .filter(e=>e.pick)
+      .filter(eventMatchesFilter)
+      .sort((a,b)=>a.date.localeCompare(b.date))[0];
+    if(firstPick) selectEvent(firstPick.id);
+  </script>
+</body>
+</html>

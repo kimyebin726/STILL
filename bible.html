@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>STILL – Bible</title>
+<link rel="icon" type="image/png" href="still_logo1.png">
+  <style>
+    :root{
+      --brand:#D70F12;
+      --bg1:#7d0a0c;
+      --bg2:#d1161a;
+
+      --ink:#121212;
+      --muted:rgba(18,18,18,.55);
+      --line:rgba(18,18,18,.09);
+
+      --cardShadow: 0 18px 44px rgba(0,0,0,.08);
+      --frameShadow: 0 26px 80px rgba(0,0,0,.22);
+
+      --r32:32px;
+      --r24:24px;
+      --r20:20px;
+      --r16:16px;
+      --r14:14px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+              "Apple SD Gothic Neo","Noto Sans KR", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--ink);
+      background:
+        radial-gradient(1000px 720px at 18% 8%, rgba(255,255,255,.12), transparent 60%),
+        radial-gradient(1000px 720px at 86% 35%, rgba(0,0,0,.22), transparent 55%),
+        linear-gradient(135deg, var(--bg2), var(--bg1));
+      padding:22px;
+    }
+
+    .frame{
+      width:min(1360px,100%);
+      margin:0 auto;
+      border-radius:var(--r32);
+      padding:14px;
+    }
+
+    .inner{
+      background:#fff;
+      border-radius:calc(var(--r32) - 10px);
+      overflow:hidden;
+      box-shadow:var(--frameShadow);
+      border:2px solid rgba(255,255,255,.55);
+    }
+
+    /* ===== HEADER (그대로) ===== */
+    .header{
+      background:
+        radial-gradient(1200px 260px at 12% 0%, rgba(255,255,255,.18), transparent 62%),
+        radial-gradient(900px 260px at 85% 0%, rgba(0,0,0,.22), transparent 65%),
+        linear-gradient(135deg, #e0181c, #8d0b0d);
+      padding:18px 22px 16px;
+      color:#fff;
+    }
+    .headerTop{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap:16px;
+    }
+    .brand{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.brandKr{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#fff;
+  opacity:.9;
+  line-height:1;
+  transform: translateY(2px); /* 로고와 시각적 정렬 */
+  user-select:none;
+}
+    .brand img{height:52px;width:auto;display:block;user-select:none;}
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width:760px;
+      justify-self:center;
+      width:100%;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.60);
+      border-radius: 999px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+    .search input{
+      border:0; outline:0;
+      background:transparent;
+      width:100%;
+      font-size:14px;
+      color:#111;
+    }
+    .searchIcon{width:22px;height:22px;object-fit:contain;opacity:.85;margin-left:6px;}
+    .micIcon{width:28px;height:28px;object-fit:contain;opacity:.9;cursor:pointer;}
+
+    .headerRight{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    .iconBtn{
+      width:42px;height:42px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      display:grid; place-items:center;
+      cursor:pointer;
+      padding:0;
+      user-select:none;
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      transition: .18s ease;
+    }
+    .iconBtn img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.95;
+      filter: brightness(.98) contrast(1.08);
+    }
+    .iconBtn:hover{
+      background: rgba(255,255,255,.16);
+      border-color: rgba(255,255,255,.34);
+      transform: translateY(-1px);
+    }
+
+    .profile{
+      width:42px; height:42px;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      padding:0;
+      display:block;
+    }
+    .profile img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      transform: scale(1.25);
+      transform-origin:center;
+      display:block;
+    }
+
+    .navPills{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .navPill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.88);
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navPill.active{
+      background: rgba(255,255,255,.92);
+      color:#111;
+      border-color: rgba(255,255,255,.70);
+    }
+
+    /* ===== MAIN LAYOUT (그대로) ===== */
+    .main{
+      background:
+        radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
+        #fff;
+      padding:18px 18px 24px;
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      gap:18px;
+    }
+
+    .sidebar{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      padding:18px;
+      height:fit-content;
+    }
+
+    .secTitle{
+      font-size:12px;
+      letter-spacing:.14em;
+      color: rgba(18,18,18,.45);
+      font-weight:900;
+      margin:6px 0 12px;
+      text-transform: uppercase;
+    }
+
+    .sideItem{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:14px;
+      border:1px solid transparent;
+      cursor:pointer;
+      user-select:none;
+      color: rgba(18,18,18,.70);
+      font-weight:900;
+    }
+    .sideItem:hover{
+      background: rgba(18,18,18,.03);
+      border-color: rgba(18,18,18,.06);
+    }
+    .sideItem.active{
+      background: rgba(215,15,18,.07);
+      border-color: rgba(215,15,18,.18);
+      color:#111;
+    }
+    .sideDot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      opacity:.25;
+    }
+    .sideItem.active .sideDot{
+      background: var(--brand);
+      opacity:1;
+      box-shadow: 0 0 0 7px rgba(215,15,18,.12);
+    }
+
+    .content{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--r24);
+      background:#fff;
+      box-shadow: var(--cardShadow);
+      overflow:hidden;
+    }
+    .pad{padding:16px}
+
+    .cardHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .cardHead b{font-size:16px; letter-spacing:-.02em;}
+    .subNote{
+      color: rgba(18,18,18,.55);
+      font-weight:800;
+      font-size:12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* ===== BIBLE PAGE CENTER (새로) ===== */
+    .bibleWrap{
+      border-radius: var(--r24);
+      overflow:hidden;
+    }
+
+    .bibleTop{
+      padding:14px 16px 10px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(900px 220px at 10% 0%, rgba(215,15,18,.06), transparent 60%),
+        #fff;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .bibleTop .title{
+      font-weight:900;
+      font-size:16px;
+      letter-spacing:-.02em;
+      margin:0;
+    }
+
+    .controls{
+      padding:12px 16px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    .ctrl{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-weight:900;
+      font-size:13px;
+      color: rgba(18,18,18,.78);
+      cursor:pointer;
+      user-select:none;
+    }
+    .ctrl select, .ctrl input{
+      border:0;
+      outline:0;
+      background:transparent;
+      font-weight:900;
+      font-size:13px;
+      color:#111;
+      cursor:pointer;
+    }
+    .ctrl input{
+      width:140px;
+      cursor:text;
+    }
+    .ctrl.primary{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+    .ctrl.ghost{
+      background:#fff;
+      border-color: rgba(18,18,18,.10);
+    }
+
+    .toggle{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 10px 8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-weight:900;
+      font-size:13px;
+      color: rgba(18,18,18,.78);
+      user-select:none;
+    }
+    .switch{
+      width:42px;height:24px;border-radius:999px;
+      background: rgba(18,18,18,.18);
+      position:relative;
+      cursor:pointer;
+      border:1px solid rgba(18,18,18,.10);
+    }
+    .knob{
+      width:20px;height:20px;border-radius:999px;
+      background:#fff;
+      position:absolute;top:1px;left:1px;
+      box-shadow: 0 8px 16px rgba(0,0,0,.18);
+      transition:.18s ease;
+    }
+    .switch.on{ background: rgba(215,15,18,.55); }
+    .switch.on .knob{ left:21px; }
+
+    .bibleGrid{
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+
+    .panel{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background:#fff;
+      overflow:hidden;
+    }
+    .panelHead{
+      padding:12px 12px 10px;
+      border-bottom:1px solid rgba(18,18,18,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background: rgba(18,18,18,.01);
+    }
+    .panelHead b{
+      font-size:15px;
+      font-weight:900;
+      letter-spacing:-.01em;
+    }
+
+    .fontBtns{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .fbtn{
+      width:38px;height:32px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background:#fff;
+      font-weight:1000;
+      cursor:pointer;
+      user-select:none;
+    }
+    .fbtn.mark{
+      width:auto;
+      padding:0 12px;
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+
+    .passage{
+      padding:14px 14px 16px;
+      line-height:1.72;
+      font-weight:800;
+      color: rgba(18,18,18,.86);
+      font-size:14px;
+    }
+    .verseRow{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin:10px 0;
+    }
+    .vnum{
+      flex:0 0 auto;
+      width:26px;height:26px;
+      border-radius:10px;
+      display:grid;place-items:center;
+      font-weight:1000;
+      font-size:12px;
+      color: rgba(18,18,18,.60);
+      background: rgba(18,18,18,.05);
+      border:1px solid rgba(18,18,18,.08);
+    }
+    .vtext{
+      margin:0;
+      flex:1 1 auto;
+    }
+    .hilite{
+      background: rgba(215,15,18,.10);
+      border-radius:10px;
+      padding:2px 6px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .relList{
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .relItem{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      padding:10px;
+      background:#fff;
+      cursor:pointer;
+    }
+    .relThumb{
+      flex:0 0 132px;
+      height:74px;
+      border-radius:14px;
+      background: linear-gradient(135deg, rgba(0,0,0,.06), rgba(0,0,0,.02));
+      border:1px solid rgba(18,18,18,.10);
+      position:relative;
+      overflow:hidden;
+    }
+    .relDur{
+      position:absolute;right:8px;bottom:8px;
+      padding:5px 7px;border-radius:10px;
+      background: rgba(0,0,0,.58);color:#fff;
+      font-size:12px;border:1px solid rgba(255,255,255,.16);
+    }
+    .relMeta{min-width:0}
+    .relTitle{
+      margin:0;
+      font-weight:950;
+      font-size:13px;
+      line-height:1.35;
+      letter-spacing:-.01em;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .relSub{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:750;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.02);
+      font-size:11px;
+      font-weight:950;
+      color: rgba(18,18,18,.70);
+      width:fit-content;
+    }
+    /* 성경 페이지 - 사이드바 성경 강조 (홈과 동일 스타일) */
+.sideItem.active.isBible {
+  background: rgba(215, 15, 18, 0.06);
+  border: 1px solid rgba(215, 15, 18, 0.25);
+  color: #111;
+}
+
+/* 빨간 동그라미 */
+.sideItem .sideDot.red {
+  background: #D70F12;
+  opacity: 1;
+  box-shadow: 0 0 0 6px rgba(215, 15, 18, 0.15);
+}
+.relThumb{
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.navPill,
+.navPill:hover,
+.navPill:visited,
+.navPill:active {
+  text-decoration: none;
+  color: inherit;
+}
+/* ===== 빌립보서 4장 전체화면(풀폭) 모드 ===== */
+body.fullChapter .bibleGrid{
+  grid-template-columns: 1fr !important; /* 2컬럼 -> 1컬럼 */
+}
+
+body.fullChapter #relPanel{
+  display:none !important; /* 관련 영상 숨김 */
+}
+
+/* 말씀 패널이 ‘읽기 화면’처럼 넓게 보이도록 */
+body.fullChapter .panel{
+  border-radius: 24px;
+}
+
+/* 본문이 길어지니 스크롤로 읽게 */
+body.fullChapter #passage{
+  max-height: 520px;   /* 필요하면 숫자만 키워 */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* 스크롤바 톤 다운(선택) */
+body.fullChapter #passage::-webkit-scrollbar{width:6px;}
+body.fullChapter #passage::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,.15);
+  border-radius: 6px;
+}
+
+@media (max-width: 1180px){
+      .main{grid-template-columns:1fr}
+      .toggle{margin-left:0}
+      .bibleGrid{grid-template-columns:1fr}
+    }
+    @media (max-width: 740px){
+      body{padding:14px}
+      .headerTop{grid-template-columns: 1fr; gap:12px;}
+      .search{justify-self:stretch}
+      .headerRight{justify-content:flex-start}
+      .brand img{height:48px;}
+      .toggle{width:100%; justify-content:space-between;}
+    }
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.subItem:hover{
+  background:rgba(18,18,18,.03);
+}
+
+.subItem img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.subItem span{
+  font-size:14px;
+  font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="frame">
+    <div class="inner">
+
+      <!-- HEADER 그대로 -->
+      <header class="header">
+        <div class="headerTop">
+        <div class="brand" title="STILL">
+  <img src="still_logo.png" alt="STILL logo">
+  <span class="brandKr">KR</span>
+</div>
+
+          <div class="search">
+            <img src="search.png" class="searchIcon" alt="search">
+            <input placeholder="영상 · 구절 · 교회 · 지역 검색" />
+            <img src="mic.png" class="micIcon" alt="mic">
+          </div>
+
+          <div class="headerRight">
+            <button class="iconBtn" title="알림">
+              <img src="bell.png" alt="알림">
+            </button>
+            <button class="iconBtn" title="업로드">
+              <img src="cross.png" alt="업로드">
+            </button>
+            <div class="profile" title="프로필">
+              <img src="bin.png" alt="profile">
+            </div>
+          </div>
+        </div>
+
+        <div class="navPills">
+         <div class="navPill" onclick="location.href='still.html'">홈</div>
+          <div class="navPill active">성경</div>
+         <div class="navPill" onclick="location.href='QnA.html'">
+  Q&A
+</div>
+      <div class="navPill" onclick="location.href='calendar.html'">캘린더</div>
+  <a class="navPill" href="region.html">지역</a>
+    <div class="navPill" onclick="location.href='church_db.html'">이단 분별</div>
+        <div class="navPill" onclick="location.href='jesusface.html'">예수님과 고민상담</div>
+        </div>
+      </header>
+
+      <div class="main">
+
+        <!-- SIDEBAR 그대로 (성경 active) -->
+        <aside class="sidebar">
+<div class="secTitle">Subscribe</div>
+
+<div class="subItem">
+  <img src="cbs.png" alt="새롭게하소서 CBS">
+  <span>새롭게하소서CBS</span>
+</div>
+
+<div class="subItem">
+  <img src="jaljal.png" alt="잘잘법">
+  <span>잘잘법 : 잘 믿고 잘 사는 법</span>
+</div>
+
+<div class="subItem">
+  <img src="weracle.png" alt="위라클">
+  <span>위라클 WERACLE</span>
+</div>
+
+<div class="subItem">
+  <img src="cts.png" alt="CTS">
+  <span>CTS기독교TV</span>
+</div>
+
+  <!-- 내 페이지 -->
+  <div class="secTitle" style="margin-top:18px">My Page</div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 최신기록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 재생목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 저장한 목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 좋아요 표시한 목록
+  </div>
+
+</aside>
+
+        <!-- CONTENT: 홈 구조 대신 "성경 중심 구조"를 그대로 -->
+        <main class="content">
+
+          <section class="card bibleWrap">
+            <!-- 상단 타이틀/설명 -->
+            <div class="bibleTop">
+              <p class="title">성경</p>
+              <div class="subNote">말씀을 중심에 두고, 영상은 곁에 둡니다.</div>
+            </div>
+
+            <!-- 범위 선택/옵션 바 -->
+            <div class="controls">
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">책</span>
+                <select id="book">
+                  <option selected>빌립보서</option>
+                  <option>요한복음</option>
+                  <option>시편</option>
+                  <option>로마서</option>
+                </select>
+              </div>
+
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">장</span>
+                <select id="chap">
+                  <option>1</option><option>2</option><option>3</option>
+                  <option selected>4</option>
+                </select>
+              </div>
+
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">절</span>
+               <input id="range" value="1 ~ 23" aria-label="절 범위" />
+              </div>
+
+              <div class="ctrl">
+                <span style="opacity:.65;font-weight:1000;">번역</span>
+                <select id="ver">
+                  <option selected>KRV</option>
+                  <option>개역개정</option>
+                  <option>NIV</option>
+                </select>
+              </div>
+
+              <div class="ctrl primary" id="applyBtn">적용</div>
+              <div class="ctrl ghost" id="todayBtn">오늘의 말씀</div>
+
+              <div class="toggle">
+                <span>침묵 모드</span>
+                <div class="switch" id="silenceSwitch" role="switch" aria-checked="false" tabindex="0">
+                  <div class="knob"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 본문 + 관련영상 -->
+            <div class="bibleGrid">
+
+              <!-- 성경 본문 패널 -->
+         <div class="panel" id="relPanel">
+                <div class="panelHead">
+                  <b id="passageTitle">빌립보서 4:6–7 (KRV)</b>
+                  <div class="fontBtns">
+                    <button class="fbtn" id="fontDown" aria-label="글자 작게">A-</button>
+                    <button class="fbtn" id="fontUp" aria-label="글자 크게">A+</button>
+                    <button class="fbtn mark" id="markBtn">북마크</button>
+                  </div>
+                </div>
+
+            <div class="passage" id="passage">
+
+  <div class="verseRow">
+    <div class="vnum">1</div>
+    <p class="vtext">그러므로 나의 사랑하고 사모하는 형제들, 나의 기쁨이요 면류관인 사랑하는 자들아 이와 같이 주 안에 서라</p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">2</div>
+    <p class="vtext">내가 유오디아를 권하고 순두게를 권하노니 주 안에서 같은 마음을 품으라</p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">3</div>
+    <p class="vtext">또 참으로 나와 멍에를 같이 한 자 네게 구하노니 복음에 나와 함께 힘쓰던 저 여인들을 돕고 또한 클레멘트와 그 외에 나의 동역자들을 도우라 그 이름들이 생명책에 있느니라</p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">4</div>
+    <p class="vtext">주 안에서 항상 기뻐하라 내가 다시 말하노니 기뻐하라</p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">5</div>
+    <p class="vtext">너희 관용을 모든 사람에게 알게 하라 주께서 가까우시니라</p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">6</div>
+    <p class="vtext">
+      <span class="hilite">아무 것도 염려하지 말고</span>
+      다만 모든 일에 기도와 간구로 너희 구할 것을 감사함으로 하나님께 아뢰라
+    </p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">7</div>
+    <p class="vtext">
+      그러하면 모든 지각에 뛰어난
+      <span class="hilite">하나님의 평강이</span>
+      그리스도 예수 안에서 너희 마음과 생각을 지키시리라
+    </p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">8</div>
+    <p class="vtext">끝으로 형제들아 무엇에든지 참되며 무엇에든지 경건하며 … 이것들을 생각하라</p>
+  </div>
+
+  <div class="verseRow">
+    <div class="vnum">9</div>
+    <p class="vtext">너희는 내게 배우고 받고 듣고 본 바를 행하라 그리하면 평강의 하나님이 너희와 함께 계시리라</p>
+  </div>
+
+  <!-- … 중략 가능 … -->
+
+  <div class="verseRow">
+    <div class="vnum">13</div>
+    <p class="vtext">
+      <span class="hilite">내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라</span>
+    </p>
+  </div>
+
+  <!-- 필요하면 14–22절도 동일 패턴으로 추가 -->
+
+  <div class="verseRow">
+    <div class="vnum">23</div>
+    <p class="vtext">주 예수 그리스도의 은혜가 너희 심령에 있을지어다</p>
+  </div>
+
+</div>
+
+              </div>
+
+              <!-- 관련 영상 패널 -->
+              <div class="panel">
+                <div class="panelHead">
+                  <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                    <b>관련 영상</b>
+                    <div class="subNote" id="relDesc" style="white-space:normal;">빌립보서 4:6–7 관련 추천</div>
+                  </div>
+                  <button class="fbtn" style="width:auto;padding:0 12px" id="moreBtn">더보기</button>
+                </div>
+<div class="relItem">
+  <div class="relThumb" style="background-image:url('b1.png');">
+    <div class="relDur">9:41</div>
+  </div>
+  <div class="relMeta">
+                      <p class="relTitle">모든 것이 가능하다 (빌립보서 4:1-13)_아침예배_베이직교회_조정민 목사_20190809</p>
+                      <div class="relSub"><span>베이직교회</span><span>•</span><span class="chip">묵상</span></div>
+                    </div>
+                  </div>
+
+
+
+<div class="relItem">
+  <div class="relThumb" style="background-image:url('b2.png');">
+    <div class="relDur">14:55</div>
+  </div>
+  <div class="relMeta">
+                      <p class="relTitle">
+아무것도 염려하지 말고 항상 기뻐하라 빌립보서 4장(2)#조용기목사 #빌립보서강해 #염려</p>
+                      <div class="relSub"><span>조용기 목사</span><span>•</span><span class="chip">기도</span></div>
+                    </div>
+                  </div>
+
+            <div class="relItem">
+  <div class="relThumb" style="background-image:url('b3.png');">
+    <div class="relDur">12:10</div>
+  </div>
+  <div class="relMeta">
+                      <p class="relTitle">
+[잘잘법 몰아보기] 불안과 두려움을 기회로</p>
+                      <div class="relSub"><span>말씀과 기도</span><span>•</span><span class="chip">해설</span></div>
+                    </div>
+                  </div>
+                  <div class="relItem">
+  <div class="relThumb" style="background-image:url('b4.png');">
+    <div class="relDur">8:32</div>
+  </div>
+  <div class="relMeta">
+    <p class="relTitle">염려를 내려놓는 믿음의 훈련</p>
+    <div class="relSub"><span>잘잘법</span><span>•</span><span class="chip">묵상</span></div>
+  </div>
+</div>
+
+<div class="relItem">
+  <div class="relThumb" style="background-image:url('b5.png');">
+    <div class="relDur">10:18</div>
+  </div>
+  <div class="relMeta">
+    <p class="relTitle">
+반복되는 불안과 두려움을 이겨내는 방법 | 4K UHD | 오늘예배 #36 | 브라이언박 목사 | Virtual Church [Just Jesus]</p>
+    <div class="relSub"><span>Just Jesus Worship 저스트 지저스 예배</span><span>•</span><span class="chip">기도</span></div>
+  </div>
+</div>
+
+<div class="relItem">
+  <div class="relThumb" style="background-image:url('b6.png');">
+    <div class="relDur">6:44</div>
+  </div>
+  <div class="relMeta">
+    <p class="relTitle">하나님의 평강이 마음을 지키는 방식</p>
+    <div class="relSub"><span>잘잘법</span><span>•</span><span class="chip">해설</span></div>
+  </div>
+</div>
+                </div>
+              </div>
+
+            </div><!-- /bibleGrid -->
+          </section>
+
+        </main>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ===== 침묵 모드 토글 =====
+    const sw = document.getElementById("silenceSwitch");
+    function toggleSwitch(){
+      const on = sw.classList.toggle("on");
+      sw.setAttribute("aria-checked", on ? "true" : "false");
+    }
+    sw.addEventListener("click", toggleSwitch);
+    sw.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        toggleSwitch();
+      }
+    });
+
+    // ===== 글자 크기 =====
+    const passage = document.getElementById("passage");
+    let font = 14;
+    document.getElementById("fontUp").addEventListener("click", ()=>{
+      font = Math.min(18, font + 1);
+      passage.style.fontSize = font + "px";
+    });
+    document.getElementById("fontDown").addEventListener("click", ()=>{
+      font = Math.max(12, font - 1);
+      passage.style.fontSize = font + "px";
+    });
+
+    // ===== 상단 적용 버튼 (데모용: 타이틀/설명만 동기화) =====
+    function syncHeader(){
+      const book = document.getElementById("book").value;
+      const chap = document.getElementById("chap").value;
+      const range = document.getElementById("range").value.trim();
+      const ver = document.getElementById("ver").value;
+      document.getElementById("passageTitle").textContent = `${book} ${chap}:${range.replace(/\s/g,'')} (${ver})`;
+      document.getElementById("relDesc").textContent = `${book} ${chap}:${range.replace(/\s/g,'')} 관련 추천`;
+    }
+    document.getElementById("applyBtn").addEventListener("click", syncHeader);
+
+    // 오늘의 말씀 (데모)
+    document.getElementById("todayBtn").addEventListener("click", ()=>{
+      document.getElementById("book").value = "빌립보서";
+      document.getElementById("chap").value = "4";
+      document.getElementById("range").value = "6 ~ 7";
+      document.getElementById("ver").value = "KRV";
+      syncHeader();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // 북마크 (데모)
+    document.getElementById("markBtn").addEventListener("click", ()=>{
+      alert("북마크에 저장했습니다. (데모)");
+    });
+
+    // 더보기 (데모)
+    document.getElementById("moreBtn").addEventListener("click", ()=>{
+      alert("관련 영상 더보기 (데모)");
+    });
+
+    // 초기 반영
+    syncHeader();
+  </script>
+</body>
+</html>
+
