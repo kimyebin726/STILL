@@ -800,6 +800,25 @@ header #logoutBtn,
   line-height:1 !important;
   box-sizing:border-box !important;
 }
+
+    .loginBtn{
+      height:40px;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.55);
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:-0.2px;
+      cursor:pointer;
+      transition:transform .18s ease, background .18s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      white-space:nowrap;
+    }
+    .loginBtn:hover{ background:rgba(255,255,255,.18); transform: translateY(-1px); }
+    .loginBtn:active{ transform: translateY(0px); }
 </style>
   <script type="module" src="auth/guard.js"></script>
 </head>
