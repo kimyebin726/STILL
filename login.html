@@ -704,7 +704,39 @@
 /* Prevent unintended smooth-scroll jump on load */
 html{ scroll-behavior:auto !important; }
 
-</style>
+
+    .authDivider{
+      display:flex; align-items:center; gap:10px;
+      margin:14px 0 10px;
+      color:#9aa0a6; font-size:12px;
+    }
+    .authDivider:before, .authDivider:after{
+      content:""; flex:1; height:1px; background:rgba(0,0,0,.08);
+    }
+    .authDivider span{ padding:0 6px; }
+
+    .authBtn.google{
+      width:100%;
+      justify-content:center;
+      gap:10px;
+      background:#fff;
+      color:#111;
+      border:1px solid rgba(0,0,0,.14);
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    }
+    .authBtn.google:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(0,0,0,.10);
+    }
+    .gIcon{
+      width:22px; height:22px;
+      display:inline-flex; align-items:center; justify-content:center;
+      border-radius:6px;
+      background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+      color:#fff; font-weight:900; font-size:13px;
+    }
+
+  </style>
   <style>
     .authField{margin-top:12px;}
     .authLabel{font-size:13px; opacity:.8; margin-bottom:6px;}
@@ -763,8 +795,7 @@ html{ scroll-behavior:auto !important; }
           </div>
 
           <div class="headerRight">
-        <button class="loginBtn" id="loginBtn" type="button">로그인</button>
-        <button class="loginBtn" id="logoutBtn" type="button" style="display:none;">로그아웃</button>
+<button class="loginBtn" id="logoutBtn" type="button" style="display:none;">로그아웃</button>
 
             <button class="iconBtn" title="알림">
               <img src="bell.png" alt="알림">
@@ -854,6 +885,12 @@ html{ scroll-behavior:auto !important; }
               <button class="authBtn ghost" id="signupBtn" type="button">회원가입</button>
               <button class="authBtn solid" id="formLoginBtn" type="button">로그인</button>
             </div>
+
+            <div class="authDivider"><span>또는</span></div>
+            <button class="authBtn google" id="googleBtn" type="button">
+              <span class="gIcon">G</span>
+              Google로 로그인
+            </button>
 
             <div class="muted" style="margin-top:10px; font-size:12px;">
               ※ Email/Password 제공업체가 Firebase Authentication에 켜져 있어야 합니다.
