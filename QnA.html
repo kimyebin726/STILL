@@ -747,6 +747,9 @@ header #logoutBtn,
           </div>
 
           <div class="headerRight">
+<button id="loginBtn" class="loginBtn" onclick="location.href='login.html'">로그인</button>
+<button id="logoutBtn" class="loginBtn" style="display:none;">로그아웃</button>
+
             <button class="iconBtn" title="알림">
               <img src="bell.png" alt="알림">
             </button>
@@ -998,6 +1001,8 @@ header #logoutBtn,
     modal.addEventListener("click", (e)=>{ if(e.target === modal) closeShort(); });
     window.addEventListener("keydown", (e)=>{ if(e.key === "Escape" && modal.classList.contains("open")) closeShort(); });
   </script>
+
+<script type="module" src="auth/header-auth.js"></script>
 </body>
 </html>
 
