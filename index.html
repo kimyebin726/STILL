@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="ko">
 <head>
+  <script type="module" src="auth/guard.js"></script>
+
   <!-- Open Graph (공유 미리보기) -->
 <meta property="og:title" content="STILL" />
 <meta property="og:description" content="신앙을 위한 크리스천 영상 플랫폼" />
@@ -18,6 +20,7 @@
 <link rel="stylesheet" href="style.css">
 <script src="app.js"></script>
 <link rel="icon" type="image/png" href="still_logo1.png">
+
 
 
   <style>
@@ -160,6 +163,26 @@
       border-color: rgba(255,255,255,.34);
       transform: translateY(-1px);
     }
+    /* --- Auth buttons --- */
+    .loginBtn{
+      height:40px;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.55);
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:-0.2px;
+      cursor:pointer;
+      transition:transform .18s ease, background .18s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      white-space:nowrap;
+    }
+    .loginBtn:hover{ background:rgba(255,255,255,.18); transform: translateY(-1px); }
+    .loginBtn:active{ transform: translateY(0px); }
+
 
     .profile{
       width:42px; height:42px;
@@ -204,7 +227,21 @@
       border-color: rgba(255,255,255,.70);
     }
 
-    /* ===== MAIN LAYOUT ===== */
+    
+    /* FIX: active pill text should be dark (not white) */
+    .navPill.active,
+    .navPill.active:hover,
+    .navPill.active:visited,
+    .navPill.active:active{
+      color:#111 !important;
+    }
+    /* When pressing (mouse down), keep readable dark text */
+    .navPill:active{
+      background: rgba(255,255,255,.92);
+      border-color: rgba(255,255,255,.70);
+      color:#111 !important;
+    }
+/* ===== MAIN LAYOUT ===== */
     .main{
       background:
         radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
@@ -624,7 +661,53 @@
     .cardHead.js-go{ cursor:pointer; }
     .cardHead.js-go:hover b{ text-decoration: underline; }
 
-  </style>
+/* === STILL UI NORMALIZE (keep pages consistent) === */
+.navPill,
+.navPill:hover,
+.navPill:visited,
+.navPill:active{ text-decoration:none; color:inherit; }
+
+.main{ grid-template-columns: 260px 1fr; }
+.sidebar{ min-width:0; }
+.content{ min-width:0; }
+
+.brand{ display:flex; align-items:center; gap:6px; }
+.brandKr{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.08em;
+  opacity:.9;
+  line-height:1;
+  transform: translateY(2px);
+  user-select:none;
+}
+
+/* Subscribe list item (if page missed it) */
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.subItem:hover{ background:rgba(18,18,18,.03); }
+.subItem img{
+  width:32px;height:32px;border-radius:50%;
+  object-fit:cover; flex-shrink:0;
+}
+.subItem span{
+  font-size:14px; font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* Prevent unintended smooth-scroll jump on load */
+html{ scroll-behavior:auto !important; }
+
+</style>
+  <script type="module" src="auth/guard.js"></script>
 </head>
 
 <body>
@@ -645,6 +728,9 @@
           </div>
 
           <div class="headerRight">
+        <button class="loginBtn" id="loginBtn" type="button">로그인</button>
+        <button class="loginBtn" id="logoutBtn" type="button" style="display:none;">로그아웃</button>
+
             <button class="iconBtn" title="알림">
               <img src="bell.png" alt="알림">
             </button>
@@ -658,17 +744,14 @@
         </div>
 
         <div class="navPills">
-          <div class="navPill active">홈</div>
-         <div class="navPill" onclick="location.href='bible.html'">성경</div>
-<div class="navPill" onclick="location.href='QnA.html'">
-  Q&A
+  <a class="navPill active" href="index.html">홈</a>
+  <a class="navPill" href="bible.html">성경</a>
+  <a class="navPill" href="QnA.html">Q&A</a>
+  <a class="navPill" href="calendar.html">캘린더</a>
+  <a class="navPill" href="region.html">지역</a>
+  <a class="navPill" href="church_db.html">이단 분별</a>
+  <a class="navPill" href="jesusface.html">예수님과 고민상담</a>
 </div>
-         <div class="navPill" onclick="location.href='calendar.html'">캘린더</div>
-        <a class="navPill" href="region.html">지역</a>
-      <div class="navPill" onclick="location.href='church_db.html'">이단 분별</div>
-        <div class="navPill" onclick="location.href='jesusface.html'">예수님과 고민상담</div>
-
-        </div>
       </header>
 
       <div class="main">
@@ -711,6 +794,7 @@
   <div class="sideItem">
     <span class="sideDot"></span> 좋아요 표시한 목록
   </div>
+
 
 </aside>
 
@@ -1302,6 +1386,32 @@
       });
     });
   </script>
+  <script type="module">
+  import { auth } from "./auth/firebase.js";
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  loginBtn?.addEventListener("click", () => {
+    // always route to login flow
+    window.location.href = "login.html";
+  });
+
+  logoutBtn?.addEventListener("click", async () => {
+    try { await signOut(auth); } catch(e){ console.error(e); }
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      if (loginBtn) loginBtn.style.display = "none";
+      if (logoutBtn) logoutBtn.style.display = "inline-flex";
+    } else {
+      if (loginBtn) loginBtn.style.display = "inline-flex";
+      if (logoutBtn) logoutBtn.style.display = "none";
+    }
+  });
+</script>
 </body>
 </html>
 

@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="ko">
 <head>
+  <script type="module" src="auth/guard.js"></script>
+
   <!-- Open Graph (공유 미리보기) -->
 <meta property="og:title" content="STILL" />
 <meta property="og:description" content="신앙을 위한 크리스천 영상 플랫폼" />
@@ -197,7 +199,21 @@
       border-color: rgba(255,255,255,.70);
     }
 
-    /* ===== MAIN LAYOUT (유지) ===== */
+    
+    /* FIX: active pill text should be dark (not white) */
+    .navPill.active,
+    .navPill.active:hover,
+    .navPill.active:visited,
+    .navPill.active:active{
+      color:#111 !important;
+    }
+    /* When pressing (mouse down), keep readable dark text */
+    .navPill:active{
+      background: rgba(255,255,255,.92);
+      border-color: rgba(255,255,255,.70);
+      color:#111 !important;
+    }
+/* ===== MAIN LAYOUT (유지) ===== */
     .main{
       background:
         radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
@@ -696,7 +712,54 @@
       .toggle{width:100%; justify-content:space-between;}
       .ctrl input{ width:160px; }
     }
-  </style>
+
+/* === STILL UI NORMALIZE (keep pages consistent) === */
+.navPill,
+.navPill:hover,
+.navPill:visited,
+.navPill:active{ text-decoration:none; color:inherit; }
+
+.main{ grid-template-columns: 260px 1fr; }
+.sidebar{ min-width:0; }
+.content{ min-width:0; }
+
+.brand{ display:flex; align-items:center; gap:6px; }
+.brandKr{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.08em;
+  opacity:.9;
+  line-height:1;
+  transform: translateY(2px);
+  user-select:none;
+}
+
+/* Subscribe list item (if page missed it) */
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.subItem:hover{ background:rgba(18,18,18,.03); }
+.subItem img{
+  width:32px;height:32px;border-radius:50%;
+  object-fit:cover; flex-shrink:0;
+}
+.subItem span{
+  font-size:14px; font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* Prevent unintended smooth-scroll jump on load */
+html{ scroll-behavior:auto !important; }
+
+</style>
+  <script type="module" src="auth/guard.js"></script>
 </head>
 
 <body>
@@ -730,45 +793,61 @@
         </div>
 
         <div class="navPills">
-         <div class="navPill" onclick="location.href='index.html'">홈</div>
-          <div class="navPill" onclick="location.href='bible.html'">성경</div>
-          <div class="navPill" onclick="location.href='QnA.html'">Q&A</div>
-          <div class="navPill" onclick="location.href='calendar.html'">캘린더</div>
-          <a class="navPill" href="region.html">지역</a>
-          <div class="navPill active">이단 분별</div>
-              <div class="navPill" onclick="location.href='jesusface.html'">예수님과 고민상담</div>
-        </div>
+  <a class="navPill" href="index.html">홈</a>
+  <a class="navPill" href="bible.html">성경</a>
+  <a class="navPill" href="QnA.html">Q&A</a>
+  <a class="navPill" href="calendar.html">캘린더</a>
+  <a class="navPill" href="region.html">지역</a>
+  <a class="navPill active" href="church_db.html">이단 분별</a>
+  <a class="navPill" href="jesusface.html">예수님과 고민상담</a>
+</div>
       </header>
 
       <div class="main">
 
         <!-- SIDEBAR (bible.html에서 쓰던 구조 유지) -->
         <aside class="sidebar">
-          <div class="secTitle">Subscribe</div>
 
-          <div class="subItem">
-            <img src="cbs.png" alt="새롭게하소서 CBS">
-            <span>새롭게하소서CBS</span>
-          </div>
-          <div class="subItem">
-            <img src="jaljal.png" alt="잘잘법">
-            <span>잘잘법 : 잘 믿고 잘 사는 법</span>
-          </div>
-          <div class="subItem">
-            <img src="weracle.png" alt="위라클">
-            <span>위라클 WERACLE</span>
-          </div>
-          <div class="subItem">
-            <img src="cts.png" alt="CTS">
-            <span>CTS기독교TV</span>
-          </div>
+  <!-- 구독 -->
+<div class="secTitle">Subscribe</div>
 
-          <div class="secTitle" style="margin-top:18px">My Page</div>
-          <div class="sideItem"><span class="sideDot"></span> 최신기록</div>
-          <div class="sideItem"><span class="sideDot"></span> 재생목록</div>
-          <div class="sideItem"><span class="sideDot"></span> 저장한 목록</div>
-          <div class="sideItem"><span class="sideDot"></span> 좋아요 표시한 목록</div>
-        </aside>
+<div class="subItem">
+  <img src="cbs.png" alt="새롭게하소서 CBS">
+  <span>새롭게하소서CBS</span>
+</div>
+
+<div class="subItem">
+  <img src="jaljal.png" alt="잘잘법">
+  <span>잘잘법 : 잘 믿고 잘 사는 법</span>
+</div>
+
+<div class="subItem">
+  <img src="weracle.png" alt="위라클">
+  <span>위라클 WERACLE</span>
+</div>
+
+<div class="subItem">
+  <img src="cts.png" alt="CTS">
+  <span>CTS기독교TV</span>
+</div>
+
+  <!-- 내 페이지 -->
+  <div class="secTitle" style="margin-top:18px">My Page</div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 최신기록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 재생목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 저장한 목록
+  </div>
+  <div class="sideItem">
+    <span class="sideDot"></span> 좋아요 표시한 목록
+  </div>
+
+
+</aside>
 
         <main class="content">
           <section class="card bibleWrap">
@@ -911,7 +990,7 @@
   <script>
     // ===== Demo DB (MVP용: 내부 DB로 “동작”부터) =====
     // 실서비스에서는: 교단/공식 디렉토리 API or 제휴 데이터로 교체
-    const db = [
+    let db = [
       {
         id:"org-cbs",
         name:"새롭게하소서CBS",
@@ -1007,6 +1086,26 @@
         tags:["이름중복주의","지역교차확인","교단표기"]
       }
     ];
+    // ✅ 외부 데이터 로드(권장): data/cult_churches.json
+    // 형식: { "items":[ { "name":"", "city":"", "gu":"", "denom":"", "status":"주의", "source":"", "note":"" } ] }
+    async function loadExternalDB(){
+      try{
+        const res = await fetch("data/cult_churches.json", { cache:"no-store" });
+        if(!res.ok) return;
+        const json = await res.json();
+        if(json && Array.isArray(json.items) && json.items.length){
+          db = json.items;
+          renderResults(); // 데이터 갱신 후 재렌더
+        }
+      }catch(e){
+        // ignore (정적 호스팅 환경/CORS 등)
+      }
+    }
+      }catch(e){
+        // ignore (정적 호스팅 환경/CORS 등)
+      }
+    }
+
 
     const state = {
       tab:"search",
@@ -1536,6 +1635,7 @@
     setTab("search");
     // prefill results (show all)
     renderResults();
+    loadExternalDB();
   </script>
 </body>
 </html>
