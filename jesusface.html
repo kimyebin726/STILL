@@ -652,6 +652,14 @@
 .desc.main{ --baseSize:15px; }
 .desc.sub{ --baseSize:13px; }
 
+/* FIX: center text inside login/logout pill buttons */
+.loginBtn, #logoutBtn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  box-sizing:border-box;
+}
 </style>
   <script type="module" src="auth/guard.js"></script>
 </head>

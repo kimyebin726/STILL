@@ -643,7 +643,15 @@ body.fullChapter #passage::-webkit-scrollbar-thumb{
   text-overflow:ellipsis;
 }
 
-  </style>
+/* FIX: center text inside login/logout pill buttons */
+.loginBtn, #logoutBtn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  box-sizing:border-box;
+}
+</style>
 </head>
 
 <body>
