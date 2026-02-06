@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>STILL 보안 로그인</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<title>STILL 인증</title>
+<link rel="stylesheet" href="style.css">
+<script type="module" src="auth/login-flow.js"></script>
 </head>
 <body>
+<div id="app">
+  <header class="topbar">STILL</header>
+  <aside class="sidebar"></aside>
+  <main class="content">
+    <h1 class="pageTitle">보안 인증</h1>
 
-<div class="login-wrap">
-  <h2>보안 로그인</h2>
+    <section id="emailStep">
+      <input id="email" placeholder="이메일">
+      <input id="password" type="password" placeholder="비밀번호">
+      <button id="emailBtn">이메일 로그인</button>
+    </section>
 
-  <div class="box">
-    <label>이메일</label>
-    <input id="email" type="email" placeholder="email@example.com" />
+    <section id="phoneStep" style="display:none">
+      <input id="phone" placeholder="전화번호">
+      <button id="phoneBtn">SMS 인증</button>
+    </section>
 
-    <label>비밀번호</label>
-    <input id="password" type="password" placeholder="8자 이상" />
-
-    <div class="btns">
-      <button id="signupBtn" type="button">회원가입</button>
-      <button id="loginBtn" type="button">로그인</button>
-    </div>
-  </div>
-
-  <div id="status" class="status"></div>
+    <section id="churchStep" style="display:none">
+      <input id="church" placeholder="소속 교회">
+      <button id="finishBtn">완료</button>
+    </section>
+  </main>
 </div>
-
-<script type="module" src="auth/login.js"></script>
 </body>
 </html>
