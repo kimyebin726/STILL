@@ -29,7 +29,7 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
   }
 });
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
+document.getElementById("formLoginBtn").addEventListener("click", async () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
 
