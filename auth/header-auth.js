@@ -9,7 +9,6 @@ function setVisible(el, show){
 }
 
 function initHeaderAuth(){
-  const loginBtn = qs("#loginBtn");
   const logoutBtn = qs("#logoutBtn");
 
   // Bind logout click once
@@ -18,7 +17,6 @@ function initHeaderAuth(){
     logoutBtn.addEventListener("click", async () => {
       try{
         await signOut(auth);
-        // after logout always go to index
         window.location.href = "index.html";
       }catch(e){
         console.error(e);
@@ -30,30 +28,14 @@ function initHeaderAuth(){
   onAuthStateChanged(auth, (user) => {
     const path = (location.pathname || "").toLowerCase();
     const isLoginPage = path.endsWith("/login.html") || path.endsWith("login.html");
-    const isIndexPage = path.endsWith("/index.html") || path.endsWith("index.html") || path.endsWith("/");
-    
-    // LOGIN PAGE: do not show header login/logout buttons (keep the main login UI only)
     if (isLoginPage){
-      setVisible(loginBtn, false);
       setVisible(logoutBtn, false);
       return;
     }
-
-    // INDEX PAGE: keep ONLY logout button (no login button)
-    if (isIndexPage){
-      setVisible(loginBtn, false);
-      setVisible(logoutBtn, !!user);
-      return;
-    }
-
-    // OTHER PAGES: show login when logged out, show logout when logged in
-    if (user){
-      setVisible(logoutBtn, true);
-      setVisible(loginBtn, false);
-    }else{
-      setVisible(logoutBtn, false);
-      setVisible(loginBtn, true);
-    }
+    // Match index.html rule across ALL pages:
+    // - Logged in: show logout
+    // - Logged out: show nothing (no header login button)
+    setVisible(logoutBtn, !!user);
   });
 }
 
