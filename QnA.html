@@ -714,13 +714,16 @@
 /* Prevent unintended smooth-scroll jump on load */
 html{ scroll-behavior:auto !important; }
 
-/* FIX: center text inside login/logout pill buttons */
-.loginBtn, #logoutBtn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  line-height:1;
-  box-sizing:border-box;
+/* FIX: center text inside login/logout pill buttons (force override) */
+header .loginBtn,
+header #logoutBtn,
+.loginBtn,
+#logoutBtn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  line-height:1 !important;
+  box-sizing:border-box !important;
 }
 </style>
   <script type="module" src="auth/guard.js"></script>
