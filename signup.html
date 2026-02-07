@@ -1,498 +1,175 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>STILL | 회원가입</title>
-
-  <!-- ✅ Favicon -->
   <link rel="icon" href="still_logo1.png" />
-
-  <!-- (프로젝트 공통 폰트/스타일을 쓰고 있다면 그대로 유지) -->
+  <!-- 로그인 페이지와 동일한 스타일 구조를 유지하기 위해 login.html을 기반으로 제작 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ====== login.html과 같은 레이아웃 톤을 유지하기 위한 기본값 ====== */
-    :root{
-      --bg1:#7a0b0b;
-      --bg2:#c81414;
-      --card:#ffffff;
-      --line:rgba(255,255,255,.65);
-      --shadow:0 18px 40px rgba(0,0,0,.18);
-      --softshadow:0 14px 30px rgba(0,0,0,.10);
-      --radius:22px;
-      --radius2:18px;
-      --txt:#111;
-      --muted:#666;
-    }
+    /* login.html의 스타일을 그대로 유지(필요 최소만 포함) */
+    :root{--bg:#7b0a0a;--card:#ffffff;--muted:#8b8b8b;--line:#ececec;--shadow:0 18px 60px rgba(0,0,0,.18);--radius:22px}
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      background: radial-gradient(1200px 800px at 30% 20%, #ff6a6a 0%, #cf1c1c 35%, #7a0b0b 100%);
-      min-height:100vh;
-      color:var(--txt);
-    }
-    .frame{
-      width:min(1380px, 92vw);
-      margin:32px auto;
-      border:2px solid var(--line);
-      border-radius:28px;
-      overflow:hidden;
-      box-shadow: var(--shadow);
-      background:rgba(255,255,255,.08);
-      backdrop-filter: blur(6px);
-    }
-
-    /* ===== Header ===== */
-    .topbar{
-      padding:18px 22px 12px;
-      background: linear-gradient(90deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-    }
-    .toprow{
-      display:flex;
-      align-items:center;
-      gap:16px;
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:200px;
-    }
-    .brand img{
-      width:88px;
-      height:auto;
-      display:block;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,.15));
-    }
-    .brand .kr{
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Pretendard,"Apple SD Gothic Neo",sans-serif;background:radial-gradient(1200px 600px at 20% 10%, #ff5b5b 0%, rgba(255,91,91,0) 60%),radial-gradient(900px 500px at 80% 0%, #6b0000 0%, rgba(107,0,0,0) 60%),linear-gradient(120deg,#c62020,#6b0000);min-height:100vh;color:#111}
+    .frame{max-width:1500px;margin:26px auto;padding:0 18px}
+    .shell{border:2px solid rgba(255,255,255,.75);border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+    .topbar{display:flex;align-items:center;gap:20px;padding:18px 22px;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.0));}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand img{height:32px}
+    .brand .kr{font-weight:700;letter-spacing:.12em;color:#fff}
+    .search{flex:1;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.86);border-radius:999px;padding:14px 16px;min-height:46px}
+    .search input{border:0;outline:0;background:transparent;flex:1;font-size:14px}
+    .topIcons{display:flex;align-items:center;gap:10px}
+    .iconBtn{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.92);display:grid;place-items:center;cursor:pointer}
+    .iconBtn img{width:20px;height:20px;object-fit:contain}
+    .navrow{display:flex;gap:10px;padding:0 22px 18px;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.0));}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.24);color:#fff;background:rgba(255,255,255,.07);font-weight:600;font-size:13px;text-decoration:none}
+    .chip.active{background:#fff;color:#111;border-color:#fff}
+    .content{background:rgba(255,255,255,.92);padding:22px}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+    .side{background:#fff;border-radius:var(--radius);border:1px solid var(--line);padding:18px;box-shadow:0 12px 35px rgba(0,0,0,.06)}
+    .side h3{margin:6px 0 14px;font-size:12px;letter-spacing:.22em;color:#9a9a9a}
+    .subItem{display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:16px}
+    .subItem img{width:34px;height:34px;border-radius:999px;object-fit:cover}
+    .subItem .name{font-weight:700}
+    .main{background:#fff;border-radius:var(--radius);border:1px solid var(--line);padding:22px;box-shadow:0 12px 35px rgba(0,0,0,.06)}
+    .title{font-size:22px;font-weight:800;margin:2px 0 8px}
+    .desc{color:#666;margin:0 0 18px;line-height:1.5}
+    .field{margin:14px 0}
+    label{display:block;font-size:12px;color:#666;margin:0 0 6px}
+    input{width:100%;border:1px solid #e6e6e6;border-radius:14px;padding:14px 14px;font-size:14px;outline:none}
+    input:focus{border-color:#d64b4b;box-shadow:0 0 0 4px rgba(214,75,75,.12)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .actions{display:flex;align-items:center;gap:10px;margin-top:16px}
+    .btn{border-radius:999px;padding:11px 16px;font-weight:800;border:1px solid #ddd;background:#fff;cursor:pointer}
+    .btn.primary{background:#111;color:#fff;border-color:#111}
+    .or{display:flex;align-items:center;gap:14px;margin:18px 0}
+    .or:before,.or:after{content:"";flex:1;height:1px;background:#eee}
+    .or span{color:#999;font-size:12px}
+    .btnWide{width:100%;border-radius:999px;border:1px solid #e6e6e6;background:#fff;padding:14px 16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}
+    .btnWide img{width:20px;height:20px}
+    .msg{margin-top:12px;font-size:13px;color:#a33;min-height:18px}
+    .hint{margin-top:10px;color:#7a7a7a;font-size:12px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}.side{display:none}}
+    .gIcon{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:22px;height:22px;border-radius:6px;
+      font-weight:800;font-size:13px;
+      background:linear-gradient(135deg,#34a853,#4285f4);
       color:#fff;
-      font-weight:700;
-      letter-spacing:.08em;
-      opacity:.9;
-      margin-top:6px;
+      margin-right:10px;
+      box-shadow:0 6px 18px rgba(0,0,0,.12);
     }
 
-    .search{
-      flex:1;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      background: rgba(255,255,255,.82);
-      border-radius:999px;
-      padding:14px 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,.10);
-    }
-    .search .mag{
-      width:18px; height:18px;
-      opacity:.65;
-    }
-    .search input{
-      border:none;
-      outline:none;
-      width:100%;
-      font-size:15px;
-      background:transparent;
-      color:#333;
-    }
-    .search .mic{
-      width:18px; height:18px;
-      opacity:.7;
-    }
-
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-left:auto;
-    }
-    .iconBtn{
-      width:44px; height:44px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.55);
-      background: rgba(255,255,255,.92);
-      display:grid;
-      place-items:center;
-      box-shadow: 0 10px 20px rgba(0,0,0,.12);
-      cursor:pointer;
-    }
-    .iconBtn img{ width:22px; height:22px; display:block; }
-
-    /* ===== Nav ===== */
-    .navrow{
-      display:flex;
-      gap:12px;
-      padding:14px 22px 18px;
-      background: linear-gradient(90deg, rgba(255,255,255,.08), rgba(0,0,0,.0));
-    }
-    .chip{
-      padding:10px 16px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.35);
-      color:#fff;
-      background: rgba(255,255,255,.10);
-      font-weight:650;
-      font-size:14px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .chip.active{
-      background: rgba(255,255,255,.92);
-      color:#111;
-      border-color: rgba(255,255,255,.92);
-    }
-
-    /* ===== Main layout ===== */
-    .main{
-      padding:20px 22px 28px;
-      background: rgba(255,255,255,.92);
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      gap:18px;
-      align-items:start;
-    }
-    .side, .card{
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--softshadow);
-      border:1px solid rgba(0,0,0,.06);
-    }
-
-    /* Sidebar */
-    .side{
-      padding:18px;
-    }
-    .side h3{
-      margin:4px 0 14px;
-      font-size:14px;
-      letter-spacing:.24em;
-      color:#888;
-      font-weight:800;
-    }
-    .subItem{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:12px 10px;
-      border-radius:14px;
-    }
-    .subItem img{
-      width:38px; height:38px;
-      border-radius:999px;
-      display:block;
-      background:#f2f2f2;
-      object-fit:cover;
-    }
-    .subItem .name{
-      font-weight:800;
-      font-size:18px;
-      color:#111;
-      letter-spacing:-.02em;
-    }
-    .subItem .desc{
-      margin-top:2px;
-      font-size:12px;
-      color:#777;
-    }
-    .mypage{
-      margin-top:18px;
-      padding-top:18px;
-      border-top:1px solid rgba(0,0,0,.06);
-    }
-    .mypage .li{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 8px;
-      color:#aaa;
-      font-weight:700;
-    }
-    .dot{
-      width:14px; height:14px;
-      border-radius:999px;
-      background:#eee;
-      border:1px solid rgba(0,0,0,.06);
-    }
-
-    /* Signup card */
-    .card{
-      padding:22px 22px 26px;
-    }
-    .card h2{
-      margin:6px 0 6px;
-      font-size:22px;
-      letter-spacing:-.02em;
-    }
-    .card .sub{
-      margin:0 0 18px;
-      color:#666;
-      font-weight:650;
-    }
-    .formRow{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-      margin-bottom:12px;
-    }
-    .formRow.one{ grid-template-columns: 1fr; }
-    label{
-      display:block;
-      font-size:12px;
-      color:#777;
-      font-weight:800;
-      margin:10px 0 6px;
-    }
-    input{
-      width:100%;
-      height:46px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.10);
-      padding:0 14px;
-      outline:none;
-      font-size:14px;
-      background:#fff;
-    }
-    .btnRow{
-      display:flex;
-      gap:12px;
-      margin-top:16px;
-      align-items:center;
-    }
-    .btn{
-      height:44px;
-      padding:0 18px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.12);
-      font-weight:850;
-      cursor:pointer;
-      background:#fff;
-    }
-    .btn.primary{
-      background:#111;
-      color:#fff;
-      border-color:#111;
-    }
-    .divider{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin:18px 0 12px;
-      color:#888;
-      font-weight:800;
-      font-size:12px;
-    }
-    .divider::before, .divider::after{
-      content:"";
-      flex:1;
-      height:1px;
-      background: rgba(0,0,0,.08);
-    }
-
-    /* Google button (✅ login.html과 같은 이미지 아이콘 방식) */
-    .googleBtn{
-      width:100%;
-      height:46px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.10);
-      background:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      font-weight:900;
-      cursor:pointer;
-    }
-    .googleBtn img{
-      width:18px;
-      height:18px;
-      display:block;
-    }
-
-    .note{
-      margin-top:12px;
-      color:#777;
-      font-size:12px;
-      font-weight:700;
-    }
-
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-      .brand{ min-width:auto; }
-      .brand img{ width:72px; }
-    }
   </style>
 </head>
-
 <body>
   <div class="frame">
-
-    <!-- ===== TOP ===== -->
-    <div class="topbar">
-      <div class="toprow">
+    <div class="shell">
+      <div class="topbar">
         <div class="brand">
-          <!-- login.html에서 쓰던 로고 이미지 그대로 -->
-          <img src="still_logo1.png" alt="STILL" />
+          <img src="still_logo.png" alt="STILL" />
           <div class="kr">KR</div>
         </div>
-
         <div class="search">
-          <!-- search 아이콘이 따로 있으면 바꿔도 됨 -->
-          <svg class="mag" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2" opacity=".65"/>
-            <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".65"/>
-          </svg>
+          <img src="search.png" alt="search" style="width:18px;height:18px;opacity:.8" />
           <input type="text" placeholder="영상 · 구절 · 교회 · 지역 검색" />
-          <!-- mic 아이콘이 따로 있으면 바꿔도 됨 -->
-          <img class="mic" src="mic.png" alt="" onerror="this.style.display='none';" />
+          <img src="mic.png" alt="mic" style="width:18px;height:18px;opacity:.85" />
         </div>
-
-        <div class="actions">
-          <!-- ✅ login.html과 동일하게 이미지 아이콘 방식 유지 -->
-          <button class="iconBtn" type="button" aria-label="알림">
-            <img src="bell.png" alt="bell" />
-          </button>
-          <button class="iconBtn" type="button" aria-label="십자가">
-            <img src="cross.png" alt="cross" />
-          </button>
-          <button class="iconBtn" type="button" aria-label="예수님">
-            <img src="jesus.png" alt="jesus" />
-          </button>
+        <div class="topIcons">
+          <button class="iconBtn" type="button"><img src="bell.png" alt="bell" /></button>
+          <button class="iconBtn" type="button"><img src="cross.png" alt="cross" /></button>
+          <button class="iconBtn" type="button"><img src="bin.png" alt="profile" /></button>
         </div>
       </div>
 
       <div class="navrow">
-        <div class="chip">홈</div>
-        <div class="chip">성경</div>
-        <div class="chip">Q&amp;A</div>
-        <div class="chip">캘린더</div>
-        <div class="chip">지역</div>
-        <div class="chip">이단 분별</div>
-        <div class="chip">예수님과 고민상담</div>
+        <a class="chip" href="index.html">홈</a>
+        <a class="chip" href="bible.html">성경</a>
+        <a class="chip" href="QnA.html">Q&amp;A</a>
+        <a class="chip" href="calendar.html">캘린더</a>
+        <a class="chip" href="region.html">지역</a>
+        <a class="chip" href="church_db.html">이단 분별</a>
+        <a class="chip" href="jesusface.html">예수님과 고민상담</a>
       </div>
-    </div>
 
-    <!-- ===== CONTENT ===== -->
-    <div class="main">
-      <div class="grid">
+      <div class="content">
+        <div class="grid">
+          <aside class="side">
+            <h3>SUBSCRIBE</h3>
+            <div class="subItem"><img src="cbs.png" alt="" /><div><div class="name">새롭게하소서CBS</div></div></div>
+            <div class="subItem"><img src="jaljal.png" alt="" /><div><div class="name">잘잘법 : 잘 믿고 잘 사는 법</div></div></div>
+            <div class="subItem"><img src="weracle.png" alt="" /><div><div class="name">위라클 WERACLE</div></div></div>
+            <div class="subItem"><img src="cts.png" alt="" /><div><div class="name">CTS기독교TV</div></div></div>
 
-        <!-- ===== LEFT SIDEBAR (login.html과 동일하게 유지되는 영역) ===== -->
-        <aside class="side">
-          <h3>SUBSCRIBE</h3>
+            <h3 style="margin-top:18px">MY PAGE</h3>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">최신기록</div></div></div>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">재생목록</div></div></div>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">저장한 목록</div></div></div>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">좋아요 표시한 목록</div></div></div>
+          </aside>
 
-          <div class="subItem">
-            <img src="saerok.png" alt="" onerror="this.style.opacity=.2" />
-            <div>
-              <div class="name">새롭게하소서CBS</div>
-            </div>
-          </div>
+          <main class="main">
+            <div class="title">회원가입</div>
+            <p class="desc">STILL 이용을 위한 계정을 만듭니다. (다음 단계: 전화번호 인증 · 소속 교회 입력)</p>
 
-          <div class="subItem">
-            <!-- ✅ 여기서 “잘잘법” 로고가 깨졌다면 파일명/경로가 틀린 것 -->
-            <img src="jaljal.png" alt="" onerror="this.style.opacity=.2" />
-            <div>
-              <div class="name">잘잘법 : 잘 믿고 잘 사는 법</div>
-            </div>
-          </div>
-
-          <div class="subItem">
-            <img src="weracle.png" alt="" onerror="this.style.opacity=.2" />
-            <div>
-              <div class="name">위라클 WERACLE</div>
-            </div>
-          </div>
-
-          <div class="subItem">
-            <img src="cts.png" alt="" onerror="this.style.opacity=.2" />
-            <div>
-              <div class="name">CTS기독교TV</div>
-            </div>
-          </div>
-
-          <div class="mypage">
-            <h3>MY PAGE</h3>
-            <div class="li"><span class="dot"></span>최신기록</div>
-            <div class="li"><span class="dot"></span>재생목록</div>
-            <div class="li"><span class="dot"></span>저장한 목록</div>
-            <div class="li"><span class="dot"></span>좋아요 표시한 목록</div>
-          </div>
-        </aside>
-
-        <!-- ===== SIGNUP CARD ===== -->
-        <section class="card">
-          <h2>회원가입</h2>
-          <p class="sub">STILL 이용을 위한 계정을 만듭니다.</p>
-
-          <form id="signupForm" autocomplete="on">
-            <div class="formRow one">
-              <div>
-                <label for="name">이름(선택)</label>
-                <input id="name" type="text" placeholder="예: 김예빈" />
-              </div>
+            <div class="field">
+              <label for="name">이름(선택)</label>
+              <input id="name" type="text" placeholder="예: 김예빈" />
             </div>
 
-            <div class="formRow one">
-              <div>
-                <label for="church">소속 교회(필수)</label>
-                <input id="church" type="text" placeholder="예: 한마음교회" required />
-              </div>
+            <div class="field">
+              <label for="church">소속 교회(필수)</label>
+              <input id="church" type="text" placeholder="예: 한마음교회" />
             </div>
 
-            <div class="formRow one">
-              <div>
-                <label for="email">이메일</label>
-                <input id="email" type="email" placeholder="email@example.com" required />
-              </div>
+            <div class="field">
+              <label for="email">이메일</label>
+              <input id="email" type="email" placeholder="email@example.com" autocomplete="email" />
             </div>
 
-            <div class="formRow">
-              <div>
+            <div class="row2">
+              <div class="field">
                 <label for="password">비밀번호</label>
-                <input id="password" type="password" placeholder="8자 이상" minlength="8" required />
+                <input id="password" type="password" placeholder="8자 이상" autocomplete="new-password" />
               </div>
-              <div>
+              <div class="field">
                 <label for="password2">비밀번호 확인</label>
-                <input id="password2" type="password" placeholder="비밀번호 다시 입력" minlength="8" required />
+                <input id="password2" type="password" placeholder="비밀번호 다시 입력" autocomplete="new-password" />
               </div>
             </div>
 
-            <div class="btnRow">
-              <button class="btn primary" type="submit">가입하기</button>
-              <button class="btn" type="button" id="goLogin">로그인으로</button>
+            <div class="actions">
+              <button class="btn primary" id="signupSubmit" type="button">가입하기</button>
+              <button class="btn" id="backToLogin" type="button">로그인으로</button>
             </div>
 
-            <div class="divider">또는</div>
-
-            <!-- ✅ login.html과 같은 구글 아이콘(이미지)로 유지 -->
-            <button class="googleBtn" type="button" id="googleStart">
-              <img src="google.png" alt="Google" />
-              Google로 시작하기
+            <div class="or"><span>또는</span></div>
+               <button class="authBtn google" id="googleBtn" type="button">
+              <span class="gIcon">G</span>
+              Google로 로그인
             </button>
-
-            <div class="note">※ Email/Password 및 Google 제공업체가 Firebase Authentication에 켜져 있어야 합니다.</div>
-          </form>
-        </section>
-
+            <div class="statusLine" data-status style="margin-top:12px; font-size:13px; color:#b00020; display:none;"></div>
+<div class="muted" style="margin-top:10px; font-size:12px;">
+              ※ Email/Password 제공업체가 Firebase Authentication에 켜져 있어야 합니다.
+            </div>
+            <div class="msg" id="msg"></div>
+                <button class="authBtn google" id="googleBtn" type="button">
+              <span class="gIcon">G</span>
+              Google로 로그인
+            </button>
+            <div class="statusLine" data-status style="margin-top:12px; font-size:13px; color:#b00020; display:none;"></div>
+<div class="muted" style="margin-top:10px; font-size:12px;">
+              ※ Email/Password 제공업체가 Firebase Authentication에 켜져 있어야 합니다.</div>
+          </main>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== Firebase / Signup Logic =====
-       프로젝트에 이미 있는 파일명을 그대로 쓰거나, 네 파일명에 맞게 수정해줘.
-  -->
-  <script type="module" src="auth/firebase.js"></script>
-  <script type="module">
-    // 페이지 이동 (next 파라미터 유지)
-    const qs = new URLSearchParams(location.search);
-    const next = qs.get("next") || "index.html";
-
-    document.getElementById("goLogin").addEventListener("click", () => {
-      location.href = `login.html?next=${encodeURIComponent(next)}`;
-    });
-
-    // signup.js가 있다면 그쪽에서 이벤트 바인딩해도 되고,
-    // 여기서 직접 처리해도 됨.
-  </script>
   <script type="module" src="auth/signup.js"></script>
 </body>
 </html>
