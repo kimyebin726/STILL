@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STILL | 회원가입</title>
+  <link rel="icon" href="still_logo1.png" />
+  <!-- 로그인 페이지와 동일한 스타일 구조를 유지하기 위해 login.html을 기반으로 제작 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* login.html의 스타일을 그대로 유지(필요 최소만 포함) */
+    :root{--bg:#7b0a0a;--card:#ffffff;--muted:#8b8b8b;--line:#ececec;--shadow:0 18px 60px rgba(0,0,0,.18);--radius:22px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Pretendard,"Apple SD Gothic Neo",sans-serif;background:radial-gradient(1200px 600px at 20% 10%, #ff5b5b 0%, rgba(255,91,91,0) 60%),radial-gradient(900px 500px at 80% 0%, #6b0000 0%, rgba(107,0,0,0) 60%),linear-gradient(120deg,#c62020,#6b0000);min-height:100vh;color:#111}
+    .frame{max-width:1500px;margin:26px auto;padding:0 18px}
+    .shell{border:2px solid rgba(255,255,255,.75);border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+    .topbar{display:flex;align-items:center;gap:20px;padding:18px 22px;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.0));}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand img{height:32px}
+    .brand .kr{font-weight:700;letter-spacing:.12em;color:#fff}
+    .search{flex:1;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.86);border-radius:999px;padding:14px 16px;min-height:46px}
+    .search input{border:0;outline:0;background:transparent;flex:1;font-size:14px}
+    .topIcons{display:flex;align-items:center;gap:10px}
+    .iconBtn{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.92);display:grid;place-items:center;cursor:pointer}
+    .iconBtn img{width:20px;height:20px;object-fit:contain}
+    .navrow{display:flex;gap:10px;padding:0 22px 18px;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.0));}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.24);color:#fff;background:rgba(255,255,255,.07);font-weight:600;font-size:13px;text-decoration:none}
+    .chip.active{background:#fff;color:#111;border-color:#fff}
+    .content{background:rgba(255,255,255,.92);padding:22px}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+    .side{background:#fff;border-radius:var(--radius);border:1px solid var(--line);padding:18px;box-shadow:0 12px 35px rgba(0,0,0,.06)}
+    .side h3{margin:6px 0 14px;font-size:12px;letter-spacing:.22em;color:#9a9a9a}
+    .subItem{display:flex;align-items:center;gap:12px;padding:12px 10px;border-radius:16px}
+    .subItem img{width:34px;height:34px;border-radius:999px;object-fit:cover}
+    .subItem .name{font-weight:700}
+    .main{background:#fff;border-radius:var(--radius);border:1px solid var(--line);padding:22px;box-shadow:0 12px 35px rgba(0,0,0,.06)}
+    .title{font-size:22px;font-weight:800;margin:2px 0 8px}
+    .desc{color:#666;margin:0 0 18px;line-height:1.5}
+    .field{margin:14px 0}
+    label{display:block;font-size:12px;color:#666;margin:0 0 6px}
+    input{width:100%;border:1px solid #e6e6e6;border-radius:14px;padding:14px 14px;font-size:14px;outline:none}
+    input:focus{border-color:#d64b4b;box-shadow:0 0 0 4px rgba(214,75,75,.12)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .actions{display:flex;align-items:center;gap:10px;margin-top:16px}
+    .btn{border-radius:999px;padding:11px 16px;font-weight:800;border:1px solid #ddd;background:#fff;cursor:pointer}
+    .btn.primary{background:#111;color:#fff;border-color:#111}
+    .or{display:flex;align-items:center;gap:14px;margin:18px 0}
+    .or:before,.or:after{content:"";flex:1;height:1px;background:#eee}
+    .or span{color:#999;font-size:12px}
+    .btnWide{width:100%;border-radius:999px;border:1px solid #e6e6e6;background:#fff;padding:14px 16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}
+    .btnWide img{width:20px;height:20px}
+    .msg{margin-top:12px;font-size:13px;color:#a33;min-height:18px}
+    .hint{margin-top:10px;color:#7a7a7a;font-size:12px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}.side{display:none}}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand">
+          <img src="still_logo1.png" alt="STILL" />
+          <div class="kr">KR</div>
+        </div>
+        <div class="search">
+          <img src="search.png" alt="search" style="width:18px;height:18px;opacity:.8" />
+          <input type="text" placeholder="영상 · 구절 · 교회 · 지역 검색" />
+          <img src="mic.png" alt="mic" style="width:18px;height:18px;opacity:.85" />
+        </div>
+        <div class="topIcons">
+          <button class="iconBtn" type="button"><img src="bell.png" alt="bell" /></button>
+          <button class="iconBtn" type="button"><img src="book.png" alt="book" /></button>
+          <button class="iconBtn" type="button"><img src="profile.png" alt="profile" /></button>
+        </div>
+      </div>
+
+      <div class="navrow">
+        <a class="chip" href="index.html">홈</a>
+        <a class="chip" href="bible.html">성경</a>
+        <a class="chip" href="QnA.html">Q&amp;A</a>
+        <a class="chip" href="calendar.html">캘린더</a>
+        <a class="chip" href="region.html">지역</a>
+        <a class="chip" href="church_db.html">이단 분별</a>
+        <a class="chip" href="jesusface.html">예수님과 고민상담</a>
+      </div>
+
+      <div class="content">
+        <div class="grid">
+          <aside class="side">
+            <h3>SUBSCRIBE</h3>
+            <div class="subItem"><img src="still/a.png" alt="" /><div><div class="name">새롭게하소서CBS</div></div></div>
+            <div class="subItem"><img src="still/b.png" alt="" /><div><div class="name">잘잘법 : 잘 믿고 잘 사는 법</div></div></div>
+            <div class="subItem"><img src="still/c.png" alt="" /><div><div class="name">위라클 WERACLE</div></div></div>
+            <div class="subItem"><img src="still/d.png" alt="" /><div><div class="name">CTS기독교TV</div></div></div>
+
+            <h3 style="margin-top:18px">MY PAGE</h3>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">최신기록</div></div></div>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">재생목록</div></div></div>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">저장한 목록</div></div></div>
+            <div class="subItem" style="opacity:.45"><div style="width:10px;height:10px;border-radius:999px;background:#ddd"></div><div><div class="name">좋아요 표시한 목록</div></div></div>
+          </aside>
+
+          <main class="main">
+            <div class="title">회원가입</div>
+            <p class="desc">STILL 이용을 위한 계정을 만듭니다. (다음 단계: 전화번호 인증 · 소속 교회 입력)</p>
+
+            <div class="field">
+              <label for="name">이름(선택)</label>
+              <input id="name" type="text" placeholder="예: 김예빈" />
+            </div>
+
+            <div class="field">
+              <label for="church">소속 교회(필수)</label>
+              <input id="church" type="text" placeholder="예: 한마음교회" />
+            </div>
+
+            <div class="field">
+              <label for="email">이메일</label>
+              <input id="email" type="email" placeholder="email@example.com" autocomplete="email" />
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label for="password">비밀번호</label>
+                <input id="password" type="password" placeholder="8자 이상" autocomplete="new-password" />
+              </div>
+              <div class="field">
+                <label for="password2">비밀번호 확인</label>
+                <input id="password2" type="password" placeholder="비밀번호 다시 입력" autocomplete="new-password" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="signupSubmit" type="button">가입하기</button>
+              <button class="btn" id="backToLogin" type="button">로그인으로</button>
+            </div>
+
+            <div class="or"><span>또는</span></div>
+            <button class="btnWide" id="googleSignupBtn" type="button">
+              <img src="google.png" alt="google" /> Google로 시작하기
+            </button>
+
+            <div class="msg" id="msg"></div>
+            <div class="hint">※ Email/Password 및 Google 제공업체가 Firebase Authentication에 켜져 있어야 합니다.</div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="auth/signup.js"></script>
+</body>
+</html>

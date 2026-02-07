@@ -1,6 +1,5 @@
 import { auth } from "./firebase.js";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup
@@ -16,21 +15,10 @@ function show(msg) {
   statusBoxes.forEach(el => (el.textContent = msg));
 }
 
-document.getElementById("signupBtn")?.addEventListener("click", async () => {
-  const email = emailInput?.value.trim();
-  const password = passwordInput?.value;
-
-  if (!email || !password) {
-    show("❌ 이메일과 비밀번호를 입력하세요.");
-    return;
-  }
-
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    show("✅ 회원가입 성공! 이제 로그인하세요.");
-  } catch (e) {
-    show("❌ " + (e?.message || e));
-  }
+// Separate signup flow
+document.getElementById("signupBtn")?.addEventListener("click", () => {
+  const next = encodeURIComponent(nextUrl);
+  window.location.href = `signup.html?next=${next}`;
 });
 
 document.getElementById("formLoginBtn")?.addEventListener("click", async () => {
