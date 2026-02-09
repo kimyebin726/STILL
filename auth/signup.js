@@ -1,111 +1,122 @@
-import { auth, db } from "./firebase.js";
+import { auth } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   GoogleAuthProvider,
   signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-const $ = (id) => document.getElementById(id);
+const $ = (sel) => document.querySelector(sel);
 
-const emailEl = $("email");
-const pwEl = $("password");
-const pw2El = $("password2");
-const nameEl = $("displayName");
-const churchEl = $("churchName");
-const msgEl = $("msg");
+function setBusy(isBusy) {
+  const btn = $("#doSignupBtn");
+  if (!btn) return;
+  btn.disabled = isBusy;
+  btn.style.opacity = isBusy ? "0.65" : "1";
+}
 
-const setMsg = (text, type = "") => {
-  if (!msgEl) return;
-  msgEl.textContent = text || "";
-  msgEl.className = `msg ${type}`.trim();
-};
+function norm(v) {
+  return (v || "").trim();
+}
 
-const normalize = (v) => (v ?? "").toString().trim();
+async function emailSignup() {
+  const name = norm($("#name")?.value);
+  const church = norm($("#church")?.value);
+  const email = norm($("#email")?.value);
+  const pw = $("#password")?.value || "";
+  const pw2 = $("#password2")?.value || "";
 
-async function upsertUserDoc(user, extra = {}) {
-  const ref = doc(db, "users", user.uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) {
-    await setDoc(ref, {
-      uid: user.uid,
-      email: user.email || null,
-      displayName: user.displayName || null,
-      provider: (user.providerData?.[0]?.providerId) || "password",
-      createdAt: serverTimestamp(),
-      ...extra,
-    });
-  } else {
-    // 이미 문서가 있으면 최소한 누락된 필드만 보완
-    const current = snap.data() || {};
-    const patch = {};
-    if (!current.displayName && user.displayName) patch.displayName = user.displayName;
-    if (!current.email && user.email) patch.email = user.email;
-    if (Object.keys(extra).length) {
-      for (const [k, v] of Object.entries(extra)) {
-        if (v != null && v !== "" && !current[k]) patch[k] = v;
-      }
+  if (!church) {
+    alert("소속 교회(필수)를 입력해 주세요.");
+    $("#church")?.focus();
+    return;
+  }
+  if (!email) {
+    alert("이메일을 입력해 주세요.");
+    $("#email")?.focus();
+    return;
+  }
+  if (pw.length < 8) {
+    alert("비밀번호는 8자 이상으로 입력해 주세요.");
+    $("#password")?.focus();
+    return;
+  }
+  if (pw !== pw2) {
+    alert("비밀번호 확인이 일치하지 않습니다.");
+    $("#password2")?.focus();
+    return;
+  }
+
+  setBusy(true);
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pw);
+
+    if (name) {
+      try { await updateProfile(cred.user, { displayName: name }); } catch (_) {}
     }
-    if (Object.keys(patch).length) {
-      await setDoc(ref, patch, { merge: true });
-    }
+
+    // (선택) 간단 프로필 임시 저장 — 나중에 Firestore로 교체 가능
+    localStorage.setItem("still_profile", JSON.stringify({
+      uid: cred.user.uid,
+      name: name || "",
+      church,
+      email,
+      createdAt: Date.now(),
+      provider: "password"
+    }));
+
+    // 가입 성공 → 로그인 페이지로 이동 (email 자동 채움)
+    window.location.href = `login.html?email=${encodeURIComponent(email)}`;
+  } catch (err) {
+    console.error(err);
+    const msg =
+      err?.code === "auth/email-already-in-use" ? "이미 사용 중인 이메일입니다." :
+      err?.code === "auth/invalid-email" ? "이메일 형식이 올바르지 않습니다." :
+      err?.code === "auth/weak-password" ? "비밀번호가 너무 약합니다. 8자 이상으로 설정해 주세요." :
+      "회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+    alert(msg);
+  } finally {
+    setBusy(false);
   }
 }
 
-$("backToLogin")?.addEventListener("click", () => {
-  window.location.href = "login.html";
-});
-
-$("signupSubmit")?.addEventListener("click", async () => {
+async function googleSignup() {
+  setBusy(true);
   try {
-    setMsg("");
-    const email = normalize(emailEl?.value);
-    const pw = normalize(pwEl?.value);
-    const pw2 = normalize(pw2El?.value);
-    const displayName = normalize(nameEl?.value);
-    const churchName = normalize(churchEl?.value);
-
-    if (!email) return setMsg("이메일을 입력해 주세요.", "err");
-    if (!pw || pw.length < 8) return setMsg("비밀번호는 8자 이상으로 입력해 주세요.", "err");
-    if (pw !== pw2) return setMsg("비밀번호 확인이 일치하지 않습니다.", "err");
-    if (!churchName) return setMsg("소속 교회를 입력해 주세요.", "err");
-
-    const cred = await createUserWithEmailAndPassword(auth, email, pw);
-    if (displayName) {
-      await updateProfile(cred.user, { displayName });
-    }
-
-    await upsertUserDoc(cred.user, { churchName });
-
-    setMsg("회원가입 완료! 홈으로 이동합니다.", "ok");
-    window.location.href = "index.html";
-  } catch (e) {
-    const code = e?.code || "";
-    if (code.includes("auth/email-already-in-use")) return setMsg("이미 가입된 이메일입니다. 로그인해 주세요.", "err");
-    if (code.includes("auth/invalid-email")) return setMsg("이메일 형식이 올바르지 않습니다.", "err");
-    if (code.includes("auth/weak-password")) return setMsg("비밀번호가 너무 약합니다. 8자 이상으로 설정해 주세요.", "err");
-    setMsg(`회원가입 실패: ${e?.message || e}` , "err");
-  }
-});
-
-$("googleSignupBtn")?.addEventListener("click", async () => {
-  try {
-    setMsg("");
-    const churchName = normalize(churchEl?.value);
-    if (!churchName) return setMsg("Google로 시작하기 전에 소속 교회를 입력해 주세요.", "err");
-
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    await upsertUserDoc(result.user, { churchName });
-    setMsg("Google 로그인 완료! 홈으로 이동합니다.", "ok");
-    window.location.href = "index.html";
-  } catch (e) {
-    setMsg(`Google 로그인 실패: ${e?.message || e}`, "err");
+
+    const email = result.user?.email || "";
+    localStorage.setItem("still_profile", JSON.stringify({
+      uid: result.user.uid,
+      name: result.user.displayName || "",
+      church: "",
+      email,
+      createdAt: Date.now(),
+      provider: "google"
+    }));
+
+    // 원하면 index.html로 바로 보내도 됨. 지금은 요청대로 login.html로.
+    window.location.href = email
+      ? `login.html?email=${encodeURIComponent(email)}`
+      : "login.html";
+  } catch (err) {
+    console.error(err);
+    const msg =
+      err?.code === "auth/popup-closed-by-user" ? "팝업이 닫혔습니다." :
+      "Google 로그인에 실패했습니다.";
+    alert(msg);
+  } finally {
+    setBusy(false);
   }
+}
+
+$("#doSignupBtn")?.addEventListener("click", emailSignup);
+$("#googleBtn")?.addEventListener("click", googleSignup);
+
+// Enter 키로 가입
+["#name", "#church", "#email", "#password", "#password2"].forEach((sel) => {
+  $(sel)?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") emailSignup();
+  });
 });

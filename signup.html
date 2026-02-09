@@ -1,18 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>STILL | 회원가입</title>
-
-  <!-- favicon -->
-  <link rel="icon" type="image/png" href="still_logo1.png">
-
-  <!-- (선택) 기존에 쓰던 외부 파일이 있다면 유지 -->
-  <link rel="stylesheet" href="style.css">
-  <script src="app.js"></script>
-
-  <style>
+<!-- Open Graph (공유 미리보기) -->
+<meta content="STILL" property="og:title"/>
+<meta content="신앙을 위한 크리스천 영상 플랫폼" property="og:description"/>
+<meta content="https://kimyebin726.github.io/STILL/og_still.png" property="og:image"/>
+<meta content="https://kimyebin726.github.io/STILL/" property="og:url"/>
+<meta content="website" property="og:type"/>
+<!-- Twitter (겸용) -->
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="https://kimyebin726.github.io/STILL/og_still.png" name="twitter:image"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>STILL | 회원가입</title>
+<link href="style.css" rel="stylesheet"/>
+<script src="app.js"></script>
+<link href="still_logo1.png" rel="icon" type="image/png"/>
+<style>
     :root{
       --brand:#D70F12;
       --bg1:#7d0a0c;
@@ -63,7 +68,7 @@
       border:2px solid rgba(255,255,255,.55);
     }
 
-    /* ===== HEADER (login.html과 동일) ===== */
+    /* ===== HEADER ===== */
     .header{
       background:
         radial-gradient(1200px 260px at 12% 0%, rgba(255,255,255,.18), transparent 62%),
@@ -81,20 +86,21 @@
     }
 
     .brand{
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-    .brandKr{
-      font-size:14px;
-      font-weight:900;
-      letter-spacing:.08em;
-      color:#fff;
-      opacity:.9;
-      line-height:1;
-      transform: translateY(2px);
-      user-select:none;
-    }
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.brandKr{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#fff;
+  opacity:.9;
+  line-height:1;
+  transform: translateY(2px); /* 로고와 시각적 정렬 */
+  user-select:none;
+}
     .brand img{height:52px;width:auto;display:block;user-select:none;}
 
     .search{
@@ -151,6 +157,26 @@
       border-color: rgba(255,255,255,.34);
       transform: translateY(-1px);
     }
+    /* --- Auth buttons --- */
+    .loginBtn{
+      height:40px;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.55);
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:-0.2px;
+      cursor:pointer;
+      transition:transform .18s ease, background .18s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      white-space:nowrap;
+    }
+    .loginBtn:hover{ background:rgba(255,255,255,.18); transform: translateY(-1px); }
+    .loginBtn:active{ transform: translateY(0px); }
+
 
     .profile{
       width:42px; height:42px;
@@ -188,22 +214,28 @@
       font-size:13px;
       cursor:pointer;
       user-select:none;
-      text-decoration:none;
     }
     .navPill.active{
       background: rgba(255,255,255,.92);
-      color:#111 !important;
+      color:#111;
       border-color: rgba(255,255,255,.70);
     }
-    .navPill,
-    .navPill:hover,
-    .navPill:visited,
-    .navPill:active {
-      text-decoration:none;
-      color:inherit;
-    }
 
-    /* ===== MAIN LAYOUT (login.html과 동일) ===== */
+    
+    /* FIX: active pill text should be dark (not white) */
+    .navPill.active,
+    .navPill.active:hover,
+    .navPill.active:visited,
+    .navPill.active:active{
+      color:#111 !important;
+    }
+    /* When pressing (mouse down), keep readable dark text */
+    .navPill:active{
+      background: rgba(255,255,255,.92);
+      border-color: rgba(255,255,255,.70);
+      color:#111 !important;
+    }
+/* ===== MAIN LAYOUT ===== */
     .main{
       background:
         radial-gradient(1100px 520px at 50% 0%, rgba(215,15,18,.06), transparent 60%),
@@ -232,32 +264,6 @@
       text-transform: uppercase;
     }
 
-    .subItem{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:10px 12px;
-      border-radius:14px;
-      cursor:pointer;
-      transition:.15s ease;
-    }
-    .subItem:hover{ background:rgba(18,18,18,.03); }
-    .subItem img{
-      width:32px;
-      height:32px;
-      border-radius:50%;
-      object-fit:cover;
-      flex-shrink:0;
-    }
-    .subItem span{
-      font-size:14px;
-      font-weight:700;
-      color:rgba(18,18,18,.78);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
     .sideItem{
       display:flex;
       align-items:center;
@@ -274,10 +280,27 @@
       background: rgba(18,18,18,.03);
       border-color: rgba(18,18,18,.06);
     }
+    .sideItem.active{
+      background: rgba(215,15,18,.07);
+      border-color: rgba(215,15,18,.18);
+      color:#111;
+    }
     .sideDot{
       width:10px;height:10px;border-radius:999px;
       background: rgba(18,18,18,.18);
       opacity:.25;
+    }
+    .sideItem.active .sideDot{
+      background: var(--brand);
+      opacity:1;
+      box-shadow: 0 0 0 7px rgba(215,15,18,.12);
+    }
+
+    .content{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
     }
 
     .card{
@@ -288,6 +311,7 @@
       overflow:hidden;
     }
     .pad{padding:16px}
+
     .cardHead{
       display:flex;
       align-items:center;
@@ -296,40 +320,386 @@
       margin-bottom:12px;
     }
     .cardHead b{font-size:16px; letter-spacing:-.02em;}
-    .muted{opacity:.75;}
+    .chev{color: rgba(18,18,18,.38); font-size:22px; line-height:1;}
 
-    /* ===== AUTH UI (login.html과 동일한 톤) ===== */
-    .authField{margin-top:12px;}
-    .authLabel{font-size:13px; opacity:.8; margin-bottom:6px;}
-    .authInput{
-      width:100%;
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.12);
-      background:rgba(255,255,255,.85);
-      outline:none;
-      font-size:14px;
+    .homeGrid{
+      display:grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      gap:16px;
+      align-items:stretch;
     }
-    .authInput:focus{border-color:rgba(0,0,0,.25); background:#fff;}
+    .span3{grid-column: 1 / -1;}
 
-    .authGrid2{
+    /* Today verse */
+    .verseChip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(215,15,18,.08);
+      border:1px solid rgba(215,15,18,.16);
+      color:#7a0b0b;
+      font-weight:900;
+      font-size:12px;
+      width:fit-content;
+    }
+    .verseTitle{margin:10px 0 0;font-weight:900;font-size:20px;letter-spacing:-.02em;}
+    .verseText{margin:8px 0 0;color: rgba(18,18,18,.60);font-weight:700;line-height:1.55;}
+    .verseRef{margin-top:10px;color: rgba(18,18,18,.45);font-size:12px;font-weight:800;}
+
+    /* Q&A list */
+    .qnaItem{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      padding:12px;
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.04);
+    }
+    .qnaItem + .qnaItem{margin-top:10px}
+    .qnaItem b{display:block;margin-bottom:6px;font-size:14px;letter-spacing:-.01em;}
+    .qnaItem span{color: rgba(18,18,18,.55);font-size:12px;font-weight:700;}
+
+    /* Notice list */
+    .noticeItem{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:12px;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,.03);
+    }
+    .noticeItem + .noticeItem{margin-top:10px}
+    .badge{
+      flex:0 0 auto;
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      border:1px solid rgba(215,15,18,.18);
+      background: rgba(215,15,18,.08);
+      color:#7a0b0b;
+      margin-top:1px;
+      white-space:nowrap;
+    }
+    .noticeText{min-width:0}
+    .noticeTitle{
+      margin:0;
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:-.01em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .noticeMeta{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+.bibleIcon{
+  width:18px;
+  height:18px;
+  object-fit:contain;
+  display:block;
+}
+    /* === 썸네일에 PNG 넣기 (공통) === */
+    .thumb, .shortThumb{
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+    }
+
+    /* Video cards */
+    .videoRow{
       display:grid;
       grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .videoCard{
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      overflow:hidden;
+      background:#fff;
+    }
+    .thumb{
+      aspect-ratio:16/9;
+      background:#eee;
+      position:relative;
+    }
+    .dur{
+      position:absolute;right:10px;bottom:10px;
+      padding:6px 8px;border-radius:10px;
+      background: rgba(0,0,0,.58);color:#fff;
+      font-size:12px;border:1px solid rgba(255,255,255,.16);
+    }
+    .vmeta{
+      padding:12px 12px 14px;
+      display:flex;
       gap:10px;
-      margin-top:12px;
+      align-items:flex-start;
+    }
+    .chdot{
+      width:34px;height:34px;border-radius:14px;
+      background: rgba(215,15,18,.10);
+      border:1px solid rgba(215,15,18,.18);
+      flex:0 0 auto;
+    }
+    .twrap{min-width:0}
+    .vt{
+      margin:0;
+      font-weight:900;
+      font-size:14px;
+      line-height:1.35;
+      letter-spacing:-.01em;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .vs{
+      margin:5px 0 0;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
     }
 
-    .authRow{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
-    .authBtn{
-      padding:10px 14px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.12);
+    /* Shorts: horizontal row */
+    .shortsRow{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      padding-bottom:6px;
+      scroll-snap-type:x mandatory;
+    }
+    .short{
+      flex: 0 0 190px;
+      scroll-snap-align:start;
+      border:1px solid rgba(18,18,18,.10);
+      border-radius: var(--r20);
+      overflow:hidden;
       background:#fff;
       cursor:pointer;
-      font-weight:700;
     }
-    .authBtn.ghost{background:rgba(255,255,255,.6);}
-    .authBtn.solid{background:#111; color:#fff; border-color:#111;}
+    .shortThumb{
+      aspect-ratio:9/16;
+      background:#eee;
+      position:relative;
+    }
+    .shortDur{
+      position:absolute;right:10px;bottom:10px;
+      padding:6px 8px;border-radius:10px;
+      background: rgba(0,0,0,.58);color:#fff;
+      font-size:12px;border:1px solid rgba(255,255,255,.16);
+    }
+    .shortMeta{padding:10px 12px 12px;}
+    .shortTitle{
+      margin:0;
+      font-weight:900;
+      font-size:13px;
+      letter-spacing:-.01em;
+      line-height:1.35;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .shortSub{
+      margin-top:6px;
+      color: rgba(18,18,18,.55);
+      font-size:12px;
+      font-weight:700;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    /* Recommended */
+    .pills{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px;}
+    .pill{
+      padding:9px 12px;border-radius:999px;
+      border:1px solid rgba(18,18,18,.10);
+      background: rgba(18,18,18,.03);
+      color: rgba(18,18,18,.72);
+      font-weight:900;font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill.active{
+      background: rgba(215,15,18,.08);
+      border-color: rgba(215,15,18,.18);
+      color:#7a0b0b;
+    }
+    .recGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+    .recTile{border:1px solid rgba(18,18,18,.10);border-radius: var(--r20);overflow:hidden;background:#fff;}
+    .tileMeta{padding:12px 12px 14px;display:flex;gap:10px;align-items:flex-start;}
+    .tileMeta .chdot{width:32px;height:32px}
+
+    /* ===== 쇼츠 모달 플레이어 ===== */
+    .playerModal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.55);
+      z-index:9999;
+      padding:18px;
+    }
+    .playerModal.open{ display:flex; }
+
+    .playerBox{
+      width:min(420px, 96vw);
+      border-radius:24px;
+      overflow:hidden;
+      background:#000;
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+      position:relative;
+    }
+    .playerStage{
+      width:100%;
+      aspect-ratio: 9 / 16;
+      position:relative;
+      background:#000;
+    }
+    .playerStage iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
+    .playerClose{
+      position:absolute;
+      top:10px; right:10px;
+      width:38px; height:38px;
+      border-radius:14px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.45);
+      color:#fff;
+      font-size:18px;
+      display:grid; place-items:center;
+      cursor:pointer;
+      z-index:2;
+    }
+.navPill,
+.navPill:hover,
+.navPill:visited,
+.navPill:active {
+  text-decoration: none;
+  color: inherit;
+}
+/* Subscribe channel item */
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.subItem:hover{
+  background:rgba(18,18,18,.03);
+}
+
+.subItem img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.subItem span{
+  font-size:14px;
+  font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+    /* Responsive */
+    @media (max-width: 1180px){
+      .main{grid-template-columns:1fr}
+      .homeGrid{grid-template-columns:1fr 1fr}
+      .span3{grid-column: 1 / -1;}
+      .recGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (max-width: 860px){
+      .homeGrid{grid-template-columns:1fr}
+      .videoRow{grid-template-columns:1fr}
+      .recGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width: 740px){
+      body{padding:14px}
+      .headerTop{grid-template-columns: 1fr; gap:12px;}
+      .search{justify-self:stretch}
+      .headerRight{justify-content:flex-start}
+      .brand img{height:48px;}
+      .recGrid{grid-template-columns:1fr}
+    }
+  
+    /* Card head link (click title/chevron) */
+    .cardHead.js-go{ cursor:pointer; }
+    .cardHead.js-go:hover b{ text-decoration: underline; }
+
+/* === STILL UI NORMALIZE (keep pages consistent) === */
+.navPill,
+.navPill:hover,
+.navPill:visited,
+.navPill:active{ text-decoration:none; color:inherit; }
+
+.main{ grid-template-columns: 260px 1fr; }
+.sidebar{ min-width:0; }
+.content{ min-width:0; }
+
+.brand{ display:flex; align-items:center; gap:6px; }
+.brandKr{
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.08em;
+  opacity:.9;
+  line-height:1;
+  transform: translateY(2px);
+  user-select:none;
+}
+
+/* Subscribe list item (if page missed it) */
+.subItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.subItem:hover{ background:rgba(18,18,18,.03); }
+.subItem img{
+  width:32px;height:32px;border-radius:50%;
+  object-fit:cover; flex-shrink:0;
+}
+.subItem span{
+  font-size:14px; font-weight:700;
+  color:rgba(18,18,18,.78);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* Prevent unintended smooth-scroll jump on load */
+html{ scroll-behavior:auto !important; }
+
 
     .authDivider{
       display:flex; align-items:center; gap:10px;
@@ -349,15 +719,11 @@
       color:#111;
       border:1px solid rgba(0,0,0,.14);
       box-shadow: 0 6px 18px rgba(0,0,0,.06);
-      display:flex;
-      align-items:center;
     }
     .authBtn.google:hover{
       transform: translateY(-1px);
       box-shadow: 0 10px 22px rgba(0,0,0,.10);
     }
-
-    /* ✅ login.html과 동일한 Google 아이콘 */
     .gIcon{
       width:22px; height:22px;
       display:inline-flex; align-items:center; justify-content:center;
@@ -366,161 +732,197 @@
       color:#fff; font-weight:900; font-size:13px;
     }
 
-    .statusLine[data-status]{
+/* FIX: center text inside login/logout pill buttons (force override) */
+header .loginBtn,
+header #logoutBtn,
+.loginBtn,
+#logoutBtn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  line-height:1 !important;
+  box-sizing:border-box !important;
+}
+</style>
+<style>
+    .authField{margin-top:12px;}
+    .authLabel{font-size:13px; opacity:.8; margin-bottom:6px;}
+    .authInput{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.85);
+      outline:none;
+      font-size:14px;
+    }
+    .authInput:focus{border-color:rgba(0,0,0,.25); background:#fff;}
+    .authRow{display:flex; gap:10px; margin-top:14px;}
+    .authBtn{
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .authBtn.ghost{background:rgba(255,255,255,.6);}
+    .authBtn.solid{background:#111; color:#fff; border-color:#111;}
+    .statusBox{
       margin-top:12px;
-      font-size:13px;
-      color:#b00020;
-      display:none;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.10);
+      background:rgba(255,255,255,.65);
+      min-height:44px;
+      line-height:1.5;
+      white-space:pre-wrap;
     }
-
-    @media (max-width: 980px){
-      .main{grid-template-columns:1fr}
-      .sidebar{display:none}
-      .authGrid2{grid-template-columns:1fr}
-    }
-    @media (max-width: 740px){
-      body{padding:14px}
-      .headerTop{grid-template-columns: 1fr; gap:12px;}
-      .search{justify-self:stretch}
-      .headerRight{justify-content:flex-start}
-      .brand img{height:48px;}
-    }
-
-    /* Prevent unintended jump */
-    html{ scroll-behavior:auto !important; }
+    .muted{opacity:.75;}
   </style>
-
-  <!-- signup 로직 -->
-  <script type="module" src="auth/signup.js"></script>
+<script src="auth/signup.js" type="module"></script>
 </head>
-
 <body>
-  <div class="frame">
-    <div class="inner">
+<div class="frame">
+<div class="inner">
+<header class="header">
+<div class="headerTop">
+<div class="brand" title="STILL">
+<img alt="STILL logo" src="still_logo.png"/>
+<span class="brandKr">KR</span>
+</div>
+<div class="search">
+<img alt="search" class="searchIcon" src="search.png"/>
+<input placeholder="영상 · 구절 · 교회 · 지역 검색"/>
+<img alt="mic" class="micIcon" src="mic.png"/>
+</div>
+<div class="headerRight">
+<button class="iconBtn" title="알림">
+<img alt="알림" src="bell.png"/>
+</button>
+<button class="iconBtn" title="업로드">
+<img alt="업로드" src="cross.png"/>
+</button>
+<div class="profile" title="프로필">
+<img alt="profile" src="bin.png"/>
+</div>
+</div>
+</div>
+<div class="navPills">
+<a class="navPill active" href="index.html">홈</a>
+<a class="navPill" href="bible.html">성경</a>
+<a class="navPill" href="QnA.html">Q&amp;A</a>
+<a class="navPill" href="calendar.html">캘린더</a>
+<a class="navPill" href="region.html">지역</a>
+<a class="navPill" href="church_db.html">이단 분별</a>
+<a class="navPill" href="jesusface.html">예수님과 고민상담</a>
+</div>
+</header>
+<div class="main">
+<aside class="sidebar">
+<!-- 구독 -->
+<div class="secTitle">Subscribe</div>
+<div class="subItem">
+<img alt="새롭게하소서 CBS" src="cbs.png"/>
+<span>새롭게하소서CBS</span>
+</div>
+<div class="subItem">
+<img alt="잘잘법" src="jaljal.png"/>
+<span>잘잘법 : 잘 믿고 잘 사는 법</span>
+</div>
+<div class="subItem">
+<img alt="위라클" src="weracle.png"/>
+<span>위라클 WERACLE</span>
+</div>
+<div class="subItem">
+<img alt="CTS" src="cts.png"/>
+<span>CTS기독교TV</span>
+</div>
+<!-- 내 페이지 -->
+<div class="secTitle" style="margin-top:18px">My Page</div>
+<div class="sideItem">
+<span class="sideDot"></span> 최신기록
+  </div>
+<div class="sideItem">
+<span class="sideDot"></span> 재생목록
+  </div>
+<div class="sideItem">
+<span class="sideDot"></span> 저장한 목록
+  </div>
+<div class="sideItem">
+<span class="sideDot"></span> 좋아요 표시한 목록
+  </div>
+</aside>
+<section class="card">
+<div class="pad">
+<div class="cardHead"><b>회원가입</b></div>
+<p class="muted" style="margin:10px 0 14px; line-height:1.5;">
+      STILL 이용을 위한 계정을 만듭니다.
+    </p>
+<div class="authField">
+<div class="authLabel">이름(선택)</div>
+<input autocomplete="name" class="authInput" id="name" placeholder="예: 김예빈" type="text"/>
+</div>
+<div class="authField">
+<div class="authLabel">소속 교회(필수)</div>
+<input autocomplete="organization" class="authInput" id="church" placeholder="예: 한마음교회" type="text"/>
+</div>
+<div class="authField">
+<div class="authLabel">이메일</div>
+<input autocomplete="email" class="authInput" id="email" placeholder="email@example.com" type="email"/>
+</div>
+<div class="authRow" style="gap:14px;">
+<div class="authField" style="flex:1; margin:0;">
+<div class="authLabel">비밀번호</div>
+<input autocomplete="new-password" class="authInput" id="password" placeholder="8자 이상" type="password"/>
+</div>
+<div class="authField" style="flex:1; margin:0;">
+<div class="authLabel">비밀번호 확인</div>
+<input autocomplete="new-password" class="authInput" id="password2" placeholder="비밀번호 다시 입력" type="password"/>
+</div>
+</div>
+<div class="authRow">
+<button class="authBtn solid" id="doSignupBtn" type="button">가입하기</button>
+<a class="authBtn ghost" href="login.html" style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none;">로그인으로</a>
+</div>
+<div class="authDivider"><span>또는</span></div>
+<button class="authBtn google" id="googleBtn" type="button">
+<span class="gIcon">G</span>
+      Google로 시작하기
+    </button>
+<div class="muted" style="margin-top:10px; font-size:12px;">
+      ※ Email/Password 및 Google 제공업체가 Firebase Authentication에 켜져 있어야 합니다.
+    </div>
+</div>
+</section>
+</div> <!-- /main -->
+</div> <!-- /inner -->
+</div> <!-- /frame -->
+<script type="module">
+    import { auth } from "./auth/firebase.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-      <header class="header">
-        <div class="headerTop">
-          <div class="brand" title="STILL">
-            <img src="still_logo.png" alt="STILL logo">
-            <span class="brandKr">KR</span>
-          </div>
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-          <div class="search">
-            <img src="search.png" class="searchIcon" alt="search">
-            <input placeholder="영상 · 구절 · 교회 · 지역 검색" />
-            <img src="mic.png" class="micIcon" alt="mic">
-          </div>
+    loginBtn?.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
 
-          <div class="headerRight">
-            <button class="iconBtn" title="알림">
-              <img src="bell.png" alt="알림">
-            </button>
-            <button class="iconBtn" title="업로드">
-              <img src="cross.png" alt="업로드">
-            </button>
-            <div class="profile" title="프로필">
-              <img src="bin.png" alt="profile">
-            </div>
-          </div>
-        </div>
+    logoutBtn?.addEventListener("click", async () => {
+      try { await signOut(auth); } catch(e){ console.error(e); }
+    });
 
-        <div class="navPills">
-          <a class="navPill" href="index.html">홈</a>
-          <a class="navPill" href="bible.html">성경</a>
-          <a class="navPill" href="QnA.html">Q&A</a>
-          <a class="navPill" href="calendar.html">캘린더</a>
-          <a class="navPill" href="region.html">지역</a>
-          <a class="navPill" href="church_db.html">이단 분별</a>
-          <a class="navPill" href="jesusface.html">예수님과 고민상담</a>
-        </div>
-      </header>
-
-      <div class="main">
-        <aside class="sidebar">
-          <div class="secTitle">Subscribe</div>
-
-          <div class="subItem">
-            <img src="cbs.png" alt="새롭게하소서 CBS">
-            <span>새롭게하소서CBS</span>
-          </div>
-
-          <div class="subItem">
-            <img src="jaljal.png" alt="잘잘법">
-            <span>잘잘법 : 잘 믿고 잘 사는 법</span>
-          </div>
-
-          <div class="subItem">
-            <img src="weracle.png" alt="위라클">
-            <span>위라클 WERACLE</span>
-          </div>
-
-          <div class="subItem">
-            <img src="cts.png" alt="CTS">
-            <span>CTS기독교TV</span>
-          </div>
-
-          <div class="secTitle" style="margin-top:18px">My Page</div>
-          <div class="sideItem"><span class="sideDot"></span> 최신기록</div>
-          <div class="sideItem"><span class="sideDot"></span> 재생목록</div>
-          <div class="sideItem"><span class="sideDot"></span> 저장한 목록</div>
-          <div class="sideItem"><span class="sideDot"></span> 좋아요 표시한 목록</div>
-        </aside>
-
-        <!-- ✅ 여기만 '회원가입' 카드로 (나머지는 login.html과 동일) -->
-        <section class="card">
-          <div class="pad">
-            <div class="cardHead"><b>회원가입</b></div>
-            <p class="muted" style="margin:10px 0 14px; line-height:1.5;">
-              STILL 이용을 위한 계정을 만듭니다.
-            </p>
-
-            <div class="authField">
-              <div class="authLabel">이름(선택)</div>
-              <input id="name" class="authInput" type="text" placeholder="예: 김예빈" autocomplete="name" />
-            </div>
-
-            <div class="authField">
-              <div class="authLabel">소속 교회(필수)</div>
-              <input id="church" class="authInput" type="text" placeholder="예: 한마음교회" />
-            </div>
-
-            <div class="authField">
-              <div class="authLabel">이메일</div>
-              <input id="email" class="authInput" type="email" placeholder="email@example.com" autocomplete="email" />
-            </div>
-
-            <div class="authGrid2">
-              <div class="authField" style="margin-top:0;">
-                <div class="authLabel">비밀번호</div>
-                <input id="password" class="authInput" type="password" placeholder="8자 이상" autocomplete="new-password" />
-              </div>
-              <div class="authField" style="margin-top:0;">
-                <div class="authLabel">비밀번호 확인</div>
-                <input id="password2" class="authInput" type="password" placeholder="비밀번호 다시 입력" autocomplete="new-password" />
-              </div>
-            </div>
-
-            <div class="authRow">
-              <button class="authBtn solid" id="signupSubmit" type="button">가입하기</button>
-              <button class="authBtn ghost" id="backToLogin" type="button">로그인으로</button>
-            </div>
-
-            <div class="authDivider"><span>또는</span></div>
-            <button class="authBtn google" id="googleBtn" type="button">
-              <span class="gIcon">G</span>
-              Google로 로그인
-            </button>
-
-            <div class="statusLine" data-status></div>
-
-            <div class="muted" style="margin-top:10px; font-size:12px;">
-              ※ Email/Password 제공업체가 Firebase Authentication에 켜져 있어야 합니다.
-            </div>
-          </div>
-        </section>
-      </div><!-- /main -->
-    </div><!-- /inner -->
-  </div><!-- /frame -->
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (loginBtn) loginBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+      } else {
+        if (loginBtn) loginBtn.style.display = "inline-flex";
+        if (logoutBtn) logoutBtn.style.display = "none";
+      }
+    });
+  </script>
+<script src="auth/header-auth.js" type="module"></script>
 </body>
 </html>
-
