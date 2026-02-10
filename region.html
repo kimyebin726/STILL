@@ -21,6 +21,15 @@
 <script src="app.js"></script>
 <link rel="icon" type="image/png" href="still_logo1.png">
   <style>
+
+    /* ===== Naver Map Embed ===== */
+    .mapMock{ background: none !important; }
+    #naverMap{
+      width:100%;
+      height:100%;
+      border-radius: var(--r20);
+    }
+
     :root{
       --brand:#D70F12;
       --bg1:#7d0a0c;
@@ -1092,6 +1101,9 @@ header #logoutBtn,
     .loginBtn:active{ transform: translateY(0px); }
 </style>
   <script type="module" src="auth/guard.js"></script>
+
+  <!-- Naver Maps JS v3 -->
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6wxc0enrje"></script>
 </head>
 
 <body>
@@ -1230,15 +1242,11 @@ header #logoutBtn,
                     <span class="subtle" id="mapMeta">추천 장소 8개</span>
                   </div>
                   <div class="mapMock" aria-label="map placeholder">
-                    <div class="pin p1" title="STILL Pick"></div>
-                    <div class="pin p2" title="교회"></div>
-                    <div class="pin p3" title="집회"></div>
-                    <div class="pin p4" title="모임"></div>
-                    <div class="mapHint">
-                      실제 서비스에서는 지도(카카오/네이버/구글)로 연동 가능<br/>
-                      지금은 STILL 스타일 목업으로 구성했어요.
+                    <div id="naverMap" aria-label="naver map"></div>
+                    <div class="mapHint" id="mapHint">
+                      네이버 지도 연동 완료. (내 주변/지역 선택 시 중심이 이동합니다)
                     </div>
-                  </div>
+</div>
                 </div>
               </div>
 
@@ -1610,7 +1618,161 @@ $("#btnNear").addEventListener("click", ()=>{
   </script>
 
 
-<script type="module" src="auth/header-auth.js"></script>
+
+  <script>
+    // ===== Naver Map (Dynamic Map) =====
+    let naverMap = null;
+    let userMarker = null;
+
+    const NAVER_CENTER = {
+      "서울": {
+        "성동구": { lat: 37.5483, lng: 127.0447 },
+        "마포구": { lat: 37.5663, lng: 126.9019 },
+        "서대문구": { lat: 37.5791, lng: 126.9368 },
+        "강남구": { lat: 37.5172, lng: 127.0473 },
+        "송파구": { lat: 37.5145, lng: 127.1059 }
+      },
+      "경기": {
+        "성남시": { lat: 37.4201, lng: 127.1265 },
+        "수원시": { lat: 37.2636, lng: 127.0286 },
+        "고양시": { lat: 37.6584, lng: 126.8320 },
+        "부천시": { lat: 37.5034, lng: 126.7660 },
+        "용인시": { lat: 37.2411, lng: 127.1776 }
+      },
+      "인천": {
+        "연수구": { lat: 37.4102, lng: 126.6783 },
+        "남동구": { lat: 37.4469, lng: 126.7310 },
+        "부평구": { lat: 37.5070, lng: 126.7219 },
+        "서구":   { lat: 37.5454, lng: 126.6760 },
+        "미추홀구": { lat: 37.4636, lng: 126.6500 }
+      },
+      "부산": {
+        "해운대구": { lat: 35.1631, lng: 129.1635 },
+        "수영구":   { lat: 35.1457, lng: 129.1132 },
+        "남구":     { lat: 35.1366, lng: 129.0849 },
+        "부산진구": { lat: 35.1627, lng: 129.0530 },
+        "동래구":   { lat: 35.2059, lng: 129.0835 }
+      },
+      "대구": {
+        "수성구": { lat: 35.8582, lng: 128.6308 },
+        "중구":   { lat: 35.8694, lng: 128.6067 },
+        "달서구": { lat: 35.8299, lng: 128.5325 },
+        "동구":   { lat: 35.8860, lng: 128.6356 },
+        "북구":   { lat: 35.8857, lng: 128.5827 }
+      },
+      "대전": {
+        "서구":   { lat: 36.3510, lng: 127.3794 },
+        "유성구": { lat: 36.3622, lng: 127.3567 },
+        "중구":   { lat: 36.3254, lng: 127.4213 },
+        "동구":   { lat: 36.3323, lng: 127.4549 },
+        "대덕구": { lat: 36.3462, lng: 127.4144 }
+      },
+      "광주": {
+        "북구":   { lat: 35.1741, lng: 126.9112 },
+        "서구":   { lat: 35.1520, lng: 126.8895 },
+        "남구":   { lat: 35.1331, lng: 126.9020 },
+        "동구":   { lat: 35.1460, lng: 126.9239 },
+        "광산구": { lat: 35.1396, lng: 126.7937 }
+      }
+    };
+
+    function getCenter(city, gu){
+      const byCity = NAVER_CENTER[city];
+      if(!byCity) return { lat: 37.5665, lng: 126.9780 };
+      return (byCity[gu] || Object.values(byCity)[0] || { lat: 37.5665, lng: 126.9780 });
+    }
+
+    function setMapCenter(lat, lng, zoom=13){
+      if(!naverMap) return;
+      naverMap.setCenter(new naver.maps.LatLng(lat, lng));
+      naverMap.setZoom(zoom, true);
+    }
+
+    function initNaverMap(){
+      const mapEl = document.getElementById("naverMap");
+      if(!mapEl) return;
+      if(!window.naver || !naver.maps){
+        console.warn("Naver Maps not loaded.");
+        return;
+      }
+
+      const center = (window.state && window.state.city && window.state.gu)
+        ? getCenter(window.state.city, window.state.gu)
+        : { lat: 37.5665, lng: 126.9780 };
+
+      naverMap = new naver.maps.Map(mapEl, {
+        center: new naver.maps.LatLng(center.lat, center.lng),
+        zoom: 13,
+        zoomControl: true,
+        zoomControlOptions: { position: naver.maps.Position.TOP_RIGHT }
+      });
+
+      userMarker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(center.lat, center.lng),
+        map: naverMap
+      });
+    }
+
+    function moveToSelectedRegion(){
+      if(!window.state) return;
+      const c = getCenter(window.state.city, window.state.gu);
+      setMapCenter(c.lat, c.lng, 13);
+      if(userMarker) userMarker.setPosition(new naver.maps.LatLng(c.lat, c.lng));
+    }
+
+    function moveToMyLocation(){
+      const hint = document.getElementById("mapHint");
+      if(!navigator.geolocation){
+        if(hint) hint.textContent = "이 브라우저는 위치 기능을 지원하지 않아요.";
+        return;
+      }
+      if(hint) hint.textContent = "내 주변 위치를 불러오는 중…";
+
+      navigator.geolocation.getCurrentPosition(
+        (pos)=>{
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          setMapCenter(lat, lng, 14);
+          if(userMarker){
+            userMarker.setPosition(new naver.maps.LatLng(lat, lng));
+          } else if(naverMap){
+            userMarker = new naver.maps.Marker({
+              position: new naver.maps.LatLng(lat, lng),
+              map: naverMap
+            });
+          }
+          if(hint) hint.textContent = "내 주변 기준으로 지도를 이동했어요.";
+        },
+        ()=>{
+          if(hint) hint.textContent = "위치 권한이 필요해요. (브라우저 설정에서 허용)";
+        },
+        { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
+      );
+    }
+
+    window.addEventListener("load", ()=>{
+      initNaverMap();
+      setTimeout(moveToSelectedRegion, 300);
+    });
+
+    if(typeof window.renderAll === "function"){
+      const _renderAll = window.renderAll;
+      window.renderAll = function(){
+        _renderAll();
+        moveToSelectedRegion();
+      };
+    }
+
+    const nearBtn = document.getElementById("btnNear");
+    if(nearBtn){
+      nearBtn.addEventListener("click", ()=>{
+        nearBtn.classList.add("active");
+        moveToMyLocation();
+      });
+    }
+  </script>
+
+  <script type="module" src="auth/header-auth.js"></script>
 </body>
 </html>
 
